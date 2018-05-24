@@ -1,0 +1,51 @@
+Product barcode,Product Name,Product Brand,Product Purchase Price (Numeric),Product Sale Price (Numeric),Product Color,Product Size,Product Quantity (Numeric),Product Expiry (YYYY-MM-DD),Warehouse Name (Case-Sensitive),Product Description
+17900239,SUGAR MAMA,Sana Safinaz,2000,2390,Standard,XS,100,30/03/2018,Main Warehouse,Casual printed shirt with fringe detailing on sleeves. Fabric: Cotton
+5003453451,SUGAR MAMA,Sana Safinaz,2000,2390,Standard,S,100,30/03/2018,Main Warehouse,Casual printed shirt with fringe detailing on sleeves. Fabric: Cotton
+5003453452,SUGAR MAMA,Sana Safinaz,2000,2390,Standard,M,100,30/03/2018,Main Warehouse,Casual printed shirt with fringe detailing on sleeves. Fabric: Cotton
+5003453453,SUGAR MAMA,Sana Safinaz,2000,2390,Standard,L,100,30/03/2018,Main Warehouse,Casual printed shirt with fringe detailing on sleeves. Fabric: Cotton
+5003453454,SUGAR MAMA,Sana Safinaz,2000,2390,Standard,XL,100,30/03/2018,Main Warehouse,Casual printed shirt with fringe detailing on sleeves. Fabric: Cotton
+5003453455,DUTCH IRIS,Sana Safinaz,1800,2499,Black,XS,10,30/03/2018,Main Warehouse,Round neck basic shirt. Fabric: Cotton
+5003453456,DUTCH IRIS,Sana Safinaz,1800,2499,Black,S,10,30/03/2018,Main Warehouse,Round neck basic shirt. Fabric: Cotton
+5003453457,DUTCH IRIS,Sana Safinaz,1800,2499,Black,M,10,30/03/2018,Main Warehouse,Round neck basic shirt. Fabric: Cotton
+5003453458,DUTCH IRIS,Sana Safinaz,1800,2499,Black,L,10,30/03/2018,Main Warehouse,Round neck basic shirt. Fabric: Cotton
+5003453459,DUTCH IRIS,Sana Safinaz,1800,2499,Black,XL,10,30/03/2018,Main Warehouse,Round neck basic shirt. Fabric: Cotton
+5003453460,ISABELLA,Sana Safinaz,1900,2390,Black,XS,15,30/03/2018,Main Warehouse,Casual printed shirt with round neck. Fabric: Cotton
+5003453461,ISABELLA,Sana Safinaz,1900,2390,Black,S,15,30/03/2018,Main Warehouse,Casual printed shirt with round neck. Fabric: Cotton
+5003453462,ISABELLA,Sana Safinaz,1900,2390,Black,M,15,30/03/2018,Main Warehouse,Casual printed shirt with round neck. Fabric: Cotton
+5003453463,ISABELLA,Sana Safinaz,1900,2390,Black,L,15,30/03/2018,Main Warehouse,Casual printed shirt with round neck. Fabric: Cotton
+5003453464,ISABELLA,Sana Safinaz,1900,2390,Black,XL,15,30/03/2018,Main Warehouse,Casual printed shirt with round neck. Fabric: Cotton
+5003453465,CASA BLANCA,Sana Safinaz,7990,10990,Standard,XS,18,31/03/2018,Main Warehouse,Heavily embroidered front open shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453466,CASA BLANCA,Sana Safinaz,7990,10990,Standard,S,18,31/03/2018,Main Warehouse,Heavily embroidered front open shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453467,CASA BLANCA,Sana Safinaz,7990,10990,Standard,M,18,31/03/2018,Main Warehouse,Heavily embroidered front open shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453468,CASA BLANCA,Sana Safinaz,7990,10990,Standard,L,18,31/03/2018,Main Warehouse,Heavily embroidered front open shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453469,CASA BLANCA,Sana Safinaz,7990,10990,Standard,XL,18,31/03/2018,Main Warehouse,Heavily embroidered front open shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453470,BELLS OF PORTUGAL,Sana Safinaz,3890,5490,Standard,XS,25,31/03/2018,Main Warehouse,Smart shirt with floral embroidery on front with boho chic sleeves completed with pink twill. Fabric: Cotton
+5003453471,BELLS OF PORTUGAL,Sana Safinaz,3890,5490,Standard,S,25,31/03/2018,Main Warehouse,Smart shirt with floral embroidery on front with boho chic sleeves completed with pink twill. Fabric: Cotton
+5003453472,BELLS OF PORTUGAL,Sana Safinaz,3890,5490,Standard,M,25,31/03/2018,Main Warehouse,Smart shirt with floral embroidery on front with boho chic sleeves completed with pink twill. Fabric: Cotton
+5003453473,BELLS OF PORTUGAL,Sana Safinaz,3890,5490,Standard,L,25,31/03/2018,Main Warehouse,Smart shirt with floral embroidery on front with boho chic sleeves completed with pink twill. Fabric: Cotton
+5003453474,BELLS OF PORTUGAL,Sana Safinaz,3890,5490,Standard,XL,25,31/03/2018,Main Warehouse,Smart shirt with floral embroidery on front with boho chic sleeves completed with pink twill. Fabric: Cotton
+5003453475,DEDRICK,Sana Safinaz,5690,8490,Standard,XS,32,31/03/2018,Main Warehouse,Heavily embroidered shirt with embroidered sleeves and plain back. Fabric: Variation of Cotton
+5003453476,DEDRICK,Sana Safinaz,5690,8490,Standard,S,32,31/03/2018,Main Warehouse,Heavily embroidered shirt with embroidered sleeves and plain back. Fabric: Variation of Cotton
+5003453477,DEDRICK,Sana Safinaz,5690,8490,Standard,M,32,31/03/2018,Main Warehouse,Heavily embroidered shirt with embroidered sleeves and plain back. Fabric: Variation of Cotton
+5003453478,DEDRICK,Sana Safinaz,5690,8490,Standard,L,32,31/03/2018,Main Warehouse,Heavily embroidered shirt with embroidered sleeves and plain back. Fabric: Variation of Cotton
+5003453479,DEDRICK,Sana Safinaz,5690,8490,Standard,XL,32,31/03/2018,Main Warehouse,Heavily embroidered shirt with embroidered sleeves and plain back. Fabric: Variation of Cotton
+5003453480,FENTY,Sana Safinaz,2890,4490,Standard,XS,45,31/03/2018,Main Warehouse,Heavily embroidered shirt with embroidered sleeves and plain back. Fabric: Variation of Cotton
+5003453481,FENTY,Sana Safinaz,2890,4490,Standard,S,45,31/03/2018,Main Warehouse,Heavily embroidered shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453482,FENTY,Sana Safinaz,2890,4490,Standard,M,45,31/03/2018,Main Warehouse,Heavily embroidered shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453483,FENTY,Sana Safinaz,2890,4490,Standard,L,45,31/03/2018,Main Warehouse,Heavily embroidered shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453484,FENTY,Sana Safinaz,2890,4490,Standard,XL,45,31/03/2018,Main Warehouse,Heavily embroidered shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453485,SPICE GIRL,Sana Safinaz,2790,4990,Standard,XS,19,31/03/2018,Main Warehouse,Fully embroidered shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453486,SPICE GIRL,Sana Safinaz,2790,4990,Standard,S,19,31/03/2018,Main Warehouse,Fully embroidered shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453487,SPICE GIRL,Sana Safinaz,2790,4990,Standard,M,19,31/03/2018,Main Warehouse,Fully embroidered shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453488,SPICE GIRL,Sana Safinaz,2790,4990,Standard,L,19,31/03/2018,Main Warehouse,Fully embroidered shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453489,SPICE GIRL,Sana Safinaz,2790,4990,Standard,XL,19,31/03/2018,Main Warehouse,Fully embroidered shirt with embroidered sleeves and plain back. Fabric: Cotton
+5003453490,LOBELIA,Sana Safinaz,1790,2390,Standard,XS,15,31/03/2018,Main Warehouse,Casual printed shirt in boxy cut. Fabric: Viscose linen. Animal print.
+5003453491,LOBELIA,Sana Safinaz,1790,2390,Standard,S,15,31/03/2018,Main Warehouse,Casual printed shirt in boxy cut. Fabric: Viscose linen. Animal print.
+5003453492,LOBELIA,Sana Safinaz,1790,2390,Standard,M,15,31/03/2018,Main Warehouse,Casual printed shirt in boxy cut. Fabric: Viscose linen. Animal print.
+5003453493,LOBELIA,Sana Safinaz,1790,2390,Standard,L,15,31/03/2018,Main Warehouse,Casual printed shirt in boxy cut. Fabric: Viscose linen. Animal print.
+5003453494,LOBELIA,Sana Safinaz,1790,2390,Standard,XL,15,31/03/2018,Main Warehouse,Casual printed shirt in boxy cut. Fabric: Viscose linen. Animal print.
+5003453495,DARK DELIGHT,Sana Safinaz,1670,2390,Standard,XS,21,31/03/2018,Main Warehouse,Round neck basic shirt with boho chic sleeves.Ê Fabric: Cotton
+5003453496,DARK DELIGHT,Sana Safinaz,1670,2390,Standard,S,21,31/03/2018,Main Warehouse,Round neck basic shirt with boho chic sleeves.Ê Fabric: Cotton
+5003453497,DARK DELIGHT,Sana Safinaz,1670,2390,Standard,M,21,31/03/2018,Main Warehouse,Round neck basic shirt with boho chic sleeves.Ê Fabric: Cotton
+5003453498,DARK DELIGHT,Sana Safinaz,1670,2390,Standard,L,21,31/03/2018,Main Warehouse,Round neck basic shirt with boho chic sleeves.Ê Fabric: Cotton
+5003453499,DARK DELIGHT,Sana Safinaz,1670,2390,Standard,XL,21,31/03/2018,Main Warehouse,Round neck basic shirt with boho chic sleeves.Ê Fabric: Cotton

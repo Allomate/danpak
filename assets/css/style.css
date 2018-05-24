@@ -1,0 +1,42 @@
+.deleteImagesSpanTag, .deleteThumbSpanTag{
+	background-color: red;
+	color: white;
+	width: 100px;
+	display: block;
+	height: 30px;
+	text-align: center;
+	cursor: pointer;
+	line-height: 30px
+}
+
+.deleteOrderExpansionInventory{
+	background-color: red;
+	color: white;
+	width: 120px;
+	display: block;
+	height: 30px;
+	text-align: center;
+	cursor: pointer;
+	line-height: 30px
+}
+
+.deleteImagesSpanTag:hover, .deleteThumbSpanTag:hover, .deleteOrderExpansionInventory:hover{
+	background-color: #d6c1c1;
+}
+
+ol.limited_drop_targets{
+	list-style: none;
+	display: block;
+	padding: 0px;
+	width: 100%
+}
+
+ol.limited_drop_targets li{
+	margin: 5px;
+	padding: 5px;
+	width: 250px;
+	border: 1px solid #cccccc;
+	color: #0088cc;
+	background: #eeeeee;
+	cursor: pointer;
+}
