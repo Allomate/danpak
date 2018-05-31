@@ -35,6 +35,10 @@ class InventoryModel extends CI_Model{
 		return $this->db->select('GROUP_CONCAT(unit_id) as unit_id')->where('item_id', $itemId)->get('inventory_preferences')->result();
 	}
 
+	public function GetUnitNamesForSku($itemId){
+		return $this->db->select('unit_name, (SELECT pref_id from inventory_preferences where item_id = '.$itemId.' and unit_id = itu.unit_id) as pref_id')->where("find_in_set(unit_id, (SELECT GROUP_CONCAT(unit_id) from inventory_preferences where item_id = ".$itemId."))")->get('inventory_types_units itu')->result();
+	}
+
 	public function AddSubInventory($subInventData){
 		$itemInsidePref = $this->db->select('pref_id')->where(array('item_id'=>$subInventData["item_name_item_inside"], 'unit_id'=>$subInventData["unit_id_item_inside"]))->get('inventory_preferences')->row()->pref_id;
 		$insideThisPref = $this->db->select('pref_id')->where(array('item_id'=>$subInventData["item_name_inside_this_item"], 'unit_id'=>$subInventData["unit_id_inside_this_item"]))->get('inventory_preferences')->row()->pref_id;

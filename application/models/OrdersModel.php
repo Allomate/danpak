@@ -60,12 +60,72 @@ class OrdersModel extends CI_Model{
 		return $orderDetails;
 	}
 
+	public function GetRetailersForEmployee($employee_id)
+    {
+		if ($this->db->select('GROUP_CONCAT(retailer_id) as retailer_ids')->where('employee_id', $employee_id)->get('retailers_assignment')->row()):
+			$retailerIds = $this->db->select('GROUP_CONCAT(retailer_id) as retailer_ids')->where('employee_id', $employee_id)->get('retailers_assignment')->row()->retailer_ids;
+			return $this->db->select('id as retailer_id, retailer_name, retailer_phone, retailer_email, retailer_address, REPLACE(retailer_image,"./","' . base_url() . '") as retailer_image, retailer_lats, retailer_longs, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as territory_name, retailer_city, retailer_type_id, retailer_territory_id')->where("find_in_set(id, '" . $retailerIds . "')")->get("retailers_details rd")->result();
+		endif;
+	}
+	
+	public function GetDistDiscountForItem($pref_id, $distributor_id){
+		return array("distributor_discount"=> $this->db->select('discount')->where("id = (SELECT retailer_type_id from retailers_details where id = " . $distributor_id . ")")->get('retailer_types')->row()->discount, "trade_price_after_discount"=>$this->db->select("(item_trade_price-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = " . $distributor_id . "))/100)*(ip.item_trade_price))) as after_discount")->where('pref_id', $pref_id)->get('inventory_preferences ip')->row()->after_discount);
+	}
+
 	public function UpdateStockOrderRemoveItems($orderData){
 		$itemsDelete = explode(",", $orderData['items_deleted']);
 		foreach ($itemsDelete as $item) :
 			$this->db->where('id', $item)->update('order_contents', array('item_status'=>0));
 		endforeach;
 	}
+
+    public function BookOrderManualEntry($orderDetails)
+    {
+		$pref_id = $orderDetails["pref_id"];
+		$employee_id = $orderDetails["employee_id"];
+		$item_quantity_booker = $orderDetails["item_quantity_booker"];
+		$booker_discount = $orderDetails["booker_discount"];
+		$visit_status = $orderDetails["visit_status"];
+		$territory_id = $this->db->select('territory_id')->where('employee_id', $employee_id)->get('employees_info')->row()->territory_id;
+		$area_id = $this->db->select('area_id')->where('id', $territory_id)->get('territory_management')->row()->area_id;
+		$region_id = $this->db->select('region_id')->where('id', $area_id)->get('area_management')->row()->region_id;
+		$orderDetails["created_at"] = $orderDetails["order_date"];
+		$orderDetails["booking_region"] = $region_id;
+		$orderDetails["booking_area"] = $area_id;
+		$orderDetails["booking_territory"] = $territory_id;
+		unset($orderDetails["pref_id"]);
+		unset($orderDetails["item_quantity_booker"]);
+		unset($orderDetails["booker_discount"]);
+		unset($orderDetails["order_date"]);
+		unset($orderDetails["visit_status"]);
+		$orderDetails["invoice_number"] = mt_rand(1000000000, mt_getrandmax());
+		$this->db->insert('orders', $orderDetails);
+		$order_id = $this->db->insert_id();
+		$pref_id = explode(",", $pref_id);
+		$item_quantity_booker = explode(",", $item_quantity_booker);
+		$booker_discount = explode(",", $booker_discount);
+		for ($i = 0; $i < sizeof($pref_id); $i++) {
+			$individualPriceForThisPrefId = $this->db->select('(item_trade_price-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $orderDetails['retailer_id'] . '))/100)*(ip.item_trade_price))) as after_discount')->where('pref_id', $pref_id[$i])->get('inventory_preferences ip')->row()->after_discount;
+			if ($booker_discount[$i]):
+				$individualPriceForThisPrefId = $individualPriceForThisPrefId - (($booker_discount[$i] / 100) * $individualPriceForThisPrefId);
+			endif;
+			$final_price = $individualPriceForThisPrefId * $item_quantity_booker[$i];
+			$orderContents[] = array("pref_id" => $pref_id[$i], "item_quantity_booker" => $item_quantity_booker[$i], "booker_discount" => $booker_discount[$i], "order_id" => $order_id, "final_price" => $final_price);
+			$deductFromThisQuantity = $this->db->select('item_quantity')->where('pref_id', $pref_id[$i])->get('inventory_preferences')->row()->item_quantity;
+			$finalQuantity = $deductFromThisQuantity - $item_quantity_booker[$i];
+			$this->db->where('pref_id', $pref_id[$i])->update('inventory_preferences', array('item_quantity' => $finalQuantity));
+		}
+		if ($this->db->insert_batch('order_contents', $orderContents)):
+			$visitsMarkedData = array("retailer_id" => $orderDetails["retailer_id"], "employee_id" => $employee_id, "took_order" => 0, "created_at" => $orderDetails["created_at"]);
+			if($visit_status == "2" || $visit_status == 2){
+				$visitsMarkedData = array("retailer_id" => $orderDetails["retailer_id"], "employee_id" => $employee_id, "took_order" => 1, "created_at" => $orderDetails["created_at"]);
+				
+			}
+			if($this->db->insert('visits_marked', $visitsMarkedData)){
+				return "Success";
+			}
+		endif;
+    }
 
 	public function UpdateStockOrder($orderData){
 

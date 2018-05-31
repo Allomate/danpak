@@ -21,7 +21,7 @@ class CampaignManagement extends WebAuth_Controller{
 		$campaignData = $this->input->post();
 
 		if($campaignData["scheme_type"] == "1") : 
-			$campaignData["distributor_discount"] = $campaignData['discount_on_scheme'];
+			// $campaignData["distributor_discount"] = $campaignData['discount_on_scheme'];
 			unset($campaignData['price_discount_of_this_pref_id']);
 			unset($campaignData['discount_on_scheme']);
 			unset($campaignData['discount_on_tp']);

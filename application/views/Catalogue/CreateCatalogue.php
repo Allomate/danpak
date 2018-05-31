@@ -14,8 +14,14 @@
 				<div class="col-lg-6 col-md-6">
 					<ol class="breadcrumb">
 
-						<li><a href="#"><span>Catalogue</span></a></li>
-						<li><span>Create Catalogue</span></li>
+						<li>
+							<a href="#">
+								<span>Catalogue</span>
+							</a>
+						</li>
+						<li>
+							<span>Create Catalogue</span>
+						</li>
 					</ol>
 				</div>
 			</div>
@@ -23,7 +29,9 @@
 				<div class="col-md-12">
 					<div class="box-white m-b-30">
 						<div id="example-basic">
-							<h3><span class="head-font capitalize-font wz-pt">Create Catalogue</span></h3>
+							<h3>
+								<span class="head-font capitalize-font wz-pt">Create Catalogue</span>
+							</h3>
 							<section>
 								<div class="form-body">
 									<div class="row">
@@ -60,18 +68,24 @@
 									</div>
 								</div>
 							</section>
-							<h3><span class="head-font capitalize-font wz-pt">Select Product</span></h3>
+							<h3>
+								<span class="head-font capitalize-font wz-pt">Select Product</span>
+							</h3>
 							<section>
 								<div class="col-md-12" id="productsDiv">
 									<h3 class="m-b-15">Select Products for Catalogue</h3>
 									<select multiple="multiple" name="inventory_items" id="inventory_items">
 										<?php foreach($inventoryList as $inventory) : ?>
-											<option value="<?= $inventory->pref_id; ?>"><?= $inventory->item_name; ?></option>
+										<option value="<?= $inventory->pref_id; ?>">
+											<?= $inventory->item_name; ?>
+										</option>
 										<?php endforeach; ?>
 									</select>
 								</div>
 							</section>
-							<h3><span class="head-font capitalize-font wz-pt">Set List Priority</span></h3>
+							<h3>
+								<span class="head-font capitalize-font wz-pt">Set List Priority</span>
+							</h3>
 							<section>
 								<div class="col-md-12">
 									<h3 class="m-b-15">Set Products List Priority</h3>
@@ -81,7 +95,9 @@
 									</div>
 								</div>
 							</section>
-							<h3><span class="head-font capitalize-font wz-pt">Assign Catalogue</span></h3>
+							<h3>
+								<span class="head-font capitalize-font wz-pt">Assign Catalogue</span>
+							</h3>
 							<section>
 								<div class="row">
 									<div class="col-md-6">
@@ -96,7 +112,9 @@
 														<label class="control-label mb-10">Region</label>
 														<select class="selectpicker" name="region_id" data-style="form-control btn-default btn-outline">
 															<?php foreach ($Regions as $region) : ?>
-																<option value="<?= $region->id; ?>"><?= $region->region_name; ?></option>
+															<option value="<?= $region->id; ?>">
+																<?= $region->region_name; ?>
+															</option>
 															<?php endforeach; ?>
 														</select>
 													</div>
@@ -116,7 +134,9 @@
 														<label class="control-label mb-10">Areas</label>
 														<select class="selectpicker" name="area_id" data-style="form-control btn-default btn-outline">
 															<?php foreach ($Areas as $area) : ?>
-																<option value="<?= $area->id; ?>"><?= $area->area_name; ?></option>
+															<option value="<?= $area->id; ?>">
+																<?= $area->area_name; ?>
+															</option>
 															<?php endforeach; ?>
 														</select>
 													</div>
@@ -136,13 +156,15 @@
 														<label class="control-label mb-10">Territory</label>
 														<select class="selectpicker" name="territory_id" data-style="form-control btn-default btn-outline">
 															<?php foreach ($Territories as $territory) : ?>
-																<option value="<?= $territory->id; ?>"><?= $territory->territory_name; ?></option>
+															<option value="<?= $territory->id; ?>">
+																<?= $territory->territory_name; ?>
+															</option>
 															<?php endforeach; ?>
 														</select>
 													</div>
 												</div>
 											</div>
-										</div>								 
+										</div>
 									</div>
 								</div>
 								<div class="row" id="employeesListDiv">
@@ -158,13 +180,15 @@
 														<label class="control-label mb-10">Employees</label>
 														<select multiple="multiple" name="employees_list" disabled="disabled" id="employees_list">
 															<?php foreach ($Employees as $employee) : ?>
-																<option value="<?= $employee->employee_id ?>"><?= $employee->employee_username; ?></option>
+															<option value="<?= $employee->employee_id ?>">
+																<?= $employee->employee_username; ?>
+															</option>
 															<?php endforeach; ?>
-														</select>	
+														</select>
 													</div>
 												</div>
 											</div>
-										</div>									 
+										</div>
 									</div>
 								</div>
 							</section>
@@ -172,20 +196,20 @@
 							echo form_open('Catalogue/CreateCatalogueOps', $attributes);
 							echo form_hidden('catalogue_data', '');
 							echo form_hidden('assignment_data', ''); ?>
-						</form>
-					</div> 
+							</form>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 </div>
-</div>
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
 <script type="text/javascript" src="<?= base_url('assets/js/RegionAndArea.js').'?v='.time(); ?>"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript">
-	$(document).ready(function(){
+	$(document).ready(function () {
 		$('#datePicker1').datepicker({
 			format: 'yyyy-mm-dd',
 			startDate: '+0d'
@@ -195,4 +219,5 @@
 			startDate: '+0d'
 		});
 	});
+
 </script>

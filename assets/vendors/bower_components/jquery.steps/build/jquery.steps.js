@@ -1386,6 +1386,7 @@ function prePopulateEmployeesList(){
     $('#employeesListDiv .selected-wrapper').empty();
     $('#employeesListDiv .non-selected-wrapper a').each(function(){
         var dataValue = $(this).attr('data-value');
+        debugger;
         if(jQuery.inArray(dataValue, employeesAdded) !== -1){
             $(this).addClass('selected');
             $('#employeesListDiv .selected-wrapper').append('<a tabindex="0" class="item selected" role="button" data-value="'+$(this).attr('data-value')+'" multi-index="'+$(this).attr('multi-index')+'">'+$(this).text()+'</a>');        

@@ -23,7 +23,7 @@ $(document).ready(function() {
                 var response = JSON.parse(response);
                 if (response.scheme_type == "1") {
                     $('.viewCampaignDetailsTable tbody').empty();
-                    $('.viewCampaignDetailsTable tbody').append('<tr><td>' + response.data["item_name"] + '</td><td>' + numberWithCommas(response.data["minimum_quantity_for_eligibility"]) + '</td><td>' + numberWithCommas(response.data["quantity_for_free_item"]) + '</td><td>' + numberWithCommas(response.data["scheme_amount"]) + '</td><td>' + numberWithCommas(response.data["discount"]));
+                    $('.viewCampaignDetailsTable tbody').append('<tr><td>' + response.data["item_name"] + '</td><td>' + numberWithCommas(response.data["minimum_quantity_for_eligibility"]) + '</td><td>' + numberWithCommas(response.data["quantity_for_free_item"]) + '</td><td>' + numberWithCommas(response.data["scheme_amount"]) + '</td>');
                     $('.dataTables_info').hide();
                     $('.dataTables_paginate').hide();
                     $('#DataTables_Table_1_filter').hide();
@@ -70,12 +70,26 @@ $(document).ready(function() {
         })
     });
 
-    $('input[name="discount_on_scheme"]').on("focus", function() {
-        if ($('input[name="quantity_for_free_item"]').val() == "" || $('input[name="minimum_quantity_for_eligibility"]').val() == "") {
-            alert('Please provide all the above information first');
-            $('input[name="discount_on_scheme"]').blur();
+    $('input[name="quantity_for_free_item"]').on('input', function() {
+        $('#validQuantityErr').hide();
+
+        if ($('input[name="minimum_quantity_for_eligibility"]').val() == "") {
+            $('#validQuantityErr').text("Please provide minimum eligibility quantity first");
+            $('#validQuantityErr').fadeIn();
+            $('input[name="quantity_for_free_item"]').val('');
+            $('input[name="minimum_quantity_for_eligibility"]').focus();
+            $('input[name="scheme_amount"]').val("");
             return;
         }
+
+        if ($('input[name="quantity_for_free_item"]').val() == "") {
+            $('#validQuantityErr').text("Please provide given free quantity for scheme amount to calculate");
+            $('#validQuantityErr').fadeIn();
+            $('input[name="quantity_for_free_item"]').val('');
+            $('input[name="scheme_amount"]').val("");
+            return;
+        }
+
         $.ajax({
             type: 'POST',
             url: $('#urlForItemTradePrice').val(),

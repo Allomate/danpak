@@ -12,8 +12,14 @@
 				</div>
 				<div class="col-lg-6 col-md-6">
 					<ol class="breadcrumb">
-						<li><a href="#"><span>Organization</span></a></li>
-						<li><span>Campaign Management</span></li>
+						<li>
+							<a href="#">
+								<span>Organization</span>
+							</a>
+						</li>
+						<li>
+							<span>Campaign Management</span>
+						</li>
 					</ol>
 				</div>
 			</div>
@@ -36,7 +42,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="row"> 
+								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
 											<label class="control-label mb-10">Campaign Name*</label>
@@ -51,7 +57,9 @@
 											<label class="control-label mb-10">Eligibility Criteria</label>
 											<select class="selectpicker" name="eligibility_criteria_pref_id" data-style="form-control btn-default btn-outline">
 												<?php foreach( $Inventory as $item ) : ?>
-													<option value="<?= $item->pref_id; ?>"><?= $item->item_name; ?></option>
+												<option value="<?= $item->pref_id; ?>">
+													<?= $item->item_name; ?>
+												</option>
 												<?php endforeach; ?>
 											</select>
 										</div>
@@ -71,7 +79,9 @@
 												<label class="control-label mb-10">+1 Item</label>
 												<select class="selectpicker" name="item_given_free_pref_id" data-style="form-control btn-default btn-outline">
 													<?php foreach( $Inventory as $item ) : ?>
-														<option value="<?= $item->pref_id; ?>"><?= $item->item_name; ?></option>
+													<option value="<?= $item->pref_id; ?>">
+														<?= $item->item_name; ?>
+													</option>
 													<?php endforeach; ?>
 												</select>
 											</div>
@@ -80,6 +90,7 @@
 											<div class="form-group">
 												<label class="control-label mb-10">Quantity given free</label>
 												<input type="number" name="quantity_for_free_item" class="form-control" value="<?= set_value('quantity_for_free_item'); ?>">
+												<small id="validQuantityErr" style="color: red; font-weight: bold; margin-top: 5px; display: none">Please provide valid quantity</small>
 												<?= form_error('quantity_for_free_item', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 											</div>
 										</div>
@@ -92,13 +103,13 @@
 												<?= form_error('scheme_amount', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 											</div>
 										</div>
-										<div class="col-md-6">
+										<!-- <div class="col-md-6">
 											<div class="form-group">
 												<label class="control-label mb-10">Distributor Discount (%)</label>
 												<input type="number" name="discount_on_scheme" class="form-control" value="<?= set_value('discount_on_scheme'); ?>">
 												<?= form_error('discount_on_scheme', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 											</div>
-										</div>
+										</div> -->
 									</div>
 								</div>
 								<div id="discountOnTpContent" style="display: none">
@@ -108,7 +119,9 @@
 												<label class="control-label mb-10">Item for discount (Each)</label>
 												<select class="selectpicker" name="price_discount_of_this_pref_id" data-style="form-control btn-default btn-outline">
 													<?php foreach( $Inventory as $item ) : ?>
-														<option value="<?= $item->pref_id; ?>"><?= $item->item_name; ?></option>
+													<option value="<?= $item->pref_id; ?>">
+														<?= $item->item_name; ?>
+													</option>
 													<?php endforeach; ?>
 												</select>
 											</div>
@@ -121,7 +134,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="row">
+									<!-- <div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
 												<label class="control-label mb-10">Distributor Discount (%)</label>
@@ -129,21 +142,22 @@
 												<?= form_error('distributor_discount', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 											</div>
 										</div>
-									</div>
+									</div> -->
 								</div>
 							</div>
 						</div>
-					</form>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
-		<input type="text" id="urlForItemTradePrice" value="<?= base_url('CampaignManagement/GetItemPriceForSchemeAmountCalculationAjax'); ?>" hidden>
-		<div class="row button-section">
-			<a type="button" href="<?= base_url('CampaignManagement/ListCampaigns'); ?>" id="backFromTerritoryButton" class="btn btn-cancel">Cancel</a>
-			<a type="button" id="addCampaignBtn" class="btn btn-save">Save</a>						
+			<input type="text" id="urlForItemTradePrice" value="<?= base_url('CampaignManagement/GetItemPriceForSchemeAmountCalculationAjax'); ?>"
+			hidden>
+			<div class="row button-section">
+				<a type="button" href="<?= base_url('CampaignManagement/ListCampaigns'); ?>" id="backFromTerritoryButton" class="btn btn-cancel">Cancel</a>
+				<a type="button" id="addCampaignBtn" class="btn btn-save">Save</a>
+			</div>
 		</div>
 	</div>
-</div>
 </div>
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
 <script type="text/javascript" src="<?= base_url('assets/js/Campaign.js').'?v='.time(); ?>"></script>
