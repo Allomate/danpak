@@ -35,7 +35,7 @@ class Login extends CI_Controller{
 				return redirect('Dashboard/Home');
 			else:
 				$this->session->set_flashdata("login_failed", "Invalid credentials. Please try again");
-				return redirect('Dashboard');
+				return redirect("Login/");
 			endif;
 		}else{
 			return $this->load->view('login');

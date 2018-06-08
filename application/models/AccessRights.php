@@ -11,11 +11,11 @@ class AccessRights extends CI_Model{
   }
     
   public function getAllRights(){
-    return $this->db->select('`id`, `admin_id`, `Dashboardv1`, `DashboardHrm`, `DashboardSales`, `Reports`, `Profile`, `ListRegions`, `ListAreas`, `ListTerritories`, `ViewCatalogueAssignments`, `DailyRouting`, `ListCampaigns`, `AddEmployee`, `ListEmployees`, `Attendance`, `EmployeesList`, `AddInventory`, `ListInventory`, `ProductGallery`, `ListMainCategories`, `ListSubCategories`, `ListSubInventory`, `ListUnits`, `ViewCatalogues`, `ListRetailers`, `ListRetailerTypes`, `ListRetailersAssignments`, `ListOrders`, `ListGroups`, `ListMessages`, `UpdateInventorySku`, `ListRights`, (SELECT admin_un from admin_credentials where id = ar.admin_id) as username')->get('access_rights ar')->result();    
+    return $this->db->select('`id`, `admin_id`, `Dashboardv1`, `DashboardHrm`, `DashboardSales`, `Reports`, `Profile`, `ListRegions`, `ListAreas`, `ListTerritories`, `ViewCatalogueAssignments`, `DailyRouting`, `ListCampaigns`, `AddEmployee`, `ListEmployees`, `Attendance`, `EmployeesList`, `AddInventory`, `ListInventory`, `ProductGallery`, `ListMainCategories`, `ListSubCategories`, `ListSubInventory`, `ListUnits`, `ViewCatalogues`, `ListRetailers`, `ListRetailerTypes`, `ListRetailersAssignments`, `ListOrders`, `ListGroups`, `ListMessages`, `UpdateInventorySku`, `ListRights`, (SELECT admin_un from admin_credentials where id = ar.admin_id) as username')->where('admin_id != 1')->get('access_rights ar')->result();    
   }
 
   public function getAdminsList(){
-    return $this->db->select('id, admin_un')->get('admin_credentials')->result();
+    return $this->db->select('id, admin_un')->where('id != 1')->get('admin_credentials')->result();
   }
 
   public function addAccRights($rightsData){
