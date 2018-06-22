@@ -12,8 +12,12 @@
 				</div>
 				<div class="col-lg-6 col-md-6">
 					<ol class="breadcrumb">
-						<li><span>Inventory Management</span></li>
-						<li class="active"><span>Add New Inventory</span></li>
+						<li>
+							<span>Inventory Management</span>
+						</li>
+						<li class="active">
+							<span>Add New Inventory</span>
+						</li>
 					</ol>
 				</div>
 			</div>
@@ -70,7 +74,9 @@
 										<div class="form-group">
 											<label class="control-label mb-10">Description</label>
 											<input type="text" name="totalInventoryAdded" hidden>
-											<textarea name="item_main_description" class="form-control" rows="5"><?= set_value('item_main_description'); ?></textarea>
+											<textarea name="item_main_description" class="form-control" rows="5">
+												<?= set_value('item_main_description'); ?>
+											</textarea>
 										</div>
 									</div>
 								</div>
@@ -90,7 +96,9 @@
 													<select name="unit_id_0" class="form-control unitIdsDd" data-style="form-control btn-default btn-outline">
 														<option value="0">No type selected</option>
 														<?php $unitTypeIds='';$unitTypeNames='';foreach ($UnitTypes as $unit) : ?>
-														<option value="<?= $unit->unit_id; ?>"><?= $unit->unit_name; ?></option>
+														<option value="<?= $unit->unit_id; ?>">
+															<?= $unit->unit_name; ?>
+														</option>
 														<?php $unitTypeIds .= ',' . $unit->unit_id;
 														$unitTypeNames .= ',' . $unit->unit_name; endforeach;?>
 													</select>
@@ -112,7 +120,9 @@
 													<select name="child_item_0" class="form-control childItems" data-style="form-control btn-default btn-outline">
 														<option value="0">No type selected</option>
 														<?php $unitTypeIds='';$unitTypeNames='';foreach ($UnitTypes as $unit) : ?>
-														<option value="<?= $unit->unit_id; ?>"><?= $unit->unit_name; ?></option>
+														<option value="<?= $unit->unit_id; ?>">
+															<?= $unit->unit_name; ?>
+														</option>
 														<?php $unitTypeIds .= ',' . $unit->unit_id;
 														$unitTypeNames .= ',' . $unit->unit_name; endforeach;?>
 													</select>
@@ -162,7 +172,7 @@
 													<label class="control-label mb-10">Expiry Date</label>
 													<input type="text" id="firstName" class="form-control" placeholder="">
 												</div>
-											</div> 
+											</div>
 										</div>
 										<div class="row">
 										</div>
@@ -173,11 +183,11 @@
 													<input type="text" name="totalInventoryAdded" hidden>
 													<textarea name="item_description_0" class="form-control" rows="5"></textarea>
 												</div>
-											</div> 
+											</div>
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-md-12 m-t-15 align-right"> 
+										<div class="col-md-12 m-t-15 align-right">
 											<a class="btn btn-blue-sm m-b-15" id="addAnotherVariantButton">Add another option</a>
 										</div>
 									</div>
@@ -191,14 +201,15 @@
 				<div class="col-md-4">
 					<div class="box-white m-b-30">
 						<h2>Images</h2>
-						<div class="box-white m-b-30">    	
+						<div class="box-white m-b-30">
 							<div class="form-wrap">
 								<div class="thumb-c">
-									<div class="upload-pic custom-thumb">Add Product thumbnail<br>maximam size 500X500 px</div>
-									<input type="file" id="itemThumbnail" name="item_thumbnail" class="dropify" accept=".png, .jpeg, .jpg, .bmp"/>
+									<div class="upload-pic custom-thumb">Add Product thumbnail
+										<br>maximam size 500X500 px</div>
+									<input type="file" id="itemThumbnail" name="item_thumbnail" class="dropify" accept=".png, .jpeg, .jpg, .bmp" />
 									<?= isset($item_thumbnail_error) ? '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">'.$item_thumbnail_error.'</small>' : '';?>
 								</div>
-							</div> 
+							</div>
 						</div>
 						<div class="panel-wrapper collapse in">
 							<div class="panel-body p-0">
@@ -217,7 +228,9 @@
 											<label class="control-label mb-10">Main Category*</label>
 											<select class="form-control" id="mainCategoryDd_0" data-style="form-control btn-default btn-outline">
 												<?php $mainCatIds = '';$mainCatNames = '';foreach ($MainCategories as $category) { ?>
-												<option value="<?= $category->main_category_id; ?>"><?= $category->main_category_name; ?></option>
+												<option value="<?= $category->main_category_id; ?>">
+													<?= $category->main_category_name; ?>
+												</option>
 												<?php $mainCatIds .= ',' . $category->main_category_id;
 												$mainCatNames .= ',' . $category->main_category_name;}?>
 											</select>
@@ -228,22 +241,22 @@
 											</select>
 										</div>
 									</div>
-								</div>		 	  
+								</div>
 							</div>
 							<input type="text" id="mainCatIdsCombined" value="<?= $mainCatIds;?>" hidden>
 							<input type="text" id="mainCatNamesCombined" value="<?= $mainCatNames;?>" hidden>
-						</div> 
+						</div>
 					</div>
 				</div>
 				<div class="form-bottom">
 					<div class="button-section align-right">
 						<a href="<?= base_url('Inventory/ListInventory'); ?>" class="btn btn-cancel">Cancel</a>
-						<a id="addInventoryButton" class="btn btn-save">Save</a>						
+						<a id="addInventoryButton" class="btn btn-save">Save</a>
 					</div>
 				</div>
 			</div>
-		</form>
+			</form>
+		</div>
 	</div>
-</div>
-<?php require_once(APPPATH.'/views/includes/footer.php'); ?>
-<script type="text/javascript" src="<?= base_url('assets/js/Inventory.js').'?v='.time(); ?>"></script>
+	<?php require_once(APPPATH.'/views/includes/footer.php'); ?>
+	<script type="text/javascript" src="<?= base_url('assets/js/Inventory.js').'?v='.time(); ?>"></script>

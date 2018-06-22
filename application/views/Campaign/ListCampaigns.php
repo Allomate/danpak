@@ -4,6 +4,7 @@
 </div>
 <div class="wrapper theme-1-active">
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
+
 	<div class="page-wrapper">
 		<div class="container-fluid">
 			<?php if ($feedback = $this->session->flashdata('campaign_created')) : ?>
@@ -75,11 +76,8 @@
 												</td>
 												<td>
 													<a class="view-report viewDetail" id="<?= $campaign->campaign_id; ?>" style="cursor: pointer">View Detail</a>
-													<a href="<?= base_url('CampaignManagement/UpdateCampaign/'.$campaign->campaign_id); ?>">
-														<i class="fa fa-pencil"></i>
-													</a>
 													&nbsp;
-													<a class="deleteConfirmation" href="<?= base_url('CampaignManagement/DeleteCampaign/'.$campaign->campaign_id); ?>">
+													<a class="deleteConfirmation" title="Deactivate" href="<?= base_url('CampaignManagement/DeactivateCampaign/'.$campaign->campaign_id); ?>">
 														<i class="fa fa-close"></i>
 													</a>
 												</td>
@@ -136,7 +134,8 @@
 								<span style="font-weight: bolder" id="minimum_quantity_for_eligibility"></span>
 							</div>
 							<div class="col-md-6" style="text-align: center">
-								<h3>Actual Bill (5 CTN): </h3>
+								<h3>Actual Bill (
+									<span id="actual_bill_quantity_package"></span> ): </h3>
 								<span style="font-weight: bolder" id="actual_bill"></span>
 							</div>
 						</div>
@@ -147,7 +146,8 @@
 								<span style="font-weight: bolder" id="scheme_offer_on_tp"> </span>
 							</div>
 							<div class="col-md-6" style="text-align: center">
-								<h3>Price of each CTN:
+								<h3>Price of each
+									<span id="each_packaging_price"></span>:
 									<small>(after scheme)</small>
 								</h3>
 								<span style="font-weight: bolder" id="price_of_each_packaging"> </span>

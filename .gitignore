@@ -31,6 +31,8 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /tests/results/
 
 
+assets/*
 .tmp.drivedownload/*
-.xlsx
-.zip
+.tmp.drivedownload
+*.xlsx
+*.zip

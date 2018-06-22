@@ -28,7 +28,7 @@
 					<div class="box-white m-b-30">
 						<h2>Add Campaign</h2>
 						<?php $attributes = array('id' => 'addCampaignFOrm');
-						echo form_open('CampaignManagement/AddCampaignOps', $attributes); ?>
+						echo form_open_multipart('CampaignManagement/AddCampaignOps', $attributes); ?>
 						<div class="form-wrap">
 							<div class="form-body">
 								<div class="row">
@@ -103,13 +103,16 @@
 												<?= form_error('scheme_amount', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 											</div>
 										</div>
-										<!-- <div class="col-md-6">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label class="control-label mb-10">Distributor Discount (%)</label>
-												<input type="number" name="discount_on_scheme" class="form-control" value="<?= set_value('discount_on_scheme'); ?>">
-												<?= form_error('discount_on_scheme', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+												<label class="control-label mb-10">Scheme Image</label>
+												<input type="file" id="scheme_image" name="scheme_image" class="form-control" accept=".jpg,.bmp,.jpeg,png" />
+												<?= isset($scheme_image_error) ? '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">'.$scheme_image_error.'</small>' : '';?>
+													<small>
+														<?php $max_upload = (int)(ini_get('upload_max_filesize')); $max_post = (int)(ini_get('post_max_size')); $memory_limit = (int)(ini_get('memory_limit')); echo "Maximum file size limit: (" . $upload_mb = min($max_upload, $max_post, $memory_limit)." mb)"; ?>
+													</small>
 											</div>
-										</div> -->
+										</div>
 									</div>
 								</div>
 								<div id="discountOnTpContent" style="display: none">
@@ -134,19 +137,27 @@
 											</div>
 										</div>
 									</div>
-									<!-- <div class="row">
+									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label class="control-label mb-10">Distributor Discount (%)</label>
-												<input type="number" name="distributor_discount" class="form-control" value="<?= set_value('distributor_discount'); ?>">
-												<?= form_error('distributor_discount', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+												<label class="control-label mb-10">Scheme Image</label>
+												<input type="file" id="scheme_image_disc_tp" name="scheme_image_disc_tp" class="form-control" accept=".jpg,.bmp,.jpeg,png"
+												/>
+												<?= isset($scheme_image_error) ? '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">'.$scheme_image_error.'</small>' : '';?>
+													<small>
+														<?php $max_upload = (int)(ini_get('upload_max_filesize')); $max_post = (int)(ini_get('post_max_size')); $memory_limit = (int)(ini_get('memory_limit')); echo "Maximum file size limit: (" . $upload_mb = min($max_upload, $max_post, $memory_limit)." mb)"; ?>
+													</small>
 											</div>
 										</div>
-									</div> -->
+									</div>
 								</div>
 							</div>
 						</div>
 						</form>
+						<div class="alert alert-warning" style="background-color: #f1ece4; color: red">
+							<strong>Note: </strong> Please double-check the entries after providing all the information as you won't be able to update
+							this campaign
+						</div>
 					</div>
 				</div>
 			</div>

@@ -10,6 +10,19 @@ $(document).ready(function() {
     });
 
     $('#addCampaignBtn').click(function() {
+        debugger;
+        if (!$('#scheme_type').val() == "1") {
+            if (!$('#scheme_image').val()) {
+                alert('Please provide scheme image also');
+                return;
+            }
+        } else {
+            if (!$('#scheme_image_disc_tp').val()) {
+                alert('Please provide scheme image also');
+                return;
+            }
+        }
+        $(this).attr('disabled', 'disabled');
         $('#addCampaignFOrm').submit();
     });
 
@@ -46,7 +59,8 @@ $(document).ready(function() {
                     $('#price_of_each_packaging').text('Rs. ' + numberWithCommas(response.data["packaging_price_each_discounted"]));
                     $('#savings_each_cartan').text('Rs. ' + numberWithCommas(response.data["discounted_from_each_packaging"]));
                     $('#savings_on_scheme').text('Rs. ' + numberWithCommas(response.data["savings_on_scheme"]));
-                    // console.log(response.data);
+                    $('#actual_bill_quantity_package').text(response.data["minimum_quantity_for_eligibility"] + " " + response.data["packaging"]);
+                    $('#each_packaging_price').text(response.data["unit_short_name"]);
                 }
             }
         })
@@ -62,7 +76,7 @@ $(document).ready(function() {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, Deactivate it!'
         }).then((result) => {
             if (result.value) {
                 window.location.href = thisRef.attr('href');

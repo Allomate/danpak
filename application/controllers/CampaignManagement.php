@@ -21,7 +21,6 @@ class CampaignManagement extends WebAuth_Controller{
 		$campaignData = $this->input->post();
 
 		if($campaignData["scheme_type"] == "1") : 
-			// $campaignData["distributor_discount"] = $campaignData['discount_on_scheme'];
 			unset($campaignData['price_discount_of_this_pref_id']);
 			unset($campaignData['discount_on_scheme']);
 			unset($campaignData['discount_on_tp']);
@@ -44,7 +43,30 @@ class CampaignManagement extends WebAuth_Controller{
 			$this->form_validation->set_rules('price_discount_of_this_pref_id', 'Price discount', 'required');
 		endif;
 
+		$config['upload_path'] = './assets/uploads/campaign/';
+		$config['allowed_types'] = 'jpg|bmp|png|jpeg';
+		$this->load->helper('file');
+		$this->load->library('upload', $config);
+		$scheme_image = '';
+
 		if ($this->form_validation->run()) :
+			
+			if (isset($_FILES['scheme_image'])) {
+				$_FILES['userfile']['name'] = time().'-'.trim($_FILES['scheme_image']['name']);
+				$_FILES['userfile']['type'] = $_FILES['scheme_image']['type'];
+				$_FILES['userfile']['tmp_name'] = $_FILES['scheme_image']['tmp_name'];
+				$_FILES['userfile']['error']    = isset($_FILES['scheme_image']['error']) ? $_FILES['scheme_image']['error'] : '';
+				$_FILES['userfile']['size'] = $_FILES['scheme_image']['size'];
+				if (!$this->upload->do_upload()) :
+					$this->load->view('Campaign/AddCampaign', [ 'Inventory' => $this->catm->GetAllInventory(), 'scheme_image_error'=>$this->upload->display_errors() ]);
+				else :
+					$file_data = $this->upload->data();
+					$scheme_image = $config['upload_path'].$file_data['file_name'];
+				endif;
+			}
+
+			$campaignData["scheme_image"] = $scheme_image;
+
 			if ($this->cam->add_campaign($campaignData)) :
 				$this->session->set_flashdata("campaign_created", "Campaign has been created successfully");
 			else:
@@ -64,15 +86,9 @@ class CampaignManagement extends WebAuth_Controller{
 		echo json_encode($this->cam->getItemPrice($this->input->post('pref_id')));
 	}
 
-	public function UpdateCampaign($campaignId){
-	}
-
-	public function UpdateCampaignOps($campaignId)
+	public function DeactivateCampaign($campaignId)
 	{
-	}
-
-	public function DeleteCampaign($campaignId)
-	{
+		echo $campaignId;
 	}
 
 }
