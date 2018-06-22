@@ -501,4 +501,17 @@ class WebServices extends CI_Model
         return $this->db->insert('employee_daily_routing', $routeData);
     }
 
+    public function AddCampaignToCart($campData){
+        $campaign = $this->db->where('campaign_id', $campData["campaign_id"])->get('campaign_management')->row();
+
+        if($campaign->minimum_quantity_for_eligibility > $campData["item_quantity"]){
+            return "Minimum eligibility criteria for this campaign is " . $campaign->minimum_quantity_for_eligibility . ' number of items. You are not eligible';
+        }
+
+        if($campaign->scheme_type == "1") :
+            return $this->db->select('eligibility_criteria_pref_id as pref_id, "'.$campData["item_quantity"].'" as quantity, FORMAT(CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))) * "'.$campData["item_quantity"].'")), 0) as final_price')->where('campaign_id', $campData["campaign_id"])->get('campaign_management cm')->row();
+        endif;
+        return $this->db->select('eligibility_criteria_pref_id as pref_id, '.$campData["item_quantity"].' as item_quantity, FORMAT(CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) * "'.$campData["item_quantity"].'")), 0) as final_price')->where('campaign_id', $campData["campaign_id"])->get('campaign_management cm')->row();
+    }
+
 }
