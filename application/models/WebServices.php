@@ -232,6 +232,24 @@ class WebServices extends CI_Model
                     unset($orderDetails["pref_id"]);
                     unset($orderDetails["item_quantity_booker"]);
                     unset($orderDetails["booker_discount"]);
+                    $campaign_id = "";
+                    $campaign_pref_id = "";
+                    $campaign_booker_quantity = "";
+                    $campaign_booker_discount = "";
+                    if(isset($orderDetails["campaign_id"])){
+                        $campaign_id = $orderDetails["campaign_id"];
+                        $campaign_pref_id = $orderDetails["campaign_pref_id"];
+                        $campaign_booker_quantity = $orderDetails["campaign_booker_quantity"];
+                        $campaign_booker_discount = $orderDetails["campaign_booker_discount"];
+                        unset($orderDetails["campaign_id"]);
+                        unset($orderDetails["campaign_pref_id"]);
+                        unset($orderDetails["campaign_booker_quantity"]);
+                        unset($orderDetails["campaign_booker_discount"]);
+                        $campaign_id = explode(",", str_replace(' ', '', $campaign_id));
+                        $campaign_pref_id = explode(",", str_replace(' ', '', $campaign_pref_id));
+                        $campaign_booker_quantity = explode(",", str_replace(' ', '', $campaign_booker_quantity));
+                        $campaign_booker_discount = explode(",", str_replace(' ', '', $campaign_booker_discount));
+                    }
                     $orderDetails["invoice_number"] = mt_rand(1000000000, mt_getrandmax());
                     $this->db->insert('orders', $orderDetails);
                     $order_id = $this->db->insert_id();
@@ -255,8 +273,29 @@ class WebServices extends CI_Model
                         $finalQuantity = $deductFromThisQuantity - $item_quantity_booker[$i];
                         $this->db->where('pref_id', $pref_id[$i])->update('inventory_preferences', array('item_quantity' => $finalQuantity));
                     }
+                    // return $this->db->insert_batch('order_contents', $orderContents);
                     if ($this->db->insert_batch('order_contents', $orderContents)):
-                        return "Success";
+                        if($campaign_id !== ""){
+                            for ($i = 0; $i < sizeof($campaign_id); $i++) {
+                                $campaign = $this->db->where('campaign_id', $campaign_id[$i])->get('campaign_management')->row();
+                                $final_price =  $this->db->select('CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $orderDetails['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))) * "'.$campaign_booker_quantity[$i].'")) as final_price')->where('campaign_id', $campaign_id[$i])->get('campaign_management cm')->row()->final_price;
+                
+                                if($campaign->scheme_type !== "1") :
+                                    $final_price = $this->db->select('CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $orderDetails['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) * "'.$campaign_booker_quantity[$i].'")) as final_price')->where('campaign_id', $campaign_id[$i])->get('campaign_management cm')->row()->final_price;
+                                endif;
+                                
+                                $orderContentsForCampaign[] = array("pref_id" => $campaign_pref_id[$i], "item_quantity_booker" => $campaign_booker_quantity[$i], "booker_discount" => $campaign_booker_discount[$i], "order_id" => $order_id, "campaign_id" => $campaign_id[$i], "final_price" => $final_price);
+                                $deductFromThisQuantity = $this->db->select('item_quantity')->where('pref_id', $campaign_pref_id[$i])->get('inventory_preferences')->row()->item_quantity;
+                                $finalQuantity = $deductFromThisQuantity - $campaign_booker_quantity[$i];
+                                $this->db->where('pref_id', $campaign_pref_id[$i])->update('inventory_preferences', array('item_quantity' => $finalQuantity));
+                            }
+
+                            if ($this->db->insert_batch('order_contents', $orderContentsForCampaign)):
+                                return "Success";
+                            endif;
+                        }else{
+                            return "Success";
+                        }
                     endif;
                 else:
                     return "Unable to find catalogue for today";
@@ -508,10 +547,18 @@ class WebServices extends CI_Model
             return "Minimum eligibility criteria for this campaign is " . $campaign->minimum_quantity_for_eligibility . ' number of items. You are not eligible';
         }
 
+        if($this->db->select('item_quantity')->where('pref_id', $campaign->eligibility_criteria_pref_id)->get('inventory_preferences')->row()->item_quantity < $campData["item_quantity"]){
+            return "Stock quantity is not enough for this campaign";
+        }
+
         if($campaign->scheme_type == "1") :
-            return $this->db->select('eligibility_criteria_pref_id as pref_id, "'.$campData["item_quantity"].'" as quantity, FORMAT(CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))) * "'.$campData["item_quantity"].'")), 0) as final_price')->where('campaign_id', $campData["campaign_id"])->get('campaign_management cm')->row();
+            return $this->db->select('eligibility_criteria_pref_id as pref_id, "'.$campData["item_quantity"].'" as quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, FORMAT(CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))))), 0) as individual_price, FORMAT(CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))) * "'.$campData["item_quantity"].'")), 0) as final_price')->where('campaign_id', $campData["campaign_id"])->get('campaign_management cm')->row();
         endif;
-        return $this->db->select('eligibility_criteria_pref_id as pref_id, '.$campData["item_quantity"].' as item_quantity, FORMAT(CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) * "'.$campData["item_quantity"].'")), 0) as final_price')->where('campaign_id', $campData["campaign_id"])->get('campaign_management cm')->row();
+        return $this->db->select('eligibility_criteria_pref_id as pref_id, '.$campData["item_quantity"].' as item_quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, FORMAT(CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)))), 0) as individual_price, FORMAT(CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) * "'.$campData["item_quantity"].'")), 0) as final_price')->where('campaign_id', $campData["campaign_id"])->get('campaign_management cm')->row();
+    }
+
+    public function GetCampaigns(){
+        return $this->db->select('campaign_id, scheme_type, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as product, CONCAT(cm.minimum_quantity_for_eligibility, " ", (SELECT unit_plural_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id))) as minimum_quantity_for_eligibility, CONCAT(cm.minimum_quantity_for_eligibility,"+",cm.quantity_for_free_item) as scheme, campaign_name, REPLACE(scheme_image,"./","' . base_url() . '") as background_image, discount_on_tp_pkr')->where('scheme_active', 1)->get('campaign_management cm')->result();
     }
 
 }

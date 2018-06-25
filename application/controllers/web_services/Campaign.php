@@ -28,6 +28,13 @@ class Campaign extends Web_Services_Controller{
 		endif;
 	}
 
+	public function GetCampaigns(){
+		if ($GLOBALS['authentication']) :
+			$campaigns = $this->ws->GetCampaigns();
+			return $this->ResponseMessage('Success', $campaigns);
+		endif;
+	}
+
 }
 
 ?>

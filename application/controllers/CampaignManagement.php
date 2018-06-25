@@ -50,19 +50,37 @@ class CampaignManagement extends WebAuth_Controller{
 		$scheme_image = '';
 
 		if ($this->form_validation->run()) :
-			
+
 			if (isset($_FILES['scheme_image'])) {
-				$_FILES['userfile']['name'] = time().'-'.trim($_FILES['scheme_image']['name']);
-				$_FILES['userfile']['type'] = $_FILES['scheme_image']['type'];
-				$_FILES['userfile']['tmp_name'] = $_FILES['scheme_image']['tmp_name'];
-				$_FILES['userfile']['error']    = isset($_FILES['scheme_image']['error']) ? $_FILES['scheme_image']['error'] : '';
-				$_FILES['userfile']['size'] = $_FILES['scheme_image']['size'];
-				if (!$this->upload->do_upload()) :
-					$this->load->view('Campaign/AddCampaign', [ 'Inventory' => $this->catm->GetAllInventory(), 'scheme_image_error'=>$this->upload->display_errors() ]);
-				else :
-					$file_data = $this->upload->data();
-					$scheme_image = $config['upload_path'].$file_data['file_name'];
-				endif;
+				if($_FILES['scheme_image']['name'] !== ''){
+					$_FILES['userfile']['name'] = time().'-'.trim($_FILES['scheme_image']['name']);
+					$_FILES['userfile']['type'] = $_FILES['scheme_image']['type'];
+					$_FILES['userfile']['tmp_name'] = $_FILES['scheme_image']['tmp_name'];
+					$_FILES['userfile']['error']    = isset($_FILES['scheme_image']['error']) ? $_FILES['scheme_image']['error'] : '';
+					$_FILES['userfile']['size'] = $_FILES['scheme_image']['size'];
+					if (!$this->upload->do_upload()) :
+						$this->load->view('Campaign/AddCampaign', [ 'Inventory' => $this->catm->GetAllInventory(), 'scheme_image_error'=>$this->upload->display_errors() ]);
+					else :
+						$file_data = $this->upload->data();
+						$scheme_image = $config['upload_path'].$file_data['file_name'];
+					endif;
+				}
+			}
+
+			if (isset($_FILES['scheme_image_disc_tp'])) {
+				if($_FILES['scheme_image_disc_tp']['name'] !== ''){
+					$_FILES['userfile']['name'] = time().'-'.trim($_FILES['scheme_image_disc_tp']['name']);
+					$_FILES['userfile']['type'] = $_FILES['scheme_image_disc_tp']['type'];
+					$_FILES['userfile']['tmp_name'] = $_FILES['scheme_image_disc_tp']['tmp_name'];
+					$_FILES['userfile']['error']    = isset($_FILES['scheme_image_disc_tp']['error']) ? $_FILES['scheme_image_disc_tp']['error'] : '';
+					$_FILES['userfile']['size'] = $_FILES['scheme_image_disc_tp']['size'];
+					if (!$this->upload->do_upload()) :
+						$this->load->view('Campaign/AddCampaign', [ 'Inventory' => $this->catm->GetAllInventory(), 'scheme_image_disc_tp_error'=>$this->upload->display_errors() ]);
+					else :
+						$file_data = $this->upload->data();
+						$scheme_image = $config['upload_path'].$file_data['file_name'];
+					endif;
+				}
 			}
 
 			$campaignData["scheme_image"] = $scheme_image;

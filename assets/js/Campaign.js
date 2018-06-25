@@ -11,7 +11,7 @@ $(document).ready(function() {
 
     $('#addCampaignBtn').click(function() {
         debugger;
-        if (!$('#scheme_type').val() == "1") {
+        if ($('#scheme_type').val() == "1") {
             if (!$('#scheme_image').val()) {
                 alert('Please provide scheme image also');
                 return;
