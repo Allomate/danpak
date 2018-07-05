@@ -56,9 +56,9 @@ class Retailers extends WebAuth_Controller{
 		if ($this->form_validation->run()) :
 			$retailersData = $this->input->post();
 			if ($this->rem->StoreRetailerInformation($retailersData)) :
-				$this->session->set_flashdata("retailer_added", "Retailer has been added successfully");
+				$this->session->set_flashdata("retailer_added", "Distributor has been added successfully");
 			else:
-				$this->session->set_flashdata("retailer_add_failed", "Failed to add the retailer");
+				$this->session->set_flashdata("retailer_add_failed", "Failed to add the distributor");
 			endif;
 			return redirect('Retailers/ListRetailers');
 		else:
@@ -105,9 +105,9 @@ class Retailers extends WebAuth_Controller{
 		if ($this->form_validation->run()) :
 			$retailersData = $this->input->post();
 			if ($this->rem->UpdateRetailerInformation($retailerId, $retailersData)) :
-				$this->session->set_flashdata("retailer_updated", "Retailer has been updated successfully");
+				$this->session->set_flashdata("retailer_updated", "Distributor has been updated successfully");
 			else:
-				$this->session->set_flashdata("retailer_update_failed", "Failed to update the retailer");
+				$this->session->set_flashdata("retailer_update_failed", "Failed to update the distributor");
 			endif;
 			return redirect('Retailers/ListRetailers');
 		else:
@@ -118,9 +118,9 @@ class Retailers extends WebAuth_Controller{
 	public function DeleteRetailer($retailerId)
 	{
 		if ($this->rem->delete_retailer($retailerId)) :
-			$this->session->set_flashdata('retailer_deleted', 'Retailer has been deleted successfully');
+			$this->session->set_flashdata('retailer_deleted', 'Distributor has been deleted successfully');
 		else:
-			$this->session->set_flashdata('retailer_delete_failed', 'Unable to delete the Retailer');
+			$this->session->set_flashdata('retailer_delete_failed', 'Unable to delete the Distributor');
 		endif;
 		return redirect('Retailers/ListRetailers');
 	}
@@ -165,14 +165,13 @@ class Retailers extends WebAuth_Controller{
 			$this->session->set_flashdata("missing_information", "Missing Information. Please provide complete details");
 			return redirect('Retailers/AddMoreAssignments');
 		}
-
 		$status = $this->rem->AssignRetailers($retailersAssignmentsData);
 		if ($status == "Exist") :
-			$this->session->set_flashdata("retailer_assignment_Exist", "This employee is already assigned retailers. Please update existing record");
+			$this->session->set_flashdata("retailer_assignment_Exist", "This employee is already assigned distibutor. Please update existing record");
 		elseif ($status == "Success") :
-			$this->session->set_flashdata("retailer_assignment_added", "Retailers assigned successfully");
+			$this->session->set_flashdata("retailer_assignment_added", "Distributors assigned successfully");
 		else:
-			$this->session->set_flashdata("retailer_assignment_failed", "Failed to add retailers assignment");
+			$this->session->set_flashdata("retailer_assignment_failed", "Failed to add distibutor assignment");
 		endif;
 		return redirect('Retailers/ListRetailersAssignments');	
 	}
@@ -190,11 +189,11 @@ class Retailers extends WebAuth_Controller{
 		}
 		$status = $this->rem->UpdateRetailersAssignment($employeeId, $retailersAssignmentsData);
 		if ($status && $status != "Exist") :
-			$this->session->set_flashdata("retailer_assignment_updated", "Retailers assignment updated successfully");
+			$this->session->set_flashdata("retailer_assignment_updated", "Distributors assignment updated successfully");
 		elseif ($status == "Exist") :
-			$this->session->set_flashdata("retailer_assignment_Exist", "This employee is already assigned retailers. Please update existing record");
+			$this->session->set_flashdata("retailer_assignment_Exist", "This employee is already assigned distributors. Please update existing record");
 		else:
-			$this->session->set_flashdata("retailer_assignment_update_failed", "Failed to update retailers assignment");
+			$this->session->set_flashdata("retailer_assignment_update_failed", "Failed to update distributors assignment");
 		endif;
 
 		return redirect('Retailers/ListRetailersAssignments');

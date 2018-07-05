@@ -235,8 +235,13 @@
 											<th>Date</th>
 											<th>Employee Id</th>
 											<th>Employee Name</th>
+											<th>Distributor Id</th>
+											<th>Distributor Name</th>
+											<th>Region</th>
+											<th>Area</th>
 											<th>Territory</th>
-											<th>Total Orders</th>
+											<th>Order Within Circle</th>
+											<th>Status</th>
 											<th>Action</th>
 										</tr>
 									</thead>
@@ -245,8 +250,13 @@
 											<th>Date</th>
 											<th>Employee Id</th>
 											<th>Employee Name</th>
+											<th>Distributor Id</th>
+											<th>Distributor Name</th>
+											<th>Region</th>
+											<th>Area</th>
 											<th>Territory</th>
-											<th>Total Orders</th>
+											<th>Order Within Circle</th>
+											<th>Status</th>
 											<th>Action</th>
 										</tr>
 									</tfoot>
@@ -254,30 +264,75 @@
 										<?php foreach ($Orders["orderDetails"] as $order) : ?>
 										<tr>
 											<td>
-												<?= $order["date"]; ?>
+												<?= $order->created_at; ?>
 											</td>
 											<td>
-												<?= $order["employee_id"]; ?>
+												<?= $order->employee_id; ?>
 											</td>
 											<td>
-												<?= $order["employee_username"]; ?>
+												<?= $order->employee_username; ?>
 											</td>
 											<td>
-												<?= $order["territory"]; ?>
+												<?= $order->distributor_id; ?>
 											</td>
 											<td>
-												<?= $order["totalOrders"]; ?>
+												<?= $order->distributor_name; ?>
 											</td>
 											<td>
-												<a href="<?= base_url('Orders/ListOrdersIndividual/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
-													<button class="btn view-report">View Orders List</button>
+												<?= $order->region; ?>
+											</td>
+											<td>
+												<?= $order->area; ?>
+											</td>
+											<td>
+												<?= $order->territory; ?>
+											</td>
+											<td>
+												<?= $order->within_radius ? "Yes" : "No"; ?>
+											</td>
+											<td>
+												<?= $order->status ? $order->status : "Pending"; ?>
+											</td>
+											<td>
+												<?php if($this->uri->segment(3) !== "EmployeesList") : ?>
+												<?php if (strtolower($order->status) == strtolower("Processed")) : ?>
+												<a href="<?= base_url('Orders/UpdateOrder/'.$order->id); ?>">
+													<i class="fa fa-pencil"></i>
 												</a>
-												<a href="<?= base_url('Orders/BookingSheet/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
-													<button class="btn view-report">Booking Sheet</button>
+												<a href="<?= base_url('Orders/CompleteOrder/'.$this->uri->segment(3).'/'.$order->id); ?>">
+													<button class="btn view-report">Complete</button>
 												</a>
-												<a href="<?= base_url('Orders/DeliveryChallan/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
-													<button class="btn view-report">Delivery Challan</button>
+												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>">
+													<button class="btn view-report">Invoice</button>
 												</a>
+												<a href="<?= base_url('Orders/CancelOrder/'.$this->uri->segment(3).'/'.$order->id); ?>">
+													<button class="btn view-report">Cancel</button>
+												</a>
+												<?php elseif (!$order->status) : ?>
+												<a href="<?= base_url('Orders/UpdateOrder/'.$order->id); ?>">
+													<i class="fa fa-pencil"></i>
+												</a>
+												<a href="<?= base_url('Orders/ProcessOrder/'.$this->uri->segment(3).'/'.$order->id); ?>">
+													<button class="btn view-report">Process</button>
+												</a>
+												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>">
+													<button class="btn view-report">Invoice</button>
+												</a>
+												<a href="<?= base_url('Orders/CancelOrder/'.$this->uri->segment(3).'/'.$order->id); ?>">
+													<button class="btn view-report">Cancel</button>
+												</a>
+												<?php else: ?>
+												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>">
+													<button class="btn view-report">View Order Detail</button>
+												</a>
+												<?php endif; ?>
+												<?php else: ?>
+												<input type="text" id="empLats" value="<?= $order->booker_lats; ?>" hidden>
+												<input type="text" id="empLongs" value="<?= $order->booker_longs; ?>" hidden>
+												<input type="text" id="retailerLats" value="<?= $order->retailer_lats; ?>" hidden>
+												<input type="text" id="retailerLongs" value="<?= $order->retailer_longs; ?>" hidden>
+												<a class="view-report" id="viewDetail" style="cursor: pointer">View Detail</a>
+												<?php endif; ?>
 											</td>
 										</tr>
 										<?php endforeach; ?>
@@ -289,8 +344,87 @@
 				</div>
 			</div>
 
+			<div class="row">
+				<div id="myModal" class="modal fade" role="dialog">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title">Order Location</h4>
+							</div>
+							<div class="modal-body">
+								<div id="map"></div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
+<input type="text" value="<?= base_url('assets/images/base-station.png'); ?>" id="greenIconUrl" hidden>
+<input type="text" value="<?= base_url('assets/images/attendance-location.png'); ?>" id="redIconUrl" hidden>
 
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
+<script>
+	$(document).ready(function () {
+		$(document).on('click', '#viewDetail', function () {
+			var lats = $(this).parent().find('#empLats').val();
+			var longs = $(this).parent().find('#empLongs').val();
+			var baseLats = $(this).parent().find('#retailerLats').val();
+			var baseLongs = $(this).parent().find('#retailerLongs').val();
+			$('#myModal').modal('show');
+			initMap(lats, longs, baseLats, baseLongs, $('#greenIconUrl').val(), $('#redIconUrl').val());
+		});
+	});
+
+	function initMap(lats, longs, baseLats, baseLongs, greenIcon, redIcon) {
+		var uluru = {
+			lat: parseFloat(lats),
+			lng: parseFloat(longs)
+		};
+		var map = new google.maps.Map(document.getElementById('map'), {
+			zoom: 18,
+			center: uluru
+		});
+
+		for (var i = 0; i < 2; i++) {
+			if (i == 0) {
+				marker = new google.maps.Marker({
+					position: new google.maps.LatLng(lats, longs),
+					title: "Order Location",
+					map: map,
+					animation: google.maps.Animation.DROP,
+					icon: redIcon
+				});
+
+				google.maps.event.addListener(marker, 'click', function (e) {
+					infowindow.setContent(this.name);
+					infowindow.open(map, this);
+				}.bind(marker));
+			} else {
+				marker = new google.maps.Marker({
+					position: new google.maps.LatLng(baseLats, baseLongs),
+					title: "Distributor Location",
+					map: map,
+					animation: google.maps.Animation.DROP,
+					icon: greenIcon
+				});
+
+				google.maps.event.addListener(marker, 'click', function (e) {
+					infowindow.setContent(this.name);
+					infowindow.open(map, this);
+				}.bind(marker));
+			}
+		}
+
+	}
+
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAap-vz0Ju0d3oO8eAhdwFfIvjaautw-eU">
+
+
+</script>

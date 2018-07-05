@@ -10,13 +10,30 @@ class Orders extends WebAuth_Controller{
 	}
 
 	public function ListOrders($status){
-		if ($status == "EmployeesList")
-			return $this->load->view('Order/ListOrders', [ 'Orders' => $this->om->getAllOrders(null) ]);
-		return $this->load->view('Order/ListOrders', [ 'Orders' => $this->om->getAllOrders(strtolower($status)) ]);
+		if ($status == "EmployeesList"){
+			return $this->load->view('Order/ListOrders', [ 'Orders' => $this->om->getCollectiveOrders(null) ]);
+		}
+		return $this->load->view('Order/ListOrders', [ 'Orders' => $this->om->getCollectiveOrders(strtolower($status)) ]);
+	}
+
+	public function ListOrdersIndividual($employee, $date, $status){
+		if ($status == "EmployeesList"){
+			return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrders(null) ]);
+		}
+		return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrders($employee, urldecode($date), strtolower($status)) ]);
 	}
 
 	public function UpdateOrder($orderId){
 		return $this->load->view('Order/UpdateOrder', [ 'Order' => $this->om->getSingleOrder($orderId), 'Inventory' => $this->im->get_inventory_for_this_order($orderId) ]);
+	}
+
+	public function BookingSheet($employee, $date, $status){
+		// echo "<pre>"; print_r($this->om->generateBookingSheet($employee, $date, strtolower($status)));die;
+		return $this->load->view('Order/BookingSheet', [ 'details' => $this->om->generateBookingSheet($employee, $date, strtolower($status)) ]);
+	}
+
+	public function DeliveryChallan($employee, $date, $status){
+		return $this->load->view('Order/DeliveryChallan');
 	}
 
 	public function ManualOrders(){

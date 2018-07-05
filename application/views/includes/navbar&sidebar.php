@@ -670,4 +670,4 @@
 		</li>
 	</ul>
 </div>
-<input type="text" id="getAccRightsUrlAjax" value="<?= base_url('AccRights/GetRightsForLoggedInAdminAjax'); ?>">
+<input type="text" id="getAccRightsUrlAjax" value="<?= base_url('AccRights/GetRightsForLoggedInAdminAjax'); ?>" hidden>

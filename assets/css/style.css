@@ -1,42 +1,203 @@
-.deleteImagesSpanTag, .deleteThumbSpanTag{
-	background-color: red;
-	color: white;
-	width: 100px;
-	display: block;
-	height: 30px;
-	text-align: center;
-	cursor: pointer;
-	line-height: 30px
-}
-
-.deleteOrderExpansionInventory{
-	background-color: red;
-	color: white;
-	width: 120px;
-	display: block;
-	height: 30px;
-	text-align: center;
-	cursor: pointer;
-	line-height: 30px
-}
-
-.deleteImagesSpanTag:hover, .deleteThumbSpanTag:hover, .deleteOrderExpansionInventory:hover{
-	background-color: #d6c1c1;
-}
-
-ol.limited_drop_targets{
-	list-style: none;
-	display: block;
-	padding: 0px;
-	width: 100%
-}
-
-ol.limited_drop_targets li{
-	margin: 5px;
-	padding: 5px;
-	width: 250px;
-	border: 1px solid #cccccc;
-	color: #0088cc;
-	background: #eeeeee;
-	cursor: pointer;
+.deleteImagesSpanTag,
+.deleteThumbSpanTag {
+    background-color: red;
+    color: white;
+    width: 100px;
+    display: block;
+    height: 30px;
+    text-align: center;
+    cursor: pointer;
+    line-height: 30px
+}
+
+.deleteOrderExpansionInventory {
+    background-color: red;
+    color: white;
+    width: 120px;
+    display: block;
+    height: 30px;
+    text-align: center;
+    cursor: pointer;
+    line-height: 30px
+}
+
+.deleteImagesSpanTag:hover,
+.deleteThumbSpanTag:hover,
+.deleteOrderExpansionInventory:hover {
+    background-color: #d6c1c1;
+}
+
+ol.limited_drop_targets {
+    list-style: none;
+    display: block;
+    padding: 0px;
+    width: 100%
+}
+
+ol.limited_drop_targets li {
+    margin: 5px;
+    padding: 5px;
+    width: 250px;
+    border: 1px solid #cccccc;
+    color: #0088cc;
+    background: #eeeeee;
+    cursor: pointer;
+}
+
+.rad-large::after,
+.rad-large::before {
+    width: 20px!important;
+    height: 20px!important
+}
+
+.rad-large {
+    font-size: 17px!important;
+    padding-left: 10px!important;
+    color: #001e35
+}
+
+.rad-large::before {
+    margin-left: -20px!important;
+    top: 3px!important
+}
+
+.radio label::after {
+    top: 3px!important;
+    left: 0px!important
+}
+
+.radio-info input[type=radio]+label::after,
+.radio-info input[type=radio]:checked+label::after {
+    background-color: #001e35;
+}
+
+.radio-info input[type=radio]:checked+label::before {
+    border-color: #001e35;
+}
+
+.radio input[type="radio"]:checked+label::after {
+    -webkit-transform: scale(0.75, 0.75);
+    -ms-transform: scale(0.75, 0.75);
+    -o-transform: scale(0.75, 0.75);
+    transform: scale(0.75, 0.75);
+}
+
+.invoice-logo img {
+    height: 35px;
+    width: auto;
+}
+
+.D_C {
+    position: absolute;
+    right: 20px;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.D_C_line {
+    border-top: solid 1px #a5a5a5;
+    text-align: center;
+    display: block;
+    padding-top: 8px;
+    text-transform: uppercase;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 200px;
+    float: left;
+}
+
+.O_info {
+    background-color: #f1f1f1;
+    border: solid 2px #cecece;
+    font-size: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    color: #000;
+    margin-top: 10px;
+}
+
+.O_info .span {
+    margin-right: 30px;
+}
+
+
+/* Invoice booking sheet, Delivery Challan CSS*/
+
+.BS_div,
+.BS_div .table>thead>tr>th,
+.O_info strong,
+.O_info,
+.BS_div .order-detail .txt-dark,
+.BS_div .order-detail strong {
+    font-family: Arial, Helvetica, sans-serif!important;
+}
+
+.BS_div,
+.BS_div .table>thead>tr>th {
+    font-size: 11px;
+}
+
+.BS_div .order-detail,
+.O_info {
+    font-size: 12px;
+}
+
+.BS_div .order-detail strong {
+    margin-left: 15px;
+}
+
+.BS_div .order-detail .txt-dark,
+.BS_div .table>thead>tr>th {
+    font-weight: bold
+}
+
+.BS_div .table>thead>tr>th,
+.table>tbody>tr>td {
+    padding: 6px 10px;
+}
+
+.BS_div .box-white h2 {
+    font-size: 16px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.invoice-logo img {
+    height: 30px;
+    width: auto;
+}
+
+.D_C {
+    position: absolute;
+    right: 20px;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.D_C_line {
+    border-top: solid 1px #a5a5a5;
+    text-align: center;
+    display: block;
+    padding-top: 8px;
+    text-transform: uppercase;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 200px;
+    float: left;
+    font-size: 13px;
+}
+
+.O_info {
+    background-color: #f1f1f1;
+    border: solid 2px #cecece;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    color: #000;
+    margin-top: 10px;
+}
+
+.O_info .span {
+    margin-right: 30px;
 }

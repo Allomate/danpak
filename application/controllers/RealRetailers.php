@@ -126,11 +126,32 @@ class RealRetailers extends WebAuth_Controller{
 	}
 
 	public function ListRetailersAssignments(){
-		return $this->load->view('RealRetailers/ListRetailerAssignments', [ 'RetailersAssignments' => $this->rem->ListRetailersAssignments() ]);
+		$response = $this->rem->ListRetailersAssignments();
+		$finalResponse = array();
+		$loopedData = array();
+		foreach($response as $data) :
+			$exist = false;
+			foreach($loopedData as $looper) :
+				if(in_array($data->employee_id, $looper)){
+					if(in_array($data->assigned_for_day, $looper)){
+						$exist = true;
+						break;
+					}
+				}
+			endforeach;
+			if(!$exist){
+				$finalResponse[] = $data;
+			}
+			$loopedData[] = array(
+				'employee_id' => $data->employee_id,
+				'assigned_for_day' => $data->assigned_for_day,
+			);
+		endforeach;
+		return $this->load->view('RealRetailers/ListRetailerAssignments', [ 'RetailersAssignments' => $finalResponse ]);
 	}
 
 	public function ViewCompleteRetailersListForAnEmployeeAjaxRequest(){
-		echo json_encode($this->rem->ViewCompleteRetailersList($this->input->post("employee_id")));
+		echo json_encode($this->rem->ViewCompleteRetailersList($this->input->post("employee_id"), $this->input->post("assignedDay")));
 	}
 
 	public function AddMoreAssignments(){
@@ -144,7 +165,6 @@ class RealRetailers extends WebAuth_Controller{
 			$this->session->set_flashdata("missing_information", "Missing Information. Please provide complete details");
 			return redirect('RealRetailers/AddMoreAssignments');
 		}
-
 		$status = $this->rem->AssignRetailers($retailersAssignmentsData);
 		if ($status == "Exist") :
 			$this->session->set_flashdata("retailer_assignment_Exist", "This employee is already assigned retailers. Please update existing record");
@@ -156,8 +176,8 @@ class RealRetailers extends WebAuth_Controller{
 		return redirect('RealRetailers/ListRetailersAssignments');	
 	}
 
-	public function UpdateRetailersAssignments($assignmentId){
-		return $this->load->view('RealRetailers/UpdateRetailersAssignments', [ 'RetailersAssignment' => $this->rem->GetSingleRetailerAssignment($assignmentId), 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list() ] );
+	public function UpdateRetailersAssignments($employeeId, $assignedDay){
+		return $this->load->view('RealRetailers/UpdateRetailersAssignments', [ 'RetailersAssignment' => $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay), 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list() ] );
 	}
 
 	public function UpdateRetailerAssignemntsOps($employeeId){
@@ -179,8 +199,8 @@ class RealRetailers extends WebAuth_Controller{
 		return redirect('RealRetailers/ListRetailersAssignments');
 	}
 
-	public function DeleteRetailersAssignments($employeeId){
-		if ($this->rem->delete_retailer_assignment($employeeId)) :
+	public function DeleteRetailersAssignments($employeeId, $assignedDay){
+		if ($this->rem->delete_retailer_assignment($employeeId, $assignedDay)) :
 			$this->session->set_flashdata('assignment_deleted', 'Assignment has been deleted successfully');
 		else:
 			$this->session->set_flashdata('assignment_delete_failed', 'Unable to delete the assignment');
