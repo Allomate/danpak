@@ -1,9 +1,9 @@
-<?php require_once(APPPATH.'/views/includes/header.php'); ?>
+<?php require_once APPPATH . '/views/includes/header.php';?>
 <div class="preloader-it">
 	<div class="la-anim-1"></div>
 </div>
 <div class="wrapper theme-1-active">
-	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
+	<?php require_once APPPATH . '/views/includes/navbar&sidebar.php';?>
 	<div class="page-wrapper">
 		<div class="container">
 			<div class="row heading-bg">
@@ -27,7 +27,7 @@
 				<div class="col-md-12 BS_div">
 					<div class="box-white p-20">
 						<div class="invoice-logo m-b-5">
-							<img src="<?= base_url('assets/images/allomate-logo.png') ?>" alt="" />
+							<img src="<?=base_url('assets/images/allomate-logo.png')?>" alt="" />
 						</div>
 						<span class="D_C">D.C # 05485</span>
 						<h2 class="font-20" align="center">Delivery Challan </h2>
@@ -37,15 +37,23 @@
 									<div class="row">
 										<div class="float-L m-l-15">
 											Booking Date:
-											<strong>07/03/2018</strong>
+											<strong>
+												<?=$this->uri->segment(4);?>
+											</strong>
 											<br> Territory:
-											<strong>Wapda Town\PIA</strong>
+											<strong>
+												<?=$details["territory"];?>
+											</strong>
 										</div>
 										<div class="float-R m-r-15">
 											Order Booker:
-											<strong>Khan Babo</strong>
+											<strong>
+												<?=$details["employee"];?>
+											</strong>
 											<br> Mobile No:
-											<strong>03221515151</strong>
+											<strong>
+												<?=$details["phone"];?>
+											</strong>
 										</div>
 									</div>
 									<div class="seprator-block m-b-40"></div>
@@ -57,74 +65,26 @@
 														<th>Product</th>
 														<th>Unit Type</th>
 														<th>Required Stock</th>
-														<th>Issue Stock</th>
+														<th>Issue Stsock</th>
 														<th>Return</th>
 													</tr>
 												</thead>
 												<tbody>
+													<?php foreach ($details["data"] as $data): ?>
 													<tr>
-														<td>Boom 60</td>
-														<td>Piece</td>
-														<td>15</td>
-														<td>10</td>
+														<td>
+															<?=$data->product;?>
+														</td>
+														<td>
+															<?=$data->unit;?>
+														</td>
+														<td>
+															<?=$data->required_stock;?>
+														</td>
+														<td></td>
 														<td></td>
 													</tr>
-													<tr>
-														<td>Chew Mint</td>
-														<td>Catan</td>
-														<td>7</td>
-														<td>25</td>
-														<td></td>
-													</tr>
-													<tr>
-														<td>Coin Jar</td>
-														<td>Piece</td>
-														<td>4</td>
-														<td>10</td>
-														<td></td>
-													</tr>
-													<tr>
-														<td>Chew Mint</td>
-														<td>Catan</td>
-														<td>1</td>
-														<td>25</td>
-														<td></td>
-													</tr>
-													<tr>
-														<td>Chew Mint</td>
-														<td>Catan</td>
-														<td>1</td>
-														<td>25</td>
-														<td></td>
-													</tr>
-													<tr>
-														<td>Chew Mint</td>
-														<td>Catan</td>
-														<td>1</td>
-														<td>25</td>
-														<td></td>
-													</tr>
-													<tr>
-														<td>Chew Mint</td>
-														<td>Catan</td>
-														<td>1</td>
-														<td>25</td>
-														<td></td>
-													</tr>
-													<tr>
-														<td>Chew Mint</td>
-														<td>Catan</td>
-														<td>1</td>
-														<td>25</td>
-														<td></td>
-													</tr>
-													<tr>
-														<td>Chew Mint</td>
-														<td>Catan</td>
-														<td>1</td>
-														<td>25</td>
-														<td></td>
-													</tr>
+													<?php endforeach;?>
 												</tbody>
 											</table>
 										</div>
@@ -161,5 +121,5 @@
 		</div>
 	</div>
 </div>
-<?php require_once(APPPATH.'/views/includes/footer.php'); ?>
-<script src="<?= base_url('assets/js/jquery.printElement.min.js'); ?>" />
+<?php require_once APPPATH . '/views/includes/footer.php';?>
+<script src="<?=base_url('assets/js/jquery.printElement.min.js');?>" />

@@ -36,8 +36,8 @@
 					<div class="box-white m-b-30">
 						<h2>Update Distributor Assignment</h2>
 						<?php $attributes = array('id' => 'updateRetailerAssignmentForm');
-						echo form_open('Retailers/UpdateRetailerAssignemntsOps/'.$RetailersAssignment->employee_id, $attributes);
-						echo form_hidden('existingAssignmentIds', $RetailersAssignment->retailer_assignment_id); ?>
+						echo form_open('Retailers/UpdateRetailerAssignemntsOps/'.$RetailersAssignment["verbose"]->employee_id, $attributes);
+						echo form_hidden('existingAssignmentIds', $RetailersAssignment["verbose"]->retailer_assignment_id); ?>
 						<div class="form-wrap">
 							<div class="form-body">
 								<div class="row">
@@ -49,7 +49,7 @@
 												$options[$employee->employee_id] = $employee->employee_username;
 											endforeach; 
 											$atts = array( 'class' => 'selectpicker', "data-style" => "form-control btn-default btn-outline" );
-											echo form_dropdown('employee', $options, $RetailersAssignment->employee_id, $atts); ?>
+											echo form_dropdown('employee', $options, $RetailersAssignment["verbose"]->employee_id, $atts); ?>
 										</div>
 									</div>
 									<div class="col-md-6">
@@ -64,7 +64,7 @@
 											$optionsNew["saturday"] = "Saturday";
 											$optionsNew["sunday"] = "Sunday";
 											$atts = array( 'class' => 'selectpicker', "data-style" => "form-control btn-default btn-outline" );
-											echo form_dropdown('assigned_for_day', $optionsNew, $RetailersAssignment->assigned_for_day, $atts); ?>
+											echo form_dropdown('assigned_for_day', $optionsNew, $RetailersAssignment["verbose"]->assigned_for_day, $atts); ?>
 										</div>
 									</div>
 								</div>
@@ -74,17 +74,17 @@
 										<label class="control-label mb-10">Distributors Added</label>
 										<ul style="list-style: none; padding: 0px" id="addedAssignmentsList">
 											<?php 
-											$RetailersAssignmentsUlListRetIds = explode(",", $RetailersAssignment->retailer_id);
-											$RetailersAssignmentsUlListRetNames = explode("<br>", $RetailersAssignment->retailer_names);
-											for($i = 0; $i < sizeof($RetailersAssignmentsUlListRetIds); $i++) : ?>
+											// echo "<pre>"; print_r(RetailersAssignmentsUlListRetNames);
+											$retailerIds = array();
+											foreach($RetailersAssignment["details"] as $retailer) : ?>
 											<li style="margin-top: 10px">
 												<div>
-													<input type="text" value="<?= $RetailersAssignmentsUlListRetNames[$i] ?> " class="form-control" style="width: 70%; display: inline; height: 50px"
+													<input type="text" value="<?= $retailer->retailer_name ?> " class="form-control" style="width: 70%; display: inline; height: 50px"
 													disabled="disabled">
-													<button type="button" class="btn btn-danger removeAddedAssignment" id="<?= $RetailersAssignmentsUlListRetIds[$i]; ?>">Remove</button>
+													<button type="button" class="btn btn-danger removeAddedAssignment" id="<?= $retailer->id; ?>">Remove</button>
 												</div>
 											</li>
-											<?php endfor; ?>
+											<?php $retailerIds[] = $retailer->id; endforeach; ?>
 										</ul>
 									</div>
 								</div>
@@ -125,7 +125,7 @@
 										</div>
 									</div>
 								</div>
-								<input type="text" name="retailersForAssignments" value="<?= $RetailersAssignment->retailer_id; ?>" id="retailersForAssignments"
+								<input type="text" name="retailersForAssignments" value="<?= implode(',', $retailerIds); ?>" id="retailersForAssignments"
 								hidden>
 							</div>
 						</div>

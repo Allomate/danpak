@@ -6,14 +6,14 @@
 	<?php require_once APPPATH . '/views/includes/navbar&sidebar.php';?>
 	<div class="page-wrapper">
 		<div class="container">
-			<?php if (isset($error)) : ?>
+			<?php if (isset($error)): ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
 					<strong>Failed</strong>
-					<?= "Unable to add KPI for this employee due to some reason. Please try again"; ?>
+					<?= "Unable to update KPI for this employee due to some reason. Please try again"; ?>
 				</div>
 			</div>
-			<?php endif; ?>
+			<?php endif;?>
 			<div class="row heading-bg">
 				<div class="col-lg-6 col-md-6">
 					<h2 class="m-heading">Employee Management</h2>
@@ -46,7 +46,7 @@
 								<div class="form-group">
 									<label class="control-label mb-10">
 										<strong>Name:</strong>
-										<?= $Employee->employee_name; ?>
+										<?=$Employee->employee_name;?>
 									</label>
 								</div>
 							</div>
@@ -54,7 +54,7 @@
 								<div class="form-group">
 									<label class="control-label mb-10">
 										<strong>Designation:</strong>
-										<?= $Employee->employee_designation; ?>
+										<?=$Employee->employee_designation;?>
 									</label>
 								</div>
 							</div>
@@ -62,7 +62,7 @@
 								<div class="form-group">
 									<label class="control-label mb-10">
 										<strong>Mobile No:</strong>
-										<?= $Employee->employee_phone; ?>
+										<?=$Employee->employee_phone;?>
 									</label>
 								</div>
 							</div>
@@ -70,7 +70,7 @@
 								<div class="form-group">
 									<label class="control-label mb-10">
 										<strong>Territory:</strong>
-										<?= $Employee->territory; ?>
+										<?=$Employee->territory;?>
 									</label>
 								</div>
 							</div>
@@ -78,7 +78,7 @@
 								<div class="form-group">
 									<label class="control-label mb-10">
 										<strong>Area:</strong>
-										<?= $Employee->area; ?>
+										<?=$Employee->area;?>
 									</label>
 								</div>
 							</div>
@@ -86,7 +86,7 @@
 								<div class="form-group">
 									<label class="control-label mb-10">
 										<strong>Region:</strong>
-										<?= $Employee->region; ?>
+										<?=$Employee->region;?>
 									</label>
 								</div>
 							</div>
@@ -180,22 +180,21 @@
 							</div>
 						</div>
 					</div>
-					<?php if(isset($error)) : ?>
-					<?php $attributes = array('id' => 'addKpiForm');
-						echo form_open('Kpi/SaveKpi/'.$this->uri->segment(3), $attributes);
-						echo form_hidden('totalKpis', $error["totalKpis"]) ?>
+					<?php $attributes = array('id' => 'updateKpiForm');
+echo form_open('Kpi/UpdateKpi/' . $this->uri->segment(3), $attributes);
+echo form_hidden('totalKpis', sizeOf($kpi))?>
 					<div id="kpiDynamicDiv" class="box-white p-20 m-t-30">
 						<h2 class="m-b-15">Add KPI </h2>
-						<?php for($i = 0; $i < $error["totalKpis"]; $i++) :
-							if($error["for_kpi_type_".$i] == "product") : ?>
+						<?php $counter = 0; foreach($kpi as $kp) : ?>
+						<?php if($kp->kpi_type == "product") : ?>
 						<h5>Product Wise (
-							<?= $error['for_month_or_criteria_'.$i]; ?>)</h5>
+							<?= $kp->criteria_parameter; ?>)</h5>
 						<br>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Product</label>
-									<select class="form-control productDD" name="productDD_<?= $i; ?>" data-style="form-control btn-default btn-outline">
+									<select class="form-control productDD" name="productDD_<?= $counter; ?>" data-style="form-control btn-default btn-outline">
 										<option value="0">Select product</option>
 									</select>
 								</div>
@@ -203,7 +202,7 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Unit</label>
-									<select class="form-control unitDD" name="unitDD_<?= $i; ?>" data-style="form-control btn-default btn-outline">
+									<select class="form-control unitDD" name="unitDD_<?= $counter; ?>" data-style="form-control btn-default btn-outline">
 										<option value="0">Select unit</option>
 									</select>
 								</div>
@@ -211,46 +210,45 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Target</label>
-									<input type="text" name="target_<?= $i; ?>" value="<?= $error['target_'.$i]; ?>" class="form-control empTargets" placeholder="">
+									<input type="text" name="target_<?= $counter;?>" value="<?= $kp->target ?>" class="form-control empTargets" placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Eligibility</label>
-									<input type="text" name="eligibility_<?= $i; ?>" value="<?= $error['eligibility_'.$i]; ?>" class="form-control empEligibility"
+									<input type="text" name="eligibility_<?= $counter;?>" value="<?= $kp->eligibility ?>" class="form-control empEligibility"
 									placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Weightage</label>
-									<input type="text" name="weightage_<?= $i; ?>" value="<?= $error['weightage_'.$i]; ?>" class="form-control weightage" placeholder="">
+									<input type="text" name="weightage_<?= $counter;?>" value="<?= $kp->weightage ?>" class="form-control weightage" placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Incentive</label>
-									<input type="text" name="incentive_<?= $i; ?>" value="<?= $error['incentive_'.$i]; ?>" class="form-control empIncentives"
-									placeholder="">
+									<input type="text" name="incentive_<?= $counter;?>" value="<?= $kp->incentive ?>" class="form-control empIncentives" placeholder="">
 								</div>
 							</div>
+
+							<input type="text" name="selected_product_<?= $counter; ?>" value="<?= $kp->item_id; ?>" hidden="">
+							<input type="text" name="selected_unit_<?= $counter; ?>" value="<?= $kp->pref_id; ?>" hidden="">
+
+							<input type="text" name="for_month_or_criteria_<?= $counter;?>" value="<?= $kp->criteria_parameter ?>" hidden="">
+							<input type="text" name="criteria_<?= $counter;?>" value="<?= $kp->criteria ?>" hidden="">
+							<input type="text" name="for_kpi_type_<?= $counter;?>" value="<?= $kp->kpi_type ?>" hidden="">
 						</div>
-
-						<input type="text" name="selected_product_<?= $i; ?>" value="<?= $error['productDD_'.$i]; ?>" hidden="">
-						<input type="text" name="selected_unit_<?= $i; ?>" value="<?= $error['unitDD_'.$i]; ?>" hidden="">
-
-						<input type="text" name="for_month_or_criteria_<?= $i; ?>" value="<?= $error['for_month_or_criteria_'.$i]; ?>" hidden="">
-						<input type="text" name="criteria_<?= $i; ?>" value="<?= $error['criteria_'.$i]; ?>" hidden="">
-						<input type="text" name="for_kpi_type_<?= $i; ?>" value="<?= $error['for_kpi_type_'.$i]; ?>" hidden="">
-						<?php elseif($error["for_kpi_type_".$i] == "quantity") : ?>
+						<?php elseif($kp->kpi_type == "quantity") :?>
 						<h5>Quantity Wise (
-							<?= $error['for_month_or_criteria_'.$i]; ?>)</h5>
+							<?= $kp->criteria_parameter; ?>)</h5>
 						<br>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Unit</label>
-									<select class="form-control unitDD" name="unitDD_<?= $i; ?>" data-style="form-control btn-default btn-outline">
+									<select class="form-control unitDD" name="unitDD_<?= $counter; ?>" data-style="form-control btn-default btn-outline">
 										<option value="0">Select unit</option>
 									</select>
 								</div>
@@ -258,84 +256,73 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Target</label>
-									<input type="text" name="target_<?= $i; ?>" value="<?= $error['target_'.$i]; ?>" class="form-control empTargets" placeholder="">
+									<input type="text" name="target_<?= $counter;?>" value="<?= $kp->target ?>" class="form-control empTargets" placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Eligibility</label>
-									<input type="text" name="eligibility_<?= $i; ?>" value="<?= $error['eligibility_'.$i]; ?>" class="form-control empEligibility"
+									<input type="text" name="eligibility_<?= $counter;?>" value="<?= $kp->eligibility ?>" class="form-control empEligibility"
 									placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Weightage</label>
-									<input type="text" name="weightage_<?= $i; ?>" value="<?= $error['weightage_'.$i]; ?>" class="form-control weightage" placeholder="">
+									<input type="text" name="weightage_<?= $counter;?>" value="<?= $kp->weightage ?>" class="form-control weightage" placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Incentive</label>
-									<input type="text" name="incentive_<?= $i; ?>" value="<?= $error['incentive_'.$i]; ?>" class="form-control empIncentives"
-									placeholder="">
+									<input type="text" name="incentive_<?= $counter;?>" value="<?= $kp->incentive ?>" class="form-control empIncentives" placeholder="">
 								</div>
 							</div>
 
-							<input type="text" name="selected_unit_<?= $i; ?>" value="<?= $error['unitDD_'.$i]; ?>" hidden="">
+							<input type="text" name="selected_unit_<?= $counter; ?>" value="<?= $kp->unit_id; ?>" hidden="">
 
-							<input type="text" name="for_month_or_criteria_<?= $i; ?>" value="<?= $error['for_month_or_criteria_' .$i]; ?>" hidden="">
-							<input type="text" name="criteria_<?= $i; ?>" value="<?= $error['criteria_'.$i]; ?>" hidden="">
-							<input type="text" name="for_kpi_type_<?= $i; ?>" value="<?= $error['for_kpi_type_'.$i]; ?>" hidden="">
+							<input type="text" name="for_month_or_criteria_<?= $counter;?>" value="<?= $kp->criteria_parameter ?>" hidden="">
+							<input type="text" name="criteria_<?= $counter;?>" value="<?= $kp->criteria ?>" hidden="">
+							<input type="text" name="for_kpi_type_<?= $counter;?>" value="<?= $kp->kpi_type ?>" hidden="">
 						</div>
-						<?php else: ?>
+						<?php elseif($kp->kpi_type == "revenue") :?>
 						<h5>Revenue Wise (
-							<?= $error['for_month_or_criteria_'.$i]; ?>)</h5>
+							<?= $kp->criteria_parameter; ?>)</h5>
 						<br>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Target</label>
-									<input type="text" name="target_<?= $i; ?>" value="<?= $error['target_'.$i]; ?>" class="form-control empTargets" placeholder="">
+									<input type="text" name="target_<?= $counter;?>" value="<?= $kp->target ?>" class="form-control empTargets" placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Eligibility</label>
-									<input type="text" name="eligibility_<?= $i; ?>" value="<?= $error['eligibility_'.$i]; ?>" class="form-control empEligibility"
+									<input type="text" name="eligibility_<?= $counter;?>" value="<?= $kp->eligibility ?>" class="form-control empEligibility"
 									placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Weightage</label>
-									<input type="text" name="weightage_<?= $i; ?>" value="<?= $error['weightage_'.$i]; ?>" class="form-control weightage" placeholder="">
+									<input type="text" name="weightage_<?= $counter;?>" value="<?= $kp->weightage ?>" class="form-control weightage" placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Incentive</label>
-									<input type="text" name="incentive_<?= $i; ?>" value="<?= $error['incentive_'.$i]; ?>" class="form-control empIncentives"
-									placeholder="">
+									<input type="text" name="incentive_<?= $counter;?>" value="<?= $kp->incentive ?>" class="form-control empIncentives" placeholder="">
 								</div>
 							</div>
-							<input type="text" name="for_month_or_criteria_<?= $i; ?>" value="<?= $error['for_month_or_criteria_'.$i]; ?>" hidden="">
-							<input type="text" name="criteria_<?= $i; ?>" value="<?= $error['criteria_'.$i]; ?>" hidden="">
-							<input type="text" name="for_kpi_type_<?= $i; ?>" value="<?= $error['for_kpi_type_'.$i]; ?>" hidden="">
+							<input type="text" name="for_month_or_criteria_<?= $counter;?>" value="<?= $kp->criteria_parameter ?>" hidden="">
+							<input type="text" name="criteria_<?= $counter;?>" value="<?= $kp->criteria ?>" hidden="">
+							<input type="text" name="for_kpi_type_<?= $counter;?>" value="<?= $kp->kpi_type ?>" hidden="">
 						</div>
-						<?php endif; ?>
-						<?php endfor; ?>
+						<?php endif;?>
+						<?php $counter++; endforeach; ?>
 					</div>
 					</form>
-					<?php else: ?>
-					<?php $attributes = array('id' => 'addKpiForm');
-						echo form_open('Kpi/SaveKpi/'.$this->uri->segment(3), $attributes);
-						echo form_hidden('totalKpis', '') ?>
-					<div id="kpiDynamicDiv" class="box-white p-20 m-t-30" style="display: none">
-						<h2 class="m-b-15">Add KPI </h2>
-					</div>
-					</form>
-					<?php endif;?>
 					<div class="row" id="progressBar" style="display: none">
 						<div class="col-md-12">
 							<div class="progress progress-lg m-t-30">
@@ -345,7 +332,7 @@
 					</div>
 					<div class="form-bottom">
 						<div class="button-section align-right">
-							<a href="<?= base_url('Kpi/EmpKpi'); ?>" class="btn btn-cancel">Cancel</a>
+							<a href="<?=base_url('Kpi/EmpKpi');?>" class="btn btn-cancel">Cancel</a>
 							<a id="submitKpi" class="btn btn-save">Save</a>
 						</div>
 					</div>
@@ -355,4 +342,4 @@
 	</div>
 </div>
 <?php require_once APPPATH . '/views/includes/footer.php';?>
-<script type="text/javascript" src="<?= base_url('assets/js/KPI.js') . '?v=' . time();?>"></script>
+<script type="text/javascript" src="<?=base_url('assets/js/Update_KPI.js') . '?v=' . time();?>"></script>

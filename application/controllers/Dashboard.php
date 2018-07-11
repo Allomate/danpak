@@ -7,6 +7,7 @@ class Dashboard extends WebAuth_Controller
     {
         parent::__construct();
         $this->load->model('EmployeeReporting', 'erp');
+        $this->load->model('DashboardModel', 'dm');
     }
 
     public function Home()
@@ -60,7 +61,8 @@ class Dashboard extends WebAuth_Controller
 
     public function Dashboardv1()
     {
-        return $this->load->view('Reporting&Dashboard/Dashboardv1');
+        // echo "<pre>"; print_r($this->dm->Dashboardv1Stats()); die;
+        return $this->load->view('Reporting&Dashboard/Dashboardv1', [ 'stats' => $this->dm->Dashboardv1Stats() ]);
     }
 
     public function DashboardHrm()

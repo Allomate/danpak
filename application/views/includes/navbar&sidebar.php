@@ -122,12 +122,6 @@
 						<a href="<?= base_url('Employees/ListEmployees');?>">Employees</a>
 					</li>
 					<li>
-						<a href="<?= base_url('CampaignManagement/ListCampaigns');?>">Campaign Management</a>
-					</li>
-					<li>
-						<a href="<?= base_url('Employees/DailyRouting');?>">Daily Routing</a>
-					</li>
-					<li>
 						<a href="<?= base_url('AccRights/ListRights');?>">Access Rights</a>
 					</li>
 				</ul>
@@ -155,6 +149,9 @@
 					</li>
 					<li>
 						<a href="<?= base_url('Orders/ListOrders/EmployeesList'); ?>">Order Compliance</a>
+					</li>
+					<li>
+						<a href="<?= base_url('Employees/DailyRouting');?>">Daily Routing</a>
 					</li>
 				</ul>
 			</li>
@@ -319,7 +316,16 @@
 					</li>
 				</ul>
 			</li>
-			<li class="corner">
+			<li>
+				<a href="<?= base_url('CampaignManagement/ListCampaigns');?>">
+					<div class="pull-left">
+						<i class="zmdi zmdi-chart-donut"></i>
+						<span class="right-nav-text">Campaign Management</span>
+					</div>
+					<div class="clearfix"></div>
+				</a>
+			</li>
+			<!-- <li class="corner">
 				<a href="<?= base_url('Dashboard/Reports'); ?>">
 					<div class="pull-left">
 						<i class="zmdi zmdi-chart-donut"></i>
@@ -327,7 +333,7 @@
 					</div>
 					<div class="clearfix"></div>
 				</a>
-			</li>
+			</li> -->
 	</ul>
 </div>
 <div class="fixed-sidebar-right">

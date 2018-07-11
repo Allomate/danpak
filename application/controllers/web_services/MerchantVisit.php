@@ -6,6 +6,7 @@ class MerchantVisit extends Web_Services_Controller{
 
 	public function __construct(){
 		parent::__construct();
+        $this->load->helper('string');
 		$this->load->model('WebServices', 'ws');
 		global $authentication;
 		if (!$this->AuthenticateWebServiceCall($this->input->post("api_secret_key"))) :
@@ -20,6 +21,16 @@ class MerchantVisit extends Web_Services_Controller{
 		$markVisit = $this->input->post();
 		if ($markVisit['retailer_id']) :
 			unset($markVisit["api_secret_key"]);
+			$config['upload_path'] = './assets/uploads/mark_visit/';
+			if (isset($markVisit['picture']) && $markVisit['picture'] !== ""):
+				$imgData = base64_decode($_POST['picture']);
+				$imageName = $config['upload_path'] . random_string('alnum', 10) . '_' . time() . '.jpg';
+				$ifp = fopen($imageName, 'wb');
+				fwrite($ifp, $imgData);
+				fclose($ifp);
+				unset($markVisit['picture']);
+				$markVisit['picture'] = $imageName;
+			endif;
 			$visitStatus = $this->ws->MarkVisit($markVisit);
 			if ($visitStatus == "Success") :
 				return $this->ResponseMessage('Success', 'Visit marked successfully');

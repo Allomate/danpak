@@ -84,6 +84,10 @@ class InventoryModel extends CI_Model{
 		return $this->db->insert('inventory_types_units', $unitsData);
 	}
 
+	public function GetUnitsAvailableForThisProduct($item_id){
+		return $this->db->select('unit_id, unit_name, (SELECT pref_id from inventory_preferences where item_id = '.$item_id.' and unit_id = itu.unit_id) as pref_id')->where('find_in_set(unit_id, (SELECT GROUP_CONCAT(unit_id) from inventory_preferences where item_id = '.$item_id.' ))')->get('inventory_types_units itu')->result();
+	}
+
 	public function update_unit($unit_id, $unitsData){
 		return $this->db
 		->where('unit_id',$unit_id)	

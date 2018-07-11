@@ -28,12 +28,12 @@ class Orders extends WebAuth_Controller{
 	}
 
 	public function BookingSheet($employee, $date, $status){
-		// echo "<pre>"; print_r($this->om->generateBookingSheet($employee, $date, strtolower($status)));die;
 		return $this->load->view('Order/BookingSheet', [ 'details' => $this->om->generateBookingSheet($employee, $date, strtolower($status)) ]);
 	}
 
 	public function DeliveryChallan($employee, $date, $status){
-		return $this->load->view('Order/DeliveryChallan');
+		// echo "<pre>"; print_r($this->om->generateDeliveryChallan($employee, $date, strtolower($status)));die;
+		return $this->load->view('Order/DeliveryChallan', [ 'details' => $this->om->generateDeliveryChallan($employee, $date, strtolower($status)) ]);
 	}
 
 	public function ManualOrders(){

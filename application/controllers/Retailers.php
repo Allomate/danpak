@@ -177,6 +177,8 @@ class Retailers extends WebAuth_Controller{
 	}
 
 	public function UpdateRetailersAssignments($employeeId, $assignedDay){
+		// echo sizeOf(explode(",", $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay)->retailer_names));die;
+		// echo "<pre>"; print_r($this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay)); die;
 		return $this->load->view('Retailer/UpdateRetailersAssignments', [ 'RetailersAssignment' => $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay), 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list() ] );
 	}
 

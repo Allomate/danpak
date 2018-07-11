@@ -6,6 +6,54 @@
 	<?php require_once APPPATH . '/views/includes/navbar&sidebar.php';?>
 	<div class="page-wrapper">
 		<div class="container">
+			<?php if ($feedback = $this->session->flashdata('kpi_succes')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Added</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('kpi_updated')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Updated</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('kpi_activation_failed')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Failed</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('kpi_activated')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Activated</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('kpi_deactivated')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>De-Activated</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('kpi_deactivation_failed')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Failed</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
 			<div class="row heading-bg">
 				<div class="col-lg-6 col-md-6">
 					<h2 class="m-heading">Employee Management</h2>
@@ -42,7 +90,7 @@
 											<th>Area</th>
 											<th>Region</th>
 											<th>Status</th>
-											<th>Set KPI</th>
+											<th>Action</th>
 										</tr>
 									</thead>
 									<tfoot>
@@ -54,22 +102,42 @@
 											<th>Area</th>
 											<th>Region</th>
 											<th>Status</th>
-											<th>Set KPI</th>
+											<th>Action</th>
 										</tr>
 									</tfoot>
 									<tbody>
+										<?php foreach($Employees as $employee) : ?>
 										<tr>
-											<td>0254</td>
-											<td>Fizan Khan</td>
-											<td>Sales</td>
-											<td>Territory here</td>
-											<td>Area here</td>
-											<td>Region here</td>
-											<td>Inactive</td>
 											<td>
-												<a href="<?= base_url('Kpi/EmpKpiSettings');?>" class="view-report">Set KPI</a>
+												<?= $employee->employee_id; ?>
+											</td>
+											<td>
+												<?= $employee->employee_first_name." ".$employee->employee_last_name;?>
+											</td>
+											<td>Sales</td>
+											<td>
+												<?= $employee->territory;?>
+											</td>
+											<td>
+												<?= $employee->area;?>
+											</td>
+											<td>
+												<?= $employee->region;?>
+											</td>
+											<td>
+												<?= $employee->kpi_status ? "Active" : "Inactive" ; ?>
+											</td>
+											<td>
+												<a href="<?= base_url('Kpi/EmpKpiSettings/'.$employee->employee_username);?>" class="view-report">Set KPI</a>
+												<?php if($employee->kpi_status == "1") : ?>
+												<a href="<?= base_url('Kpi/UpdateKpiSettings/'.$employee->employee_username);?>" class="view-report">Update KPI</a>
+												<a href="<?= base_url('Kpi/DeactivateKpi/'.$employee->employee_username);?>" class="view-report">De-Active</a>
+												<?php elseif($employee->kpi_status == "0") : ?>
+												<a href="<?= base_url('Kpi/ActivateKpi/'.$employee->employee_username);?>" class="view-report">Active</a>
+												<?php endif; ?>
 											</td>
 										</tr>
+										<?php endforeach; ?>
 									</tbody>
 								</table>
 							</div>

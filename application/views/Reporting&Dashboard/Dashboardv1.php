@@ -15,19 +15,21 @@
 									<div class="container-fluid">
 										<div class="row">
 											<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-												<span class="txt-dark block counter">1,25,000</span>
-												<span class="weight-500 uppercase-font block">Today Sale</span>
+												<span class="txt-dark block counter">
+													<?= $stats['stat']->total_orders; ?>
+												</span>
+												<span class="weight-500 uppercase-font block">Total Orders</span>
 											</div>
 											<div class="col-xs-6 text-center">
 												<img src="<?= base_url('assets/images/icon-all-sale.svg'); ?>" alt="brand">
 											</div>
-										</div>	
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 				<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 ">
 					<div class="panel panel-default card-view pa-0 emp-stats blue-box">
 						<div class="panel-wrapper collapse in">
@@ -36,13 +38,15 @@
 									<div class="container-fluid">
 										<div class="row">
 											<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-												<span class="txt-dark block counter">375</span>
-												<span class="weight-500 uppercase-font block font-13">Today Orders</span>
+												<span class="txt-dark block counter">
+													<?= $stats['stat']->completed_orders; ?>
+												</span>
+												<span class="weight-500 uppercase-font block font-13">Completed Orders</span>
 											</div>
 											<div class="col-xs-6 text-center  pl-0 pr-0">
 												<img src="<?= base_url('assets/images/icon-all-order.svg'); ?>" alt="brand">
 											</div>
-										</div>	
+										</div>
 									</div>
 								</div>
 							</div>
@@ -57,13 +61,15 @@
 									<div class="container-fluid">
 										<div class="row">
 											<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-												<span class="txt-dark block counter">875</span>
-												<span class="weight-500 uppercase-font block font-13">Today Visits</span>
+												<span class="txt-dark block counter">
+													<?= $stats['stat']->retail_visits; ?>
+												</span>
+												<span class="weight-500 uppercase-font block font-13">Retail Visits</span>
 											</div>
 											<div class="col-xs-6 text-center  pl-0 pr-0">
 												<img src="<?= base_url('assets/images/icon-order-done.svg'); ?>" alt="brand">
 											</div>
-										</div>	
+										</div>
 									</div>
 								</div>
 							</div>
@@ -78,13 +84,15 @@
 									<div class="container-fluid">
 										<div class="row">
 											<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-												<span class="txt-dark block counter">1800</span>
-												<span class="weight-500 uppercase-font block font-13">Active Devices</span>
+												<span class="txt-dark block counter">
+													<?= $stats['stat']->cancelled_orders; ?>
+												</span>
+												<span class="weight-500 uppercase-font block font-13">Cancelled Orders</span>
 											</div>
 											<div class="col-xs-6 text-center  pl-0 pr-0">
 												<img src="<?= base_url('assets/images/icon-active-devices.svg'); ?>" alt="brand">
 											</div>
-										</div>	
+										</div>
 									</div>
 								</div>
 							</div>
@@ -110,11 +118,22 @@
 									<i class="zmdi zmdi-fullscreen"></i>
 								</a>
 								<div class="pull-left inline-block dropdown mr-15">
-									<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false" role="button"><i class="zmdi zmdi-more-vert"></i></a>
-									<ul class="dropdown-menu bullet dropdown-menu-right"  role="menu">
-										<li role="presentation"><a href="javascript:void(0)" role="menuitem"><i class="icon wb-reply" aria-hidden="true"></i>Devices</a></li>
-										<li role="presentation"><a href="javascript:void(0)" role="menuitem"><i class="icon wb-share" aria-hidden="true"></i>General</a></li>
-										<li role="presentation"><a href="javascript:void(0)" role="menuitem"><i class="icon wb-trash" aria-hidden="true"></i>Referral</a></li>
+									<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false" role="button">
+										<i class="zmdi zmdi-more-vert"></i>
+									</a>
+									<ul class="dropdown-menu bullet dropdown-menu-right" role="menu">
+										<li role="presentation">
+											<a href="javascript:void(0)" role="menuitem">
+												<i class="icon wb-reply" aria-hidden="true"></i>Devices</a>
+										</li>
+										<li role="presentation">
+											<a href="javascript:void(0)" role="menuitem">
+												<i class="icon wb-share" aria-hidden="true"></i>General</a>
+										</li>
+										<li role="presentation">
+											<a href="javascript:void(0)" role="menuitem">
+												<i class="icon wb-trash" aria-hidden="true"></i>Referral</a>
+										</li>
 									</ul>
 								</div>
 							</div>
@@ -126,11 +145,15 @@
 								<ul class="flex-stat mt-20">
 									<li>
 										<span class="block">Weekly Sale</span>
-										<span class="block txt-dark weight-500 font-18"><span class="counter-anim">3,24,222</span></span>
+										<span class="block txt-dark weight-500 font-18">
+											<span class="counter-anim">3,24,222</span>
+										</span>
 									</li>
 									<li>
 										<span class="block">Monthly Sale</span>
-										<span class="block txt-dark weight-500 font-18"><span class="counter-anim">1,23,432</span></span>
+										<span class="block txt-dark weight-500 font-18">
+											<span class="counter-anim">1,23,432</span>
+										</span>
 									</li>
 									<li>
 										<span class="block">Trend</span>
@@ -154,7 +177,8 @@
 								<div class="clearfix"></div>
 
 								<div class="cus-sat-stat weight-500 txt-info text-center mt-10">
-									<span class="counter-anim">70.13</span><span>%</span>
+									<span class="counter-anim">70.13</span>
+									<span>%</span>
 								</div>
 
 								<div class="progress-anim mt-5">
@@ -182,7 +206,7 @@
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 				<div class="col-md-4">
 					<div class="panel panel-default card-view pa-0 w-box-sec">
 						<div class="panel-wrapper collapse in">
@@ -191,13 +215,17 @@
 									<div class="container-fluid">
 										<div class="row">
 											<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-												<span class="txt-dark block counter"><span class="counter-anim">5422</span></span>
-												<span class="weight-500 uppercase-font block">Total Invoice</span>
+												<span class="txt-dark block counter">
+													<span class="counter-anim">
+														<?= $stats['stat']->total_sale; ?>
+													</span>
+												</span>
+												<span class="weight-500 uppercase-font block">Total Sale</span>
 											</div>
 											<div class="dist-profile-icons">
 												<img src="images/icon-all-orders-b.svg" alt="">
 											</div>
-										</div>	
+										</div>
 									</div>
 								</div>
 							</div>
@@ -212,13 +240,17 @@
 									<div class="container-fluid">
 										<div class="row">
 											<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-												<span class="txt-dark block counter"><span class="counter-anim">6500</span></span>
-												<span class="weight-500 uppercase-font block font-13">Total Orders</span>
+												<span class="txt-dark block counter">
+													<span class="counter-anim">
+														<?= $stats['stat']->average_order; ?>
+													</span>
+												</span>
+												<span class="weight-500 uppercase-font block font-13">Average Order</span>
 											</div>
 											<div class="dist-profile-icons">
 												<img src="images/icon-all-order.svg" alt="">
 											</div>
-										</div>	
+										</div>
 									</div>
 								</div>
 							</div>
@@ -237,26 +269,56 @@
 						</div>
 						<div class="panel-wrapper collapse in">
 							<div class="panel-body p-t-0">
-								<span class="font-12 head-font txt-dark">Chocolate<span class="pull-right">85%</span></span>
+								<?php foreach($stats["top_products"] as $tops) : ?>
+								<span class="font-12 head-font txt-dark">
+									<?= $tops->product; ?>
+										<span class="pull-right">
+											<?= $tops->percent_value; ?>%</span>
+								</span>
 								<div class="progress mt-10 mb-30">
-									<div class="progress-bar progress-bar-info" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 85%" role="progressbar"> <span class="sr-only">85% Complete (success)</span> </div>
+									<div class="progress-bar progress-bar-info" aria-valuenow="<?= $tops->percent_value; ?>" aria-valuemin="0" aria-valuemax="<?= $tops->percent_value; ?>"
+									style="width: <?= $tops->percent_value; ?>%" role="progressbar">
+										<span class="sr-only">
+											<?= $tops->percent_value; ?>% Complete (success)</span>
+									</div>
 								</div>
-								<span class="font-12 head-font txt-dark">Candy Red<span class="pull-right">80%</span></span>
+								<?php endforeach; ?>
+								<!-- <span class="font-12 head-font txt-dark">Candy Red
+									<span class="pull-right">80%</span>
+								</span>
 								<div class="progress mt-10 mb-30">
-									<div class="progress-bar progress-bar-success" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 80%" role="progressbar"> <span class="sr-only">85% Complete (success)</span> </div>
+									<div class="progress-bar progress-bar-success" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 80%"
+									role="progressbar">
+										<span class="sr-only">85% Complete (success)</span>
+									</div>
 								</div>
-								<span class="font-12 head-font txt-dark">Candy Big<span class="pull-right">70%</span></span>
+								<span class="font-12 head-font txt-dark">Candy Big
+									<span class="pull-right">70%</span>
+								</span>
 								<div class="progress mt-10 mb-30">
-									<div class="progress-bar progress-bar-danger" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 70%" role="progressbar"> <span class="sr-only">85% Complete (success)</span> </div>
+									<div class="progress-bar progress-bar-danger" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 70%"
+									role="progressbar">
+										<span class="sr-only">85% Complete (success)</span>
+									</div>
 								</div>
-								<span class="font-12 head-font txt-dark">Candy Chocolate<span class="pull-right">45%</span></span>
+								<span class="font-12 head-font txt-dark">Candy Chocolate
+									<span class="pull-right">45%</span>
+								</span>
 								<div class="progress mt-10 mb-30">
-									<div class="progress-bar progress-bar-inverse" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 45%" role="progressbar"> <span class="sr-only">85% Complete (success)</span> </div>
+									<div class="progress-bar progress-bar-inverse" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 45%"
+									role="progressbar">
+										<span class="sr-only">85% Complete (success)</span>
+									</div>
 								</div>
-								<span class="font-12 head-font txt-dark">Small Candy<span class="pull-right">80%</span></span>
+								<span class="font-12 head-font txt-dark">Small Candy
+									<span class="pull-right">80%</span>
+								</span>
 								<div class="progress mt-10 mb-30">
-									<div class="progress-bar progress-bar-success" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%" role="progressbar"> <span class="sr-only">80% Complete (success)</span> </div>
-								</div>
+									<div class="progress-bar progress-bar-success" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%"
+									role="progressbar">
+										<span class="sr-only">80% Complete (success)</span>
+									</div>
+								</div> -->
 							</div>
 						</div>
 					</div>
@@ -285,49 +347,61 @@
 											<tbody>
 												<tr>
 													<td>Sales Target 1</td>
-													<td><div class="progress progress-xs mb-0 ">
-														<div class="progress-bar progress-bar-danger" style="width: 35%"></div>
-													</div></td>
+													<td>
+														<div class="progress progress-xs mb-0 ">
+															<div class="progress-bar progress-bar-danger" style="width: 35%"></div>
+														</div>
+													</td>
 													<td>Jan 18, 2017</td>
 
 												</tr>
 												<tr>
 													<td>Sales Target 2</td>
-													<td><div class="progress progress-xs mb-0 ">
-														<div class="progress-bar progress-bar-warning" style="width: 50%"></div>
-													</div></td>
+													<td>
+														<div class="progress progress-xs mb-0 ">
+															<div class="progress-bar progress-bar-warning" style="width: 50%"></div>
+														</div>
+													</td>
 													<td>Dec 1, 2016</td>
 
 												</tr>
 												<tr>
 													<td>Sales Target 3</td>
-													<td><div class="progress progress-xs mb-0 ">
-														<div class="progress-bar progress-bar-success" style="width: 100%"></div>
-													</div></td>
+													<td>
+														<div class="progress progress-xs mb-0 ">
+															<div class="progress-bar progress-bar-success" style="width: 100%"></div>
+														</div>
+													</td>
 													<td>Nov 12, 2016</td>
 
 												</tr>
 												<tr>
 													<td>Sales Target 4</td>
-													<td><div class="progress progress-xs mb-0 ">
-														<div class="progress-bar progress-bar-primary" style="width: 70%"></div>
-													</div></td>
+													<td>
+														<div class="progress progress-xs mb-0 ">
+															<div class="progress-bar progress-bar-primary" style="width: 70%"></div>
+														</div>
+													</td>
 													<td>Oct 9, 2016</td>
 
 												</tr>
 												<tr>
 													<td>Sales Target 5</td>
-													<td><div class="progress progress-xs mb-0 ">
-														<div class="progress-bar progress-bar-primary" style="width: 85%"></div>
-													</div></td>
+													<td>
+														<div class="progress progress-xs mb-0 ">
+															<div class="progress-bar progress-bar-primary" style="width: 85%"></div>
+														</div>
+													</td>
 													<td>Sept 2, 2016</td>
 
 												</tr>
 												<tr>
 													<td>Sales Target 6</td>
-													<td><div class="progress progress-xs mb-0 ">
-														<div class="progress-bar progress-bar-warning" style="width: 50%"></div>
-													</div></td>
+													<td>
+														<div class="progress progress-xs mb-0 ">
+															<div class="progress-bar progress-bar-warning" style="width: 50%"></div>
+														</div>
+													</td>
 													<td>August 11, 2015</td>
 
 												</tr>
@@ -347,10 +421,10 @@
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
 <script src="<?= base_url('assets/vendors/bower_components/waypoints/lib/jquery.waypoints.min.js');?>"></script>
 <script src="<?= base_url('assets/vendors/bower_components/jquery.counterup/jquery.counterup.min.js');?>"></script>
-<script src="<?= base_url('assets/vendors/jquery.sparkline/dist/jquery.sparkline.min.js');?>"></script> 
+<script src="<?= base_url('assets/vendors/jquery.sparkline/dist/jquery.sparkline.min.js');?>"></script>
 <script src="<?= base_url('assets/vendors/bower_components/echarts/dist/echarts-en.min.js');?>"></script>
 <script src="<?= base_url('assets/vendors/echarts-liquidfill.min.js');?>"></script>
-<script src="<?= base_url('assets/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js');?>"></script>	
+<script src="<?= base_url('assets/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js');?>"></script>
 <script src="<?= base_url('assets/vendors/bower_components/peity/jquery.peity.min.js');?>"></script>
 <script src="<?= base_url('assets/dist/js/peity-data.js');?>"></script>
 <script src="<?= base_url('assets/dist/js/dashboard-data.js');?>"></script>

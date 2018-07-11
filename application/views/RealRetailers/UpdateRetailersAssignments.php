@@ -75,7 +75,7 @@
 										<ul style="list-style: none; padding: 0px" id="addedAssignmentsList">
 											<?php 
 											$RetailersAssignmentsUlListRetIds = explode(",", $RetailersAssignment->retailer_id);
-											$RetailersAssignmentsUlListRetNames = explode("<br>", $RetailersAssignment->retailer_names);
+											$RetailersAssignmentsUlListRetNames = explode("<>", $RetailersAssignment->retailer_names);
 											for($i = 0; $i < sizeof($RetailersAssignmentsUlListRetIds); $i++) : ?>
 											<li style="margin-top: 10px">
 												<div>

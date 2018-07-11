@@ -272,12 +272,14 @@
 												<a href="<?= base_url('Orders/ListOrdersIndividual/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
 													<button class="btn view-report">View Orders List</button>
 												</a>
+												<?php if($this->uri->segment(3) == "Latest") : ?>
 												<a href="<?= base_url('Orders/BookingSheet/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
 													<button class="btn view-report">Booking Sheet</button>
 												</a>
 												<a href="<?= base_url('Orders/DeliveryChallan/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
 													<button class="btn view-report">Delivery Challan</button>
 												</a>
+												<?php endif; ?>
 											</td>
 										</tr>
 										<?php endforeach; ?>

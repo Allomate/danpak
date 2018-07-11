@@ -112,7 +112,7 @@ class RealRetailersModel extends CI_Model{
 		endforeach;
 		return $this->db->select('GROUP_CONCAT(id) as retailer_assignment_id, employee_id, GROUP_CONCAT(retailer_id order by retailer_id) as retailer_id,
 			(SELECT CONCAT(employee_first_name, " ", employee_last_name) from employees_info where employee_id = rd.employee_id and assigned_for_day = rd.assigned_for_day) as employee,
-			( SELECT GROUP_CONCAT(retailer_name order by id SEPARATOR "<br>") from retailers_details where find_in_set(id, (SELECT GROUP_CONCAT(retailer_id) from retailers_assignment where employee_id = rd.employee_id and assigned_for_day = rd.assigned_for_day and retailer_id IN ('.$rets.')))) as retailer_names,
+			( SELECT GROUP_CONCAT(retailer_name order by id SEPARATOR "<>") from retailers_details where find_in_set(id, (SELECT GROUP_CONCAT(retailer_id) from retailers_assignment where employee_id = rd.employee_id and assigned_for_day = rd.assigned_for_day and retailer_id IN ('.$rets.')))) as retailer_names,
 			( SELECT GROUP_CONCAT(retailer_address order by id SEPARATOR "<br>") from retailers_details where find_in_set(id, (SELECT GROUP_CONCAT(retailer_id) from retailers_assignment where employee_id = rd.employee_id))) as retailer_addresses, assigned_for_day')->group_by('employee_id')->where('employee_id='.$employee_id.' and assigned_for_day = "'.$assiged_for_day.'" and retailer_id IN ('.$rets.')')->get('retailers_assignment rd')->row();
 	}
 

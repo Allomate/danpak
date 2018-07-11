@@ -72,13 +72,11 @@ class RetailerInformation extends Web_Services_Controller
 
     public function AddRetailer()
     {
-
         if ($this->AuthenticateWebServiceCall($this->input->post("api_secret_key"))):
             $retailerInfo = $this->input->post();
             unset($retailerInfo['api_secret_key']);
             if (isset($retailerInfo['retailer_name'], $retailerInfo['retailer_address'],
-            $retailerInfo['retailer_lats'], $retailerInfo['retailer_longs'],
-            $retailerInfo['retailer_territory_id'], $retailerInfo['retailer_city'], $retailerInfo['retailer_phone'], $retailerInfo['retailer_email'], $retailerInfo['retailer_type_id'], $retailerInfo['session'])):
+            $retailerInfo['retailer_lats'], $retailerInfo['retailer_longs'], $retailerInfo['retailer_phone'], $retailerInfo['retailer_type_id'], $retailerInfo['session'])):
                 $config['upload_path'] = './assets/uploads/retailers/';
                 if (isset($retailerInfo['retailer_image_b64'])):
                     $imgData = base64_decode($_POST['retailer_image_b64']);
@@ -91,9 +89,7 @@ class RetailerInformation extends Web_Services_Controller
                 endif;
                 $this->form_validation->set_rules('retailer_name', 'Retailer Name', 'max_length[100]');
                 $this->form_validation->set_rules('retailer_address', 'Retailer Address', 'max_length[500]');
-                $this->form_validation->set_rules('retailer_city', 'Retailer City', 'max_length[100]');
                 $this->form_validation->set_rules('retailer_phone', 'Retailer Phone', 'numeric|max_length[100]');
-                $this->form_validation->set_rules('retailer_email', 'Retailer Email', 'valid_email|max_length[100]');
                 if ($this->form_validation->run()):
                     if ($this->ws->StoreRetailerInformation($retailerInfo)):
                         return $this->ResponseMessage('Success', 'Retailer has been added successfully');
@@ -110,7 +106,6 @@ class RetailerInformation extends Web_Services_Controller
         else:
             return $this->ResponseMessage('Failed', 'Failed Api Authentication');
         endif;
-
     }
 
     public function AddRetailerOffline()
@@ -137,6 +132,7 @@ class RetailerInformation extends Web_Services_Controller
             }
 
             $response = $this->ws->StoreRetailerInformationOffline($retailerInfo);
+            // echo "<pre>"; print_r($response);die;
             if ($response["status"] == "Success"):
                 return $this->ResponseMessage('Success', $response["response"]);
             else:
@@ -154,8 +150,7 @@ class RetailerInformation extends Web_Services_Controller
             $retailerInfo = $this->input->post();
             unset($retailerInfo['api_secret_key']);
             if (isset($retailerInfo['retailer_name'], $retailerInfo['retailer_address'],
-            $retailerInfo['retailer_lats'], $retailerInfo['retailer_longs'],
-            $retailerInfo['retailer_territory_id'], $retailerInfo['retailer_city'], $retailerInfo['retailer_phone'], $retailerInfo['retailer_email'], $retailerInfo['retailer_type_id'], $retailerInfo['session'], $retailerInfo['retailer_id'])):
+            $retailerInfo['retailer_lats'], $retailerInfo['retailer_longs'], $retailerInfo['retailer_phone'], $retailerInfo['retailer_type_id'], $retailerInfo['session'], $retailerInfo['retailer_id'])):
                 $config['upload_path'] = './assets/uploads/retailers/';
                 if (isset($retailerInfo['retailer_image_b64'])):
                     $imgData = base64_decode($_POST['retailer_image_b64']);
@@ -168,9 +163,7 @@ class RetailerInformation extends Web_Services_Controller
                 endif;
                 $this->form_validation->set_rules('retailer_name', 'Retailer Name', 'max_length[100]');
                 $this->form_validation->set_rules('retailer_address', 'Retailer Address', 'max_length[500]');
-                $this->form_validation->set_rules('retailer_city', 'Retailer City', 'max_length[100]');
                 $this->form_validation->set_rules('retailer_phone', 'Retailer Phone', 'numeric|max_length[100]');
-                $this->form_validation->set_rules('retailer_email', 'Retailer Email', 'valid_email|max_length[100]');
 
                 if ($this->form_validation->run()):
                     $retailerId = $retailerInfo["retailer_id"];

@@ -67,6 +67,7 @@ class WebServices extends CI_Model
         $usersession = $retailerInfo['session'];
         $username = $this->db->select('username')->where('session', $usersession)->get('employee_session')->row()->username;
         $employee_id = $this->db->select('employee_id')->where('employee_username', $username)->get('employees_info')->row()->employee_id;
+        $territoryId =  $this->db->select('territory_id')->where('employee_username', $username)->get('employees_info')->row()->territory_id;
         unset($retailerInfo['session']);
         $exceptionsArray = array();
         $result = array();
@@ -74,6 +75,7 @@ class WebServices extends CI_Model
             $oldId = $ret["retailer_id"];
             unset($ret['retailer_id']);
             $ret["added_by"] = $employee_id;
+            $ret["retailer_territory_id"] = $territoryId;
             $response = $this->db->insert('retailers_details', $ret);
             if ($response) {
                 $newId = $this->db->insert_id();
@@ -91,11 +93,12 @@ class WebServices extends CI_Model
     public function StoreRetailerInformation($retailerInfo)
     {
         $usersession = $retailerInfo['session'];
+        $username = $this->db->select('username')->where('session', $usersession)->get('employee_session')->row()->username;
+        $employee_id = $this->db->select('employee_id')->where('employee_username', $username)->get('employees_info')->row()->employee_id;
+        $retailerInfo['retailer_territory_id'] = $this->db->select('territory_id')->where('employee_username', $username)->get('employees_info')->row()->territory_id;
         unset($retailerInfo['session']);
         $this->db->insert('retailers_details', $retailerInfo);
         $retailerIdLatest = $this->db->insert_id();
-        $username = $this->db->select('username')->where('session', $usersession)->get('employee_session')->row()->username;
-        $employee_id = $this->db->select('employee_id')->where('employee_username', $username)->get('employees_info')->row()->employee_id;
         return $this->db
             ->where('id', $retailerIdLatest)
             ->update('retailers_details', array('added_by' => $employee_id));
@@ -286,10 +289,18 @@ class WebServices extends CI_Model
                             }
 
                             if ($this->db->insert_batch('order_contents', $orderContentsForCampaign)):
-                                return "Success";
+                                $this->db->delete('visits_marked', 'employee_id = '.$employee_id.' and retailer_id = '.$orderDetails['retailer_id'].' and DATE(created_at) = CURDATE()');
+                                $orderVisitMarkedData = array('retailer_id' => $orderDetails["retailer_id"], 'employee_id' => $employee_id, 'took_order' => '1');
+                                if($this->db->insert('visits_marked', $orderVisitMarkedData)){
+                                    return "Success";
+                                }
                             endif;
                         }else{
-                            return "Success";
+                            $this->db->delete('visits_marked', 'employee_id = '.$employee_id.' and retailer_id = '.$orderDetails['retailer_id'].' and DATE(created_at) = CURDATE()');
+                            $orderVisitMarkedData = array('retailer_id' => $orderDetails["retailer_id"], 'employee_id' => $employee_id, 'took_order' => '1');
+                            if($this->db->insert('visits_marked', $orderVisitMarkedData)){
+                                return "Success";
+                            }
                         }
                     endif;
                 else:
@@ -396,9 +407,28 @@ class WebServices extends CI_Model
 
         $markVisit = array(
             'retailer_id' => $visitData["retailer_id"],
+            'picture' => $visitData["picture"] ? $visitData["picture"] : "",
+            'took_order' => 0,
             'employee_id' => $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $visitData['session'] . '"))')->get('employees_info')->row()->employee_id,
         );
         return $this->db->insert('visits_marked', $markVisit);
+    }
+
+    public function GetOverviewStat($data){
+        $employee_id = $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $data['session'] . '"))')->get('employees_info')->row()->employee_id;
+        $orders = $this->db->select('GROUP_CONCAT(id) as orders')->where(['employee_id'=>'43', 'DATE(created_at)'=>date("Y-m-d")])->get('orders')->row()->orders;
+        $totalOrders = 0;
+        $total_sale = 0;
+        if($orders):
+            $totalOrders = sizeOf(explode(",", $orders));
+            $total_sale = $this->db->select('IFNULL(SUM(final_price), "0") as total_sale')->where("order_id IN (".$orders.")")->get('order_contents')->row()->total_sale;
+        endif;
+        $punch_in_time = $this->db->select('IFNULL(DATE_FORMAT(TIME(created_at), "%r"), "Not checked in") as punch_in_time')->where('employee_id = ' . $employee_id.' and checking_status = 1 and DATE(created_at) = CURDATE()')->get('ams')->row()->punch_in_time;
+        $time_spent = $this->db->select('TIME_FORMAT(TIMEDIFF(TIME(NOW()), TIME(created_at)) , "%Hh %im") as time_spent')->where('employee_id = ' . $employee_id.' and checking_status = 1 and DATE(created_at) = CURDATE()')->get('ams')->row()->time_spent;
+        $schedule_visits = $this->db->select('count(*) as schedule_visits')->where('employee_id = ' . $employee_id.' and DATE(plan_for_day) = CURDATE()')->get('employee_visit_plan')->row()->schedule_visits;
+        $done_visits = $this->db->select('count(*) as done_visits')->where('employee_id = ' . $employee_id.' and DATE(created_at) = CURDATE()')->get('visits_marked')->row()->done_visits;
+
+        return array('total_sale' => $total_sale, 'punch_in_time' => $punch_in_time, 'time_spent' => $time_spent, 'total_orders' =>$totalOrders, 'schedule_visits' =>$schedule_visits, 'done_visits' =>$done_visits);
     }
 
     public function GetMarkStatus($visitData)
