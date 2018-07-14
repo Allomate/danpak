@@ -34,6 +34,11 @@ class Employees extends WebAuth_Controller {
 		$this->load->view('Employee/list_employees', ['employees'=>$this->em->get_employees_list()]);
 	}
 
+	public function GetEmployeeProfilePicture(){
+		$data = $this->session->userdata('session');
+		echo $this->em->GetProfilePicForWeb($data);
+	}
+
 	public function DeleteEmployee($employee_id)
 	{
 		if ($this->em->delete_employee($employee_id)) :
@@ -94,6 +99,7 @@ class Employees extends WebAuth_Controller {
 			else:
 				unset($employee['employee_password']);
 			endif;
+
 			if ($this->em->update_employee($employee_id, $employee)) :
 				$this->session->set_flashdata("update_success", "Employee has been updated successfully");
 			else:
@@ -155,7 +161,6 @@ class Employees extends WebAuth_Controller {
 			$employee = $this->input->post();
 			$employee['employee_password'] = sha1($employee['employee_password']);
 			$employee['employee_picture'] = $employee_picture;
-
 			if ($this->em->add_employee($employee)) :
 				$this->session->set_flashData('employee_added', 'Employee has been added successfully');
 			else:

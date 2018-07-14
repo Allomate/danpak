@@ -7,7 +7,27 @@ class EmployeesModel extends CI_Model{
 	}
 
 	public function add_employee($employee){
-		return $this->db->insert('employees_info', $employee);
+		$this->db->insert('employees_info', $employee);
+		$employee_id = $this->db->insert_id();
+		if($employee["is_admin"] == "1"){
+			$columns = preg_replace('/\bid,\b/', '', $this->db->query('SELECT GROUP_CONCAT(COLUMN_NAME) as columns 
+			FROM `INFORMATION_SCHEMA`.`COLUMNS` 
+			WHERE `TABLE_SCHEMA`= "'.$this->db->database.'" AND `TABLE_NAME`="access_rights"')->row()->columns);
+			$values = '';
+			for($i = 0; $i < sizeOf(explode(",", $columns)); $i++){
+				if($i != 0){
+					if($i == (sizeof(explode(",", $columns)) - 1)){
+						$values .= ',1';
+					}else{
+						$values .= ',1';
+					}
+				}else{
+					$values = $employee_id;
+				}
+			}
+			return $this->db->query('INSERT into access_rights('.$columns.') values('.$values.') ');
+		}
+		return true;
 	}
 
 	public function get_single_employee($employee_id){
@@ -38,6 +58,30 @@ class EmployeesModel extends CI_Model{
 	}
 
 	public function update_employee($employee_id, $employee){
+
+		if($employee["is_admin"] == "1"){
+			if(!$this->db->where('admin_id', $employee_id)->get('access_rights')->result()){
+				$columns = preg_replace('/\bid,\b/', '', $this->db->query('SELECT GROUP_CONCAT(COLUMN_NAME) as columns 
+				FROM `INFORMATION_SCHEMA`.`COLUMNS` 
+				WHERE `TABLE_SCHEMA`= "'.$this->db->database.'" AND `TABLE_NAME`="access_rights"')->row()->columns);
+				$values = '';
+				for($i = 0; $i < sizeOf(explode(",", $columns)); $i++){
+					if($i != 0){
+						if($i == (sizeof(explode(",", $columns)) - 1)){
+							$values .= ',1';
+						}else{
+							$values .= ',1';
+						}
+					}else{
+						$values = $employee_id;
+					}
+				}
+				$this->db->query('INSERT into access_rights('.$columns.') values('.$values.') ');
+			}
+		}else{
+			$this->db->delete('access_rights', array('admin_id' => $employee_id)); 
+		}
+
 		if (isset($employee['employee_picture']) || $employee['picture_deleted'] == 'deleted') {
 			$employee_picture = $this->db->select('REPLACE(employee_picture,"./","") as employee_picture')->where('employee_id', $employee_id)->get('employees_info')->row()->employee_picture;
 			if ($employee_picture) {
@@ -56,6 +100,7 @@ class EmployeesModel extends CI_Model{
 		}else{
 			unset($employee['picture_deleted']);
 		}
+
 		return $this->db
 		->where('employee_id',$employee_id)	
 		->update('employees_info', $employee);
@@ -63,6 +108,10 @@ class EmployeesModel extends CI_Model{
 
 	public function delete_employee($employee_id){
 		return $this->db->delete('employees_info', array('employee_id' => $employee_id)); 
+	}
+
+	public function GetProfilePicForWeb($session){
+		return $this->db->select('(SELECT REPLACE(employee_picture, "./","") from employees_info where employee_id = as.admin_id) as picture')->where('session', $session)->get('admin_session as')->row()->picture;
 	}
 
 }

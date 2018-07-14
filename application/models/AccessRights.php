@@ -11,11 +11,11 @@ class AccessRights extends CI_Model{
   }
     
   public function getAllRights(){
-    return $this->db->select('`id`, `admin_id`, `Dashboardv1`, `DashboardHrm`, `DashboardSales`, `Reports`, `Profile`, `ListRegions`, `ListAreas`, `ListTerritories`, `ViewCatalogueAssignments`, `DailyRouting`, `ListCampaigns`, `AddEmployee`, `ListEmployees`, `Attendance`, `EmployeesList`, `AddInventory`, `ListInventory`, `ProductGallery`, `ListMainCategories`, `ListSubCategories`, `ListSubInventory`, `ListUnits`, `ViewCatalogues`, `ListRetailers`, `ListRetailerTypes`, `ListRetailersAssignments`, `ListOrders`, `ListGroups`, `ListMessages`, `UpdateInventorySku`, `ListRights`, (SELECT admin_un from admin_credentials where id = ar.admin_id) as username')->where('admin_id != 1')->get('access_rights ar')->result();    
+    return $this->db->select('id, (SELECT employee_username from employees_info where employee_id = ar.admin_id) as username')->where('admin_id != 1')->get('access_rights ar')->result();    
   }
 
   public function getAdminsList(){
-    return $this->db->select('id, admin_un')->where('id != 1')->get('admin_credentials')->result();
+    return $this->db->select('employee_id, employee_username')->get('employees_info')->result();
   }
 
   public function addAccRights($rightsData){
@@ -31,14 +31,14 @@ class AccessRights extends CI_Model{
   }
 
   public function updateAccRights($rightsData, $rightId){
-    if($this->db->where('admin_id = '.$rightsData["admin_id"].' and id != '.$rightId)->get('access_rights')->row()){
+    if($this->db->where('admin_id = '.$rightsData["employee_id"].' and id != '.$rightId)->get('access_rights')->row()){
       return "Exist";
     }
-    return $this->db->query("UPDATE `access_rights` set ".$rightsData["permisData"]." where id = ".$rightId);  
+    return $this->db->query("UPDATE `access_rights` set ".$rightsData["permisData"].", admin_id = ".$rightsData["employee_id"]." where id = ".$rightId);  
   }
 
-  public function getRightsDataForAdmin($rightsData){
-    return $this->db->where('id', $rightsData)->get('access_rights')->row();
+  public function getRightsDataForAdmin($rightId){
+    return $this->db->where('id', $rightId)->get('access_rights')->row();
   }
 
   public function getRightsDataForLoggedInAdmin($admin){

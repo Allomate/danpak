@@ -35,8 +35,8 @@ class WebAuth_Controller extends CI_Controller{
 		if($func == "ListOrders"){
 			$func = $this->uri->segment(3);
 		}
-		$adminSession = $this->session->userdata('session');
 
+		$adminSession = $this->session->userdata('session');
 		if($func != "Home"){
 			if(!$this->ar->VerifyRights($func, $adminSession)){
 				return $this->load->view('not_found');

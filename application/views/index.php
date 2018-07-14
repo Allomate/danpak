@@ -1,7 +1,7 @@
 <?php require_once(APPPATH.'/views/includes/header.php'); ?>
-<div class="preloader-it">
+<!-- <div class="preloader-it">
 	<div class="la-anim-1"></div>
-</div>
+</div> -->
 <div class="wrapper theme-1-active">
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
 	<div class="page-wrapper">

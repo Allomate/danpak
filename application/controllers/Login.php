@@ -22,15 +22,15 @@ class Login extends CI_Controller{
 		$this->form_validation->set_rules('username', 'User Name', 'required|max_length[100]');
 		$this->form_validation->set_rules('password', 'Password', 'required');
 		if ($this->form_validation->run()) {
-			$adminData = $this->input->post();
-			$adminData["password"] = sha1($adminData["password"]);
-			$adminData["session"] = random_string('alnum', 50);
-			if ($this->lm->VerifyLogin($adminData)) :
-				$adminLogin = array(
-					'session' => $adminData["session"]
+			$empData = $this->input->post();
+			$empData["password"] = sha1($empData["password"]);
+			$empData["session"] = random_string('alnum', 50);
+			if ($this->lm->VerifyLogin($empData)) :
+				$empLogin = array(
+					'session' => $empData["session"]
 				);
 
-				$this->session->set_userdata($adminLogin);
+				$this->session->set_userdata($empLogin);
 
 				return redirect('Dashboard/Home');
 			else:

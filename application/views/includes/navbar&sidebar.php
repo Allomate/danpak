@@ -30,7 +30,7 @@
 		<ul class="nav navbar-right top-nav pull-right">
 			<li class="dropdown auth-drp">
 				<a href="#" class="dropdown-toggle pr-0" data-toggle="dropdown">
-					<img src="<?= base_url('assets/images/profile-img.jpg'); ?>" alt="" class="user-auth-img img-circle" />
+					<img src="<?= base_url(); ?>" alt="" class="user-auth-img img-circle" />
 					<span class="user-online-status"></span>
 				</a>
 				<ul class="dropdown-menu user-auth-dropdown" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
@@ -121,9 +121,6 @@
 					<li>
 						<a href="<?= base_url('Employees/ListEmployees');?>">Employees</a>
 					</li>
-					<li>
-						<a href="<?= base_url('AccRights/ListRights');?>">Access Rights</a>
-					</li>
 				</ul>
 			</li>
 			<li>
@@ -153,6 +150,9 @@
 					<li>
 						<a href="<?= base_url('Employees/DailyRouting');?>">Daily Routing</a>
 					</li>
+					<li>
+						<a href="<?= base_url('AccRights/ListRights');?>">Access Rights</a>
+					</li>
 				</ul>
 			</li>
 			<li>
@@ -177,29 +177,16 @@
 						<a href="<?= base_url('Inventory/ProductGallery'); ?>">Product Gallery</a>
 					</li>
 					<li>
-						<a href="javascript:void(0);" data-toggle="collapse" data-target="#categ_dr">
-							<div class="pull-left">
-								<span class="left-nav-text">Categories</span>
-							</div>
-							<div class="pull-right m-t-5">
-								<i class="zmdi zmdi-caret-down"></i>
-							</div>
-							<div class="clearfix"></div>
-						</a>
-						<ul id="categ_dr" class="innerUl collapse collapse-level-1">
-							<li>
-								<a href="<?= base_url('Categories/ListMainCategories'); ?>">Main Categories</a>
-							</li>
-							<li>
-								<a href="<?= base_url('Categories/ListSubCategories'); ?>">Sub Categories</a>
-							</li>
-						</ul>
-					</li>
-					<li>
 						<a href="<?= base_url('Inventory/ListSubInventory'); ?>">Sub-Inventory Management</a>
 					</li>
 					<li>
 						<a href="<?= base_url('Inventory/ListUnits'); ?>">Packaging Options</a>
+					</li>
+					<li>
+						<a href="<?= base_url('Categories/ListMainCategories'); ?>">Main Categories</a>
+					</li>
+					<li>
+						<a href="<?= base_url('Categories/ListSubCategories'); ?>">Sub Categories</a>
 					</li>
 				</ul>
 			</li>
@@ -317,6 +304,26 @@
 				</ul>
 			</li>
 			<li>
+				<a href="javascript:void(0);" data-toggle="collapse" data-target="#kpi_dr">
+					<div class="pull-left">
+						<i class="zmdi zmdi-widgets"></i>
+						<span class="right-nav-text">KPI Management</span>
+					</div>
+					<div class="pull-right m-t-5">
+						<i class="zmdi zmdi-caret-down"></i>
+					</div>
+					<div class="clearfix"></div>
+				</a>
+				<ul id="kpi_dr" class="innerUl collapse collapse-level-1">
+					<li>
+						<a href="<?= base_url('Kpi/EmpKpi'); ?>">KPI Settings</a>
+					</li>
+					<li>
+						<a href="<?= base_url('Kpi/Hierarchy'); ?>">Hierarchy Tree</a>
+					</li>
+				</ul>
+			</li>
+			<li>
 				<a href="<?= base_url('CampaignManagement/ListCampaigns');?>">
 					<div class="pull-left">
 						<i class="zmdi zmdi-chart-donut"></i>
@@ -325,15 +332,7 @@
 					<div class="clearfix"></div>
 				</a>
 			</li>
-			<!-- <li class="corner">
-				<a href="<?= base_url('Dashboard/Reports'); ?>">
-					<div class="pull-left">
-						<i class="zmdi zmdi-chart-donut"></i>
-						<span class="right-nav-text">Reports</span>
-					</div>
-					<div class="clearfix"></div>
-				</a>
-			</li> -->
+		</li>
 	</ul>
 </div>
 <div class="fixed-sidebar-right">
@@ -677,3 +676,4 @@
 	</ul>
 </div>
 <input type="text" id="getAccRightsUrlAjax" value="<?= base_url('AccRights/GetRightsForLoggedInAdminAjax'); ?>" hidden>
+<input type="text" id="getUserProfile" value="<?= base_url('Employees/GetEmployeeProfilePicture'); ?>" hidden>

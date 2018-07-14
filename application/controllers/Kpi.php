@@ -9,16 +9,19 @@ class Kpi extends WebAuth_Controller{
 	}
 
 	public function EmpKpi(){
-		// echo "<pre>"; print_r($this->km->get_employees_list());die;
 		return $this->load->view('Kpi/employee_kpi', ['Employees' => $this->km->get_employees_list() ]);
 	}
 
 	public function EmpKpiSettings($employee_username){
+		if(!$this->km->validate_reporting($employee_username))
+			return redirect("Kpi/EmpKpi");
 		return $this->load->view('Kpi/employee_kpi_setting', ['Employee' => $this->km->get_this_employee_info($employee_username)]);
 	}
 
 	public function UpdateKpiSettings($employee_username){
-		// echo "<pre>"; print_r($this->km->get_this_employee_kpi($employee_username));die;
+		if(!$this->km->validate_reporting($employee_username))
+			return redirect("Kpi/EmpKpi");
+
 		return $this->load->view('Kpi/update_employee_kpi_setting', ['Employee' => $this->km->get_this_employee_info($employee_username), 'kpi' => $this->km->get_this_employee_kpi($employee_username)]);
 	}
 
@@ -103,6 +106,15 @@ class Kpi extends WebAuth_Controller{
 
 		$this->session->set_flashdata("kpi_activated", "KPI has been activated for ".$employee_username." successfully");
 		return redirect('Kpi/EmpKpi');
+	}
+
+	public function Hierarchy(){
+		return $this->load->view('Kpi/hierarchy', ['Employees' => $this->km->get_employees_list() ]);
+	}
+
+	public function CreateHierarchy($employee_username){
+		// echo "<pre>"; print_r($this->km->get_reportees($employee_username));die;
+		return $this->load->view('Kpi/generate_hierarchy', [ 'Reportees' => $this->km->get_reportees($employee_username) ]);
 	}
 
 }

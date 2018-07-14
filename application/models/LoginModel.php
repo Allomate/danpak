@@ -2,14 +2,14 @@
 
 class LoginModel extends CI_Model{
 
-	public function VerifyLogin($adminData){
-		$data = $this->db->where(array('admin_un'=>$adminData["username"],'admin_pw'=>$adminData["password"]))->get("admin_credentials")->row();
+	public function VerifyLogin($empData){
+		$data = $this->db->where(array('employee_username'=>$empData["username"],'employee_password'=>$empData["password"]))->get("employees_info")->row();
 		if($data) :
-			unset($adminData["username"]);
-			unset($adminData["password"]);
-			$adminData["admin_id"] = $data->id;
-			if($this->db->delete('admin_session', array('admin_id' => $data->id)))
-				return $this->db->insert('admin_session', $adminData);
+			unset($empData["username"]);
+			unset($empData["password"]);
+			$empData["admin_id"] = $data->employee_id;
+			if($this->db->delete('admin_session', array('admin_id' => $data->employee_id)))
+				return $this->db->insert('admin_session', $empData);
 		endif;
 	}
 

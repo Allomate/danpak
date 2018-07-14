@@ -99,9 +99,8 @@ class WebServices extends CI_Model
         unset($retailerInfo['session']);
         $this->db->insert('retailers_details', $retailerInfo);
         $retailerIdLatest = $this->db->insert_id();
-        return $this->db
-            ->where('id', $retailerIdLatest)
-            ->update('retailers_details', array('added_by' => $employee_id));
+        $this->db->insert('retailers_assignment', ['retailer_id' => $retailerIdLatest, 'employee_id' => $employee_id, 'assigned_for_day' => strtolower(date('l'))]);
+        return $this->db->where('id', $retailerIdLatest)->update('retailers_details', array('added_by' => $employee_id));
     }
 
     public function UpdateRetailerInformation($retailer_id, $retailerInfo)
