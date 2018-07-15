@@ -125,15 +125,16 @@
 												<?= $employee->region;?>
 											</td>
 											<td>
-												<?= $employee->kpi_status ? "Active" : "Inactive" ; ?>
+												<?php if($employee->kpi_status == "1") : echo "Active"; elseif($employee->kpi_status == "0") : echo "Inactive"; else: echo "Not Set"; endif; ?>
 											</td>
 											<td>
-												<a href="<?= base_url('Kpi/EmpKpiSettings/'.$employee->employee_username);?>" class="view-report">Set KPI</a>
 												<?php if($employee->kpi_status == "1") : ?>
 												<a href="<?= base_url('Kpi/UpdateKpiSettings/'.$employee->employee_username);?>" class="view-report">Update KPI</a>
 												<a href="<?= base_url('Kpi/DeactivateKpi/'.$employee->employee_username);?>" class="view-report">De-Active</a>
 												<?php elseif($employee->kpi_status == "0") : ?>
 												<a href="<?= base_url('Kpi/ActivateKpi/'.$employee->employee_username);?>" class="view-report">Active</a>
+												<?php else : ?>
+												<a href="<?= base_url('Kpi/EmpKpiSettings/'.$employee->employee_username);?>" class="view-report">Set KPI</a>
 												<?php endif; ?>
 											</td>
 										</tr>
