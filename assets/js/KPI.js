@@ -98,11 +98,9 @@ $(document).ready(function() {
             url: "/Kpi/GetDetailedKpis/" + un,
             success: function(response) {
                 var response = JSON.parse(response);
-                console.log(response);
-                return;
                 $('.kpisTable tbody').empty();
                 for (var counter = 0; counter < response.length; counter++) {
-                    $('.kpisTable tbody').append('<tr> <td>' + response[counter]["kpi_type"] + '</td><td>' + response[counter]["criteria"] + '</td><td>' + response[counter]["criteria_parameter"] + '</td><td>' + (response[counter]["item_name"] ? response[counter]["item_name"] : "NA") + '</td><td>' + (response[counter]["unit_name"] ? response[counter]["unit_name"] : "NA") + '</td><td>' + response[counter]["target"] + '</td><td>' + response[counter]["eligibility"] + '</td><td>' + response[counter]["weightage"] + '%</td><td>' + response[counter]["incentive"] + '</td><td>' + response[counter]["active"] + '</td><td><a class="deleteKpi" id="' + response[counter]["id"] + '"><i class="fa fa-close"></i></a>' + (response[counter]["active"] == "1" ? '<a class="view-report deactivateSingularKpi" id="' + response[counter]["id"] + '" style="display: none">De-Active</a>' : '<a id="' + response[counter]["id"] + '" class="view-report activateSingularKpi" style="display: none">Active</a>') + '</td> </tr>');
+                    $('.kpisTable tbody').append('<tr> <td>' + response[counter]["kpi_type"] + '</td><td>' + response[counter]["criteria"] + '</td><td>' + response[counter]["criteria_parameter"] + '</td><td>' + (response[counter]["item_name"] ? response[counter]["item_name"] : "NA") + '</td><td>' + (response[counter]["unit_name"] ? response[counter]["unit_name"] : "NA") + '</td><td>' + response[counter]["target"] + '</td><td>' + response[counter]["eligibility"] + '</td><td>' + response[counter]["weightage"] + '%</td><td>' + response[counter]["incentive"] + '</td><td>' + numberWithCommas(Math.round(response[counter]["progress"])) + (response[counter]["progress"] ? " (" + (parseInt(response[counter]["progress"]) / parseInt(response[counter]["target"])) * 100 + "%)" : " (0%)") + '</td><td><a class="deleteKpi" id="' + response[counter]["id"] + '"><i class="fa fa-close"></i></a>' + (response[counter]["active"] == "1" ? '<a class="view-report deactivateSingularKpi" id="' + response[counter]["id"] + '" style="display: none">De-Active</a>' : '<a id="' + response[counter]["id"] + '" class="view-report activateSingularKpi" style="display: none">Active</a>') + '</td> </tr>');
                 }
                 $('#datable_2_filter').remove();
                 $('#myModal').modal('show');
@@ -449,3 +447,7 @@ $(document).ready(function() {
     });
 
 });
+
+const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
