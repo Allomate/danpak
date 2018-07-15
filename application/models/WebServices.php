@@ -79,6 +79,7 @@ class WebServices extends CI_Model
             $response = $this->db->insert('retailers_details', $ret);
             if ($response) {
                 $newId = $this->db->insert_id();
+                $this->db->insert('retailers_assignment', ['retailer_id' => $this->db->insert_id(), 'employee_id' => $employee_id, 'assigned_for_day' => strtolower(date('l'))]);
                 $result[] = array('new_id' => $newId, 'old_id' => $oldId);
             } else {
                 $exceptionsArray[] = array('old_id' => $oldId, 'error' => $response);
@@ -96,11 +97,11 @@ class WebServices extends CI_Model
         $username = $this->db->select('username')->where('session', $usersession)->get('employee_session')->row()->username;
         $employee_id = $this->db->select('employee_id')->where('employee_username', $username)->get('employees_info')->row()->employee_id;
         $retailerInfo['retailer_territory_id'] = $this->db->select('territory_id')->where('employee_username', $username)->get('employees_info')->row()->territory_id;
+        $retailerInfo["added_by"] = $employee_id;
         unset($retailerInfo['session']);
         $this->db->insert('retailers_details', $retailerInfo);
         $retailerIdLatest = $this->db->insert_id();
-        $this->db->insert('retailers_assignment', ['retailer_id' => $retailerIdLatest, 'employee_id' => $employee_id, 'assigned_for_day' => strtolower(date('l'))]);
-        return $this->db->where('id', $retailerIdLatest)->update('retailers_details', array('added_by' => $employee_id));
+        return $this->db->insert('retailers_assignment', ['retailer_id' => $retailerIdLatest, 'employee_id' => $employee_id, 'assigned_for_day' => strtolower(date('l'))]);
     }
 
     public function UpdateRetailerInformation($retailer_id, $retailerInfo)

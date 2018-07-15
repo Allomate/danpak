@@ -3,63 +3,60 @@
  * Copyright (c) 2014 Rafael Staib (http://www.jquery-steps.com)
  * Licensed under MIT http://www.opensource.org/licenses/MIT
  */
- ;(function ($, undefined)
- {
-    var currentLayout = "create_catalogue";
-    var catalogueAssignmentDataJson = new Object;
-    var catalogueDataJson = new Object;
-    $.fn.extend({
-        _aria: function (name, value)
-        {
-            return this.attr("aria-" + name, value);
-        },
+;(function ($, undefined)
+{
+$.fn.extend({
+    _aria: function (name, value)
+    {
+        return this.attr("aria-" + name, value);
+    },
 
-        _removeAria: function (name)
-        {
-            return this.removeAttr("aria-" + name);
-        },
+    _removeAria: function (name)
+    {
+        return this.removeAttr("aria-" + name);
+    },
 
-        _enableAria: function (enable)
-        {
-            return (enable == null || enable) ? 
+    _enableAria: function (enable)
+    {
+        return (enable == null || enable) ? 
             this.removeClass("disabled")._aria("disabled", "false") : 
             this.addClass("disabled")._aria("disabled", "true");
-        },
+    },
 
-        _showAria: function (show)
-        {
-            return (show == null || show) ? 
+    _showAria: function (show)
+    {
+        return (show == null || show) ? 
             this.show()._aria("hidden", "false") : 
             this.hide()._aria("hidden", "true");
-        },
+    },
 
-        _selectAria: function (select)
-        {
-            return (select == null || select) ? 
+    _selectAria: function (select)
+    {
+        return (select == null || select) ? 
             this.addClass("current")._aria("selected", "true") : 
             this.removeClass("current")._aria("selected", "false");
-        },
+    },
 
-        _id: function (id)
-        {
-            return (id) ? this.attr("id", id) : this.attr("id");
-        }
-    });
-
-    if (!String.prototype.format)
+    _id: function (id)
     {
-        String.prototype.format = function()
-        {
-            var args = (arguments.length === 1 && $.isArray(arguments[0])) ? arguments[0] : arguments;
-            var formattedString = this;
-            for (var i = 0; i < args.length; i++)
-            {
-                var pattern = new RegExp("\\{" + i + "\\}", "gm");
-                formattedString = formattedString.replace(pattern, args[i]);
-            }
-            return formattedString;
-        };
+        return (id) ? this.attr("id", id) : this.attr("id");
     }
+});
+
+if (!String.prototype.format)
+{
+    String.prototype.format = function()
+    {
+        var args = (arguments.length === 1 && $.isArray(arguments[0])) ? arguments[0] : arguments;
+        var formattedString = this;
+        for (var i = 0; i < args.length; i++)
+        {
+            var pattern = new RegExp("\\{" + i + "\\}", "gm");
+            formattedString = formattedString.replace(pattern, args[i]);
+        }
+        return formattedString;
+    };
+}
 
 /**
  * A global unique id count.
@@ -69,7 +66,7 @@
  * @property _uniqueId
  * @type Integer
  **/
- var _uniqueId = 0;
+var _uniqueId = 0;
 
 /**
  * The plugin prefix for cookies.
@@ -79,7 +76,7 @@
  * @property _cookiePrefix
  * @type String
  **/
- var _cookiePrefix = "jQu3ry_5teps_St@te_";
+var _cookiePrefix = "jQu3ry_5teps_St@te_";
 
 /**
  * Suffix for the unique tab id.
@@ -90,7 +87,7 @@
  * @type String
  * @since 0.9.7
  **/
- var _tabSuffix = "-t-";
+var _tabSuffix = "-t-";
 
 /**
  * Suffix for the unique tabpanel id.
@@ -101,7 +98,7 @@
  * @type String
  * @since 0.9.7
  **/
- var _tabpanelSuffix = "-p-";
+var _tabpanelSuffix = "-p-";
 
 /**
  * Suffix for the unique title id.
@@ -112,7 +109,7 @@
  * @type String
  * @since 0.9.7
  **/
- var _titleSuffix = "-h-";
+var _titleSuffix = "-h-";
 
 /**
  * An error message for an "index out of range" error.
@@ -122,7 +119,7 @@
  * @property _indexOutOfRangeErrorMessage
  * @type String
  **/
- var _indexOutOfRangeErrorMessage = "Index out of range.";
+var _indexOutOfRangeErrorMessage = "Index out of range.";
 
 /**
  * An error message for an "missing corresponding element" error.
@@ -132,7 +129,7 @@
  * @property _missingCorrespondingElementErrorMessage
  * @type String
  **/
- var _missingCorrespondingElementErrorMessage = "One or more corresponding step {0} are missing.";
+var _missingCorrespondingElementErrorMessage = "One or more corresponding step {0} are missing.";
 
 /**
  * Adds a step to the cache.
@@ -143,15 +140,15 @@
  * @param wizard {Object} A jQuery wizard object
  * @param step {Object} The step object to add
  **/
- function addStepToCache(wizard, step)
- {
+function addStepToCache(wizard, step)
+{
     getSteps(wizard).push(step);
 }
 
 function analyzeData(wizard, options, state)
 {
     var stepTitles = wizard.children(options.headerTag),
-    stepContents = wizard.children(options.bodyTag);
+        stepContents = wizard.children(options.bodyTag);
 
     // Validate content
     if (stepTitles.length > stepContents.length)
@@ -162,7 +159,7 @@ function analyzeData(wizard, options, state)
     {
         throwError(_missingCorrespondingElementErrorMessage, "titles");
     }
-
+        
     var startIndex = options.startIndex;
 
     state.stepCount = stepTitles.length;
@@ -184,20 +181,20 @@ function analyzeData(wizard, options, state)
     stepTitles.each(function (index)
     {
         var item = $(this), // item == header
-        content = stepContents.eq(index),
-        modeData = content.data("mode"),
-        mode = (modeData == null) ? contentMode.html : getValidEnumValue(contentMode,
-            (/^\s*$/.test(modeData) || isNaN(modeData)) ? modeData : parseInt(modeData, 0)),
-        contentUrl = (mode === contentMode.html || content.data("url") === undefined) ?
-        "" : content.data("url"),
-        contentLoaded = (mode !== contentMode.html && content.data("loaded") === "1"),
-        step = $.extend({}, stepModel, {
-            title: item.html(),
-            content: (mode === contentMode.html) ? content.html() : "",
-            contentUrl: contentUrl,
-            contentMode: mode,
-            contentLoaded: contentLoaded
-        });
+            content = stepContents.eq(index),
+            modeData = content.data("mode"),
+            mode = (modeData == null) ? contentMode.html : getValidEnumValue(contentMode,
+                (/^\s*$/.test(modeData) || isNaN(modeData)) ? modeData : parseInt(modeData, 0)),
+            contentUrl = (mode === contentMode.html || content.data("url") === undefined) ?
+                "" : content.data("url"),
+            contentLoaded = (mode !== contentMode.html && content.data("loaded") === "1"),
+            step = $.extend({}, stepModel, {
+                title: item.html(),
+                content: (mode === contentMode.html) ? content.html() : "",
+                contentUrl: contentUrl,
+                contentMode: mode,
+                contentLoaded: contentLoaded
+            });
 
         addStepToCache(wizard, step);
     });
@@ -211,8 +208,8 @@ function analyzeData(wizard, options, state)
  * @method cancel
  * @param wizard {Object} The jQuery wizard object
  **/
- function cancel(wizard)
- {
+function cancel(wizard)
+{
     wizard.triggerHandler("canceled");
 }
 
@@ -229,14 +226,14 @@ function decreaseCurrentIndexBy(state, decreaseBy)
  * @method destroy
  * @param wizard {Object} A jQuery wizard object
  **/
- function destroy(wizard, options)
- {
+function destroy(wizard, options)
+{
     var eventNamespace = getEventNamespace(wizard);
 
     // Remove virtual data objects from the wizard
     wizard.unbind(eventNamespace).removeData("uid").removeData("options")
-    .removeData("state").removeData("steps").removeData("eventNamespace")
-    .find(".actions a").unbind(eventNamespace);
+        .removeData("state").removeData("steps").removeData("eventNamespace")
+        .find(".actions a").unbind(eventNamespace);
 
     // Remove attributes and CSS classes from the wizard
     wizard.removeClass(options.clearFixCssClass + " vertical");
@@ -248,8 +245,8 @@ function decreaseCurrentIndexBy(state, decreaseBy)
 
     // Remove attributes, CSS classes and reset inline styles on all panels and their titles
     contents.removeAttr("id").removeAttr("role").removeAttr("tabindex")
-    .removeAttr("class").removeAttr("style")._removeAria("labelledby")
-    ._removeAria("hidden");
+        .removeAttr("class").removeAttr("style")._removeAria("labelledby")
+        ._removeAria("hidden");
 
     // Empty panels if the mode is set to 'async' or 'iframe'
     wizard.find(".content > [data-mode='async'],.content > [data-mode='iframe']").empty();
@@ -278,8 +275,8 @@ function decreaseCurrentIndexBy(state, decreaseBy)
  * @param wizard {Object} The jQuery wizard object
  * @param state {Object} The state container of the current wizard
  **/
- function finishStep(wizard, state)
- {
+function finishStep(wizard, state)
+{
     var currentStep = wizard.find(".steps li").eq(state.currentIndex);
 
     if (wizard.triggerHandler("finishing", [state.currentIndex]))
@@ -302,8 +299,8 @@ function decreaseCurrentIndexBy(state, decreaseBy)
  * @param wizard {Object} A jQuery wizard object
  * @return {String} Returns the unique event namespace for the given wizard
  */
- function getEventNamespace(wizard)
- {
+function getEventNamespace(wizard)
+{
     var eventNamespace = wizard.data("eventNamespace");
 
     if (eventNamespace == null)
@@ -360,8 +357,8 @@ function getSteps(wizard)
  * @param index {Integer} An integer that belongs to the position of a step
  * @return {Object} A specific step object
  **/
- function getStep(wizard, index)
- {
+function getStep(wizard, index)
+{
     var steps = getSteps(wizard);
 
     if (index < 0 || index >= steps.length)
@@ -381,8 +378,8 @@ function getSteps(wizard)
  * @param wizard {Object} A jQuery wizard object
  * @return {String} Returns the unique id for the given wizard
  */
- function getUniqueId(wizard)
- {
+function getUniqueId(wizard)
+{
     var uniqueId = wizard.data("uid");
 
     if (uniqueId == null)
@@ -410,8 +407,8 @@ function getSteps(wizard)
  * @param enumType {Object} Type of enum
  * @param keyOrValue {Object} Key as `String` or value as `Integer` to check for
  */
- function getValidEnumValue(enumType, keyOrValue)
- {
+function getValidEnumValue(enumType, keyOrValue)
+{
     validateArgument("enumType", enumType);
     validateArgument("keyOrValue", keyOrValue);
 
@@ -457,8 +454,8 @@ function getSteps(wizard)
  * @param state {Object} The state container of the current wizard
  * @return {Boolean} Indicates whether the action executed
  **/
- function goToNextStep(wizard, options, state)
- {
+function goToNextStep(wizard, options, state)
+{
     return paginationClick(wizard, options, state, increaseCurrentIndexBy(state, 1));
 }
 
@@ -473,8 +470,8 @@ function getSteps(wizard)
  * @param state {Object} The state container of the current wizard
  * @return {Boolean} Indicates whether the action executed
  **/
- function goToPreviousStep(wizard, options, state)
- {
+function goToPreviousStep(wizard, options, state)
+{
     return paginationClick(wizard, options, state, decreaseCurrentIndexBy(state, 1));
 }
 
@@ -490,8 +487,8 @@ function getSteps(wizard)
  * @param index {Integer} The position (zero-based) to route to
  * @return {Boolean} Indicates whether the action succeeded or failed
  **/
- function goToStep(wizard, options, state, index)
- {
+function goToStep(wizard, options, state, index)
+{
     if (index < 0 || index >= state.stepCount)
     {
         throwError(_indexOutOfRangeErrorMessage);
@@ -539,8 +536,8 @@ function increaseCurrentIndexBy(state, increaseBy)
  * @method initialize
  * @param options {Object} The component settings
  **/
- function initialize(options)
- {
+function initialize(options)
+{
     /*jshint -W040 */
     var opts = $.extend(true, {}, defaults, options);
 
@@ -593,8 +590,8 @@ function increaseCurrentIndexBy(state, increaseBy)
  *     });
  * @chainable
  **/
- function insertStep(wizard, options, state, index, step)
- {
+function insertStep(wizard, options, state, index, step)
+{
     if (index < 0 || index > state.stepCount)
     {
         throwError(_indexOutOfRangeErrorMessage);
@@ -613,8 +610,8 @@ function increaseCurrentIndexBy(state, increaseBy)
     state.stepCount++;
 
     var contentContainer = wizard.find(".content"),
-    header = $("<{0}>{1}</{0}>".format(options.headerTag, step.title)),
-    body = $("<{0}></{0}>".format(options.bodyTag));
+        header = $("<{0}>{1}</{0}>".format(options.headerTag, step.title)),
+        body = $("<{0}></{0}>".format(options.bodyTag));
 
     if (step.contentMode == null || step.contentMode === contentMode.html)
     {
@@ -652,8 +649,8 @@ function increaseCurrentIndexBy(state, increaseBy)
  * @param index {Integer} The position (zero-based) to add
  * @param step {Object} The step object to add
  **/
- function insertStepToCache(wizard, index, step)
- {
+function insertStepToCache(wizard, index, step)
+{
     getSteps(wizard).splice(index, 0, step);
 }
 
@@ -665,11 +662,11 @@ function increaseCurrentIndexBy(state, increaseBy)
  * @event keyup
  * @param event {Object} An event object
  */
- function keyUpHandler(event)
- {
+function keyUpHandler(event)
+{
     var wizard = $(this),
-    options = getOptions(wizard),
-    state = getState(wizard);
+        options = getOptions(wizard),
+        state = getState(wizard);
 
     if (options.suppressPaginationOnFocus && wizard.find(":focus").is(":input"))
     {
@@ -700,33 +697,33 @@ function increaseCurrentIndexBy(state, increaseBy)
  * @param options {Object} Settings of the current wizard
  * @param state {Object} The state container of the current wizard
  */
- function loadAsyncContent(wizard, options, state)
- {
+function loadAsyncContent(wizard, options, state)
+{
     if (state.stepCount > 0)
     {
         var currentIndex = state.currentIndex,
-        currentStep = getStep(wizard, currentIndex);
+            currentStep = getStep(wizard, currentIndex);
 
         if (!options.enableContentCache || !currentStep.contentLoaded)
         {
             switch (getValidEnumValue(contentMode, currentStep.contentMode))
             {
                 case contentMode.iframe:
-                wizard.find(".content > .body").eq(state.currentIndex).empty()
-                .html("<iframe src=\"" + currentStep.contentUrl + "\" frameborder=\"0\" scrolling=\"no\" />")
-                .data("loaded", "1");
-                break;
+                    wizard.find(".content > .body").eq(state.currentIndex).empty()
+                        .html("<iframe src=\"" + currentStep.contentUrl + "\" frameborder=\"0\" scrolling=\"no\" />")
+                        .data("loaded", "1");
+                    break;
 
                 case contentMode.async:
-                var currentStepContent = getStepPanel(wizard, currentIndex)._aria("busy", "true")
-                .empty().append(renderTemplate(options.loadingTemplate, { text: options.labels.loading }));
+                    var currentStepContent = getStepPanel(wizard, currentIndex)._aria("busy", "true")
+                        .empty().append(renderTemplate(options.loadingTemplate, { text: options.labels.loading }));
 
-                $.ajax({ url: currentStep.contentUrl, cache: false }).done(function (data)
-                {
-                    currentStepContent.empty().html(data)._aria("busy", "false").data("loaded", "1");
-                    wizard.triggerHandler("contentLoaded", [currentIndex]);
-                });
-                break;
+                    $.ajax({ url: currentStep.contentUrl, cache: false }).done(function (data)
+                    {
+                        currentStepContent.empty().html(data)._aria("busy", "false").data("loaded", "1");
+                        wizard.triggerHandler("contentLoaded", [currentIndex]);
+                    });
+                    break;
             }
         }
     }
@@ -744,15 +741,15 @@ function increaseCurrentIndexBy(state, increaseBy)
  * @param index {Integer} The position (zero-based) to route to
  * @return {Boolean} Indicates whether the event fired successfully or not
  **/
- function paginationClick(wizard, options, state, index)
- {
+function paginationClick(wizard, options, state, index)
+{
     var oldIndex = state.currentIndex;
 
     if (index >= 0 && index < state.stepCount && !(options.forceMoveForward && index < state.currentIndex))
     {
         var anchor = getStepAnchor(wizard, index),
-        parent = anchor.parent(),
-        isDisabled = parent.hasClass("disabled");
+            parent = anchor.parent(),
+            isDisabled = parent.hasClass("disabled");
 
         // Enable the step to make the anchor clickable!
         parent._enableAria();
@@ -780,62 +777,33 @@ function increaseCurrentIndexBy(state, increaseBy)
  * @event click
  * @param event {Object} An event object
  */
- function paginationClickHandler(event)
- {
+function paginationClickHandler(event)
+{
     event.preventDefault();
 
     var anchor = $(this),
-    wizard = anchor.parent().parent().parent().parent(),
-    options = getOptions(wizard),
-    state = getState(wizard),
-    href = anchor.attr("href");
+        wizard = anchor.parent().parent().parent().parent(),
+        options = getOptions(wizard),
+        state = getState(wizard),
+        href = anchor.attr("href");
 
     switch (href.substring(href.lastIndexOf("#") + 1))
     {
         case "cancel":
-        cancel(wizard);
-        break;
+            cancel(wizard);
+            break;
 
         case "finish":
-        getAssignCatalogueData();
-        finishStep(wizard, state);
-        break;
+            finishStep(wizard, state);
+            break;
 
         case "next":
-        if (currentLayout == "create_catalogue") {
-            if (!$('#catalogue_name').val() || !$('#active_till').val() || !$('#active_from').val()) {
-                alert('Please provide complete details');
-                return;
-            }
-            updateCreateCatalogueData();
-            currentLayout = "select_product";
-        }else if (currentLayout == "select_product") {
-            updateSelectedProductsForCatalogue();
-            if (!catalogueDataJson.pref_ids) {
-                alert("Please select atleast one product");
-                return;
-            }
-            populateListForPrioritySettings();
-            currentLayout = "set_list_priority";
-        }else if (currentLayout == "set_list_priority") {
-
-            populateAssignCatalogue();
-            currentLayout = "assign_catalogue";
-        }
-        goToNextStep(wizard, options, state);
-
-        break;
+            goToNextStep(wizard, options, state);
+            break;
 
         case "previous":
-        if (currentLayout == "assign_catalogue") {
-            currentLayout = "set_list_priority";
-        }else if (currentLayout == "set_list_priority") {
-            currentLayout = "select_product";
-        }else if (currentLayout == "select_product") {
-            currentLayout = "create_catalogue";
-        }
-        goToPreviousStep(wizard, options, state);
-        break;
+            goToPreviousStep(wizard, options, state);
+            break;
     }
 }
 
@@ -849,12 +817,12 @@ function increaseCurrentIndexBy(state, increaseBy)
  * @param options {Object} Settings of the current wizard
  * @param state {Object} The state container of the current wizard
  */
- function refreshPagination(wizard, options, state)
- {
+function refreshPagination(wizard, options, state)
+{
     if (options.enablePagination)
     {
         var finish = wizard.find(".actions a[href$='#finish']").parent(),
-        next = wizard.find(".actions a[href$='#next']").parent();
+            next = wizard.find(".actions a[href$='#next']").parent();
 
         if (!options.forceMoveForward)
         {
@@ -871,7 +839,7 @@ function increaseCurrentIndexBy(state, increaseBy)
         {
             finish._showAria(options.enableFinishButton && state.stepCount === (state.currentIndex + 1));
             next._showAria(state.stepCount === 0 || state.stepCount > (state.currentIndex + 1)).
-            _enableAria(state.stepCount > (state.currentIndex + 1) || !options.enableFinishButton);
+                _enableAria(state.stepCount > (state.currentIndex + 1) || !options.enableFinishButton);
         }
     }
 }
@@ -887,11 +855,11 @@ function increaseCurrentIndexBy(state, increaseBy)
  * @param state {Object} The state container of the current wizard
  * @param [oldIndex] {Integer} The index of the prior step
  */
- function refreshStepNavigation(wizard, options, state, oldIndex)
- {
+function refreshStepNavigation(wizard, options, state, oldIndex)
+{
     var currentOrNewStepAnchor = getStepAnchor(wizard, state.currentIndex),
-    currentInfo = $("<span class=\"current-info audible\">" + options.labels.current + " </span>"),
-    stepTitles = wizard.find(".content > .title");
+        currentInfo = $("<span class=\"current-info audible\">" + options.labels.current + " </span>"),
+        stepTitles = wizard.find(".content > .title");
 
     if (oldIndex != null)
     {
@@ -917,22 +885,22 @@ function increaseCurrentIndexBy(state, increaseBy)
  * @param state {Object} The state container of the current wizard
  * @param index {Integer} The start point for refreshing ids
  */
- function refreshSteps(wizard, options, state, index)
- {
+function refreshSteps(wizard, options, state, index)
+{
     var uniqueId = getUniqueId(wizard);
 
     for (var i = index; i < state.stepCount; i++)
     {
         var uniqueStepId = uniqueId + _tabSuffix + i,
-        uniqueBodyId = uniqueId + _tabpanelSuffix + i,
-        uniqueHeaderId = uniqueId + _titleSuffix + i,
-        title = wizard.find(".title").eq(i)._id(uniqueHeaderId);
+            uniqueBodyId = uniqueId + _tabpanelSuffix + i,
+            uniqueHeaderId = uniqueId + _titleSuffix + i,
+            title = wizard.find(".title").eq(i)._id(uniqueHeaderId);
 
         wizard.find(".steps a").eq(i)._id(uniqueStepId)
-        ._aria("controls", uniqueBodyId).attr("href", "#" + uniqueHeaderId)
-        .html(renderTemplate(options.titleTemplate, { index: i + 1, title: title.html() }));
+            ._aria("controls", uniqueBodyId).attr("href", "#" + uniqueHeaderId)
+            .html(renderTemplate(options.titleTemplate, { index: i + 1, title: title.html() }));
         wizard.find(".body").eq(i)._id(uniqueBodyId)
-        ._aria("labelledby", uniqueHeaderId);
+            ._aria("labelledby", uniqueHeaderId);
     }
 }
 
@@ -968,8 +936,8 @@ function registerEvents(wizard, options)
  * @param index {Integer} The position (zero-based) of the step to remove
  * @return Indecates whether the item is removed.
  **/
- function removeStep(wizard, options, state, index)
- {
+function removeStep(wizard, options, state, index)
+{
     // Index out of range and try deleting current item will return false.
     if (index < 0 || index >= state.stepCount || state.currentIndex === index)
     {
@@ -1022,20 +990,20 @@ function removeStepFromCache(wizard, index)
  * @param options {Object} Settings of the current wizard
  * @param state {Object} The state container of the current wizard
  **/
- function render(wizard, options, state)
- {
+function render(wizard, options, state)
+{
     // Create a content wrapper and copy HTML from the intial wizard structure
     var wrapperTemplate = "<{0} class=\"{1}\">{2}</{0}>",
-    orientation = getValidEnumValue(stepsOrientation, options.stepsOrientation),
-    verticalCssClass = (orientation === stepsOrientation.vertical) ? " vertical" : "",
-    contentWrapper = $(wrapperTemplate.format(options.contentContainerTag, "content " + options.clearFixCssClass, wizard.html())),
-    stepsWrapper = $(wrapperTemplate.format(options.stepsContainerTag, "steps " + options.clearFixCssClass, "<ul role=\"tablist\"></ul>")),
-    stepTitles = contentWrapper.children(options.headerTag),
-    stepContents = contentWrapper.children(options.bodyTag);
+        orientation = getValidEnumValue(stepsOrientation, options.stepsOrientation),
+        verticalCssClass = (orientation === stepsOrientation.vertical) ? " vertical" : "",
+        contentWrapper = $(wrapperTemplate.format(options.contentContainerTag, "content " + options.clearFixCssClass, wizard.html())),
+        stepsWrapper = $(wrapperTemplate.format(options.stepsContainerTag, "steps " + options.clearFixCssClass, "<ul role=\"tablist\"></ul>")),
+        stepTitles = contentWrapper.children(options.headerTag),
+        stepContents = contentWrapper.children(options.bodyTag);
 
     // Transform the wizard wrapper and remove the inner HTML
     wizard.attr("role", "application").empty().append(stepsWrapper).append(contentWrapper)
-    .addClass(options.cssClass + " " + options.clearFixCssClass + verticalCssClass);
+        .addClass(options.cssClass + " " + options.clearFixCssClass + verticalCssClass);
 
     // Add WIA-ARIA support
     stepContents.each(function (index)
@@ -1062,14 +1030,14 @@ function removeStepFromCache(wizard, index)
  * @param body {Object} A jQuery body object
  * @param index {Integer} The position of the body
  */
- function renderBody(wizard, state, body, index)
- {
+function renderBody(wizard, state, body, index)
+{
     var uniqueId = getUniqueId(wizard),
-    uniqueBodyId = uniqueId + _tabpanelSuffix + index,
-    uniqueHeaderId = uniqueId + _titleSuffix + index;
+        uniqueBodyId = uniqueId + _tabpanelSuffix + index,
+        uniqueHeaderId = uniqueId + _titleSuffix + index;
 
     body._id(uniqueBodyId).attr("role", "tabpanel")._aria("labelledby", uniqueHeaderId)
-    .addClass("body")._showAria(state.currentIndex === index);
+        .addClass("body")._showAria(state.currentIndex === index);
 }
 
 /**
@@ -1082,13 +1050,13 @@ function removeStepFromCache(wizard, index)
  * @param options {Object} Settings of the current wizard
  * @param state {Object} The state container of the current wizard
  */
- function renderPagination(wizard, options, state)
- {
+function renderPagination(wizard, options, state)
+{
     if (options.enablePagination)
     {
         var pagination = "<{0} class=\"actions {1}\"><ul role=\"menu\" aria-label=\"{2}\">{3}</ul></{0}>",
-        buttonTemplate = "<li><a href=\"#{0}\" role=\"menuitem\">{1}</a></li>",
-        buttons = "";
+            buttonTemplate = "<li><a href=\"#{0}\" role=\"menuitem\">{1}</a></li>",
+            buttons = "";
 
         if (!options.forceMoveForward)
         {
@@ -1125,14 +1093,14 @@ function removeStepFromCache(wizard, index)
  * @param substitutes {Object} A list of substitute
  * @return {String} The rendered template
  */
- function renderTemplate(template, substitutes)
- {
+function renderTemplate(template, substitutes)
+{
     var matches = template.match(/#([a-z]*)#/gi);
 
     for (var i = 0; i < matches.length; i++)
     {
         var match = matches[i], 
-        key = match.substring(1, match.length - 1);
+            key = match.substring(1, match.length - 1);
 
         if (substitutes[key] === undefined)
         {
@@ -1157,20 +1125,20 @@ function removeStepFromCache(wizard, index)
  * @param header {Object} A jQuery header object
  * @param index {Integer} The position of the header
  */
- function renderTitle(wizard, options, state, header, index)
- {
+function renderTitle(wizard, options, state, header, index)
+{
     var uniqueId = getUniqueId(wizard),
-    uniqueStepId = uniqueId + _tabSuffix + index,
-    uniqueBodyId = uniqueId + _tabpanelSuffix + index,
-    uniqueHeaderId = uniqueId + _titleSuffix + index,
-    stepCollection = wizard.find(".steps > ul"),
-    title = renderTemplate(options.titleTemplate, {
-        index: index + 1,
-        title: header.html()
-    }),
-    stepItem = $("<li role=\"tab\"><a id=\"" + uniqueStepId + "\" href=\"#" + uniqueHeaderId + 
-        "\" aria-controls=\"" + uniqueBodyId + "\">" + title + "</a></li>");
-
+        uniqueStepId = uniqueId + _tabSuffix + index,
+        uniqueBodyId = uniqueId + _tabpanelSuffix + index,
+        uniqueHeaderId = uniqueId + _titleSuffix + index,
+        stepCollection = wizard.find(".steps > ul"),
+        title = renderTemplate(options.titleTemplate, {
+            index: index + 1,
+            title: header.html()
+        }),
+        stepItem = $("<li role=\"tab\"><a id=\"" + uniqueStepId + "\" href=\"#" + uniqueHeaderId + 
+            "\" aria-controls=\"" + uniqueBodyId + "\">" + title + "</a></li>");
+        
     stepItem._enableAria(options.enableAllSteps || state.currentIndex > index);
 
     if (state.currentIndex > index)
@@ -1215,8 +1183,8 @@ function removeStepFromCache(wizard, index)
  * @param options {Object} Settings of the current wizard
  * @param state {Object} The state container of the current wizard
  */
- function saveCurrentStateToCookie(wizard, options, state)
- {
+function saveCurrentStateToCookie(wizard, options, state)
+{
     if (options.saveState && $.cookie)
     {
         $.cookie(_cookiePrefix + getUniqueId(wizard), state.currentIndex);
@@ -1226,50 +1194,50 @@ function removeStepFromCache(wizard, index)
 function startTransitionEffect(wizard, options, state, index, oldIndex, doneCallback)
 {
     var stepContents = wizard.find(".content > .body"),
-    effect = getValidEnumValue(transitionEffect, options.transitionEffect),
-    effectSpeed = options.transitionEffectSpeed,
-    newStep = stepContents.eq(index),
-    currentStep = stepContents.eq(oldIndex);
+        effect = getValidEnumValue(transitionEffect, options.transitionEffect),
+        effectSpeed = options.transitionEffectSpeed,
+        newStep = stepContents.eq(index),
+        currentStep = stepContents.eq(oldIndex);
 
     switch (effect)
     {
         case transitionEffect.fade:
         case transitionEffect.slide:
-        var hide = (effect === transitionEffect.fade) ? "fadeOut" : "slideUp",
-        show = (effect === transitionEffect.fade) ? "fadeIn" : "slideDown";
+            var hide = (effect === transitionEffect.fade) ? "fadeOut" : "slideUp",
+                show = (effect === transitionEffect.fade) ? "fadeIn" : "slideDown";
 
-        state.transitionElement = newStep;
-        currentStep[hide](effectSpeed, function ()
-        {
-            var wizard = $(this)._showAria(false).parent().parent(),
-            state = getState(wizard);
-
-            if (state.transitionElement)
+            state.transitionElement = newStep;
+            currentStep[hide](effectSpeed, function ()
             {
-                state.transitionElement[show](effectSpeed, function ()
+                var wizard = $(this)._showAria(false).parent().parent(),
+                    state = getState(wizard);
+
+                if (state.transitionElement)
                 {
-                    $(this)._showAria();
-                }).promise().done(doneCallback);
-                state.transitionElement = null;
-            }
-        });
-        break;
+                    state.transitionElement[show](effectSpeed, function ()
+                    {
+                        $(this)._showAria();
+                    }).promise().done(doneCallback);
+                    state.transitionElement = null;
+                }
+            });
+            break;
 
         case transitionEffect.slideLeft:
-        var outerWidth = currentStep.outerWidth(true),
-        posFadeOut = (index > oldIndex) ? -(outerWidth) : outerWidth,
-        posFadeIn = (index > oldIndex) ? outerWidth : -(outerWidth);
+            var outerWidth = currentStep.outerWidth(true),
+                posFadeOut = (index > oldIndex) ? -(outerWidth) : outerWidth,
+                posFadeIn = (index > oldIndex) ? outerWidth : -(outerWidth);
 
-        $.when(currentStep.animate({ left: posFadeOut }, effectSpeed, 
-            function () { $(this)._showAria(false); }),
-        newStep.css("left", posFadeIn + "px")._showAria()
-        .animate({ left: 0 }, effectSpeed)).done(doneCallback);
-        break;
+            $.when(currentStep.animate({ left: posFadeOut }, effectSpeed, 
+                    function () { $(this)._showAria(false); }),
+                newStep.css("left", posFadeIn + "px")._showAria()
+                    .animate({ left: 0 }, effectSpeed)).done(doneCallback);
+            break;
 
         default:
-        $.when(currentStep._showAria(false), newStep._showAria())
-        .done(doneCallback);
-        break;
+            $.when(currentStep._showAria(false), newStep._showAria())
+                .done(doneCallback);
+            break;
     }
 }
 
@@ -1281,44 +1249,22 @@ function startTransitionEffect(wizard, options, state, index, oldIndex, doneCall
  * @event click
  * @param event {Object} An event object
  */
- function stepClickHandler(event)
- {
+function stepClickHandler(event)
+{
     event.preventDefault();
 
     var anchor = $(this),
-    wizard = anchor.parent().parent().parent().parent(),
-    options = getOptions(wizard),
-    state = getState(wizard),
-    oldIndex = state.currentIndex;
+        wizard = anchor.parent().parent().parent().parent(),
+        options = getOptions(wizard),
+        state = getState(wizard),
+        oldIndex = state.currentIndex;
+
     if (anchor.parent().is(":not(.disabled):not(.current)"))
     {
         var href = anchor.attr("href"),
-        position = parseInt(href.substring(href.lastIndexOf("-") + 1), 0);
-        if (position == "0") {
-            currentLayout = "create_catalogue";
-        }else if (position == "1") {
-            if (!$('#catalogue_name').val() || !$('#active_till').val() || !$('#active_from').val()) {
-                alert('Please provide complete details');
-                return;
-            }
-            updateCreateCatalogueData();
-            currentLayout = "select_product";
-        }else if (position == "2") {
-            updateSelectedProductsForCatalogue();
-            if (!catalogueDataJson.pref_ids) {
-                alert("Please select atleast one product");
-                return;
-            }
-            populateListForPrioritySettings();
-            currentLayout = "set_list_priority";
-        }else if (position == "3") {
-
-            populateAssignCatalogue();
-            currentLayout = "assign_catalogue";
-        }
+            position = parseInt(href.substring(href.lastIndexOf("-") + 1), 0);
 
         goToStep(wizard, options, state, position);
-        
     }
 
     // If nothing has changed
@@ -1348,167 +1294,11 @@ function throwError(message)
  * @param argumentName {String} The name of the given argument
  * @param argumentValue {Object} The argument itself
  */
- function validateArgument(argumentName, argumentValue)
- {
+function validateArgument(argumentName, argumentValue)
+{
     if (argumentValue == null)
     {
         throwError("The argument '{0}' is null or undefined.", argumentName);
-    }
-}
-
-function updateCreateCatalogueData(){
-    var select = document.getElementById('inventory_items');
-    multi( select );
-    catalogueDataJson.catalogue_name = $('#catalogue_name').val(); 
-    catalogueAssignmentDataJson.active_till = $('#active_till').val();
-    catalogueAssignmentDataJson.active_from = $('#active_from').val();
-    if ($('input[name="currentUrl"]').val() == "UpdateCatalogue") {
-        prePopulateProductsListForUpdateCatalogue();
-    }
-}
-
-function prePopulateProductsListForUpdateCatalogue(){
-    var prefIdsAdded = $('input[name="productsAddedList"]').val().split(",");
-    $('#productsDiv .selected-wrapper').empty();
-    for (var i = 0; i < prefIdsAdded.length; i++) {
-        $('#productsDiv .non-selected-wrapper a').each(function(){
-            var dataValue = parseInt($(this).attr('data-value'));
-            if(dataValue == prefIdsAdded[i]){
-                $(this).addClass('selected');
-                $('#productsDiv .selected-wrapper').append('<a tabindex="0" class="item selected" role="button" data-value="'+prefIdsAdded[i]+'" multi-index="'+$(this).attr('multi-index')+'">'+$(this).text()+'</a>');        
-            }
-        });
-    }
-}
-
-function prePopulateEmployeesList(){
-    var employeesAdded = $('input[name="employeeAddedList"]').val().split(",");
-    $('#employeesListDiv .selected-wrapper').empty();
-    $('#employeesListDiv .non-selected-wrapper a').each(function(){
-        var dataValue = $(this).attr('data-value');
-        debugger;
-        if(jQuery.inArray(dataValue, employeesAdded) !== -1){
-            $(this).addClass('selected');
-            $('#employeesListDiv .selected-wrapper').append('<a tabindex="0" class="item selected" role="button" data-value="'+$(this).attr('data-value')+'" multi-index="'+$(this).attr('multi-index')+'">'+$(this).text()+'</a>');        
-        }
-    });
-}
-
-function updateSelectedProductsForCatalogue(){
-    var pref_ids = [];
-    var pref_names = [];
-    $('#productsDiv .selected-wrapper a').each(function(){
-        if (!catalogueDataJson.pref_ids) {
-            pref_ids.push($(this).attr('data-value'));
-            pref_names.push($(this).text());
-            catalogueDataJson.pref_ids = pref_ids.join(",");
-            catalogueDataJson.pref_names = pref_names.join(",");
-        }else{
-            if(!(jQuery.inArray($(this).attr('data-value'), catalogueDataJson.pref_ids.split(",")) !== -1)){
-                pref_ids.push($(this).attr('data-value'));
-                pref_names.push($(this).text());
-                catalogueDataJson.pref_ids = pref_ids.join(",");
-                catalogueDataJson.pref_names = pref_names.join(",");
-            }
-        }
-    });
-}
-
-function populateListForPrioritySettings(){
-
-    var itemNames = catalogueDataJson.pref_names.split(",");
-    var itemIds = catalogueDataJson.pref_ids.split(",");
-    $('.priorityListings').empty();
-    for (var i = 0; i < itemIds.length; i++) {
-        $('.priorityListings').append('<li class="dd-item dd3-item" id="'+itemIds[i]+'" data-id="13"><div class="dd-handle dd3-handle"></div><div class="dd3-content">'+itemNames[i]+'<a class="delete-icon" href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="zmdi zmdi-close-circle"></i></a></div></li>');
-    }
-}
-
-function populateAssignCatalogue(){
-    var select = document.getElementById('employees_list');
-    multi( select );
-    var priorityListIds = [];
-    var priorityListNames = [];
-    $('.priorityListings li').each(function(){
-        priorityListIds.push($(this).attr('id'));
-        priorityListNames.push($(this).text());
-    });
-
-    catalogueDataJson.pref_ids = priorityListIds.join(",");
-    catalogueDataJson.pref_names = priorityListNames.join(",");
-    catalogueAssignmentDataJson.assignment_method = "employee";
-
-    $('#region').click(function(){
-        $('#territory').attr('checked', false);
-        $('#employee').attr('checked', false);
-        $('#area').attr('checked', false);
-        $(this).attr('checked', true);
-        catalogueAssignmentDataJson.assignment_method = "region";
-        $('select[name="region_id"]').removeAttr('disabled');
-        $('select[name="area_id"]').attr('disabled', 'disabled');
-        $('select[name="employees_list"]').attr('disabled', 'disabled');
-        $('select[name="territory_id"]').attr('disabled', 'disabled');
-    });
-    $('#area').click(function(){
-        $('#territory').attr('checked', false);
-        $('#employee').attr('checked', false);
-        $('#region').attr('checked', false);
-        $(this).attr('checked', true);
-        catalogueAssignmentDataJson.assignment_method = "area";
-        $('select[name="area_id"]').removeAttr('disabled');
-        $('select[name="region_id"]').attr('disabled', 'disabled');
-        $('select[name="employees_list"]').attr('disabled', 'disabled');
-        $('select[name="territory_id"]').attr('disabled', 'disabled');
-    });
-    $('#territory').click(function(){
-        $('#region').attr('checked', false);
-        $('#employee').attr('checked', false);
-        $('#area').attr('checked', false);
-        $(this).attr('checked', true);
-        catalogueAssignmentDataJson.assignment_method = "territory";
-        $('select[name="territory_id"]').removeAttr('disabled');
-        $('select[name="region_id"]').attr('disabled', 'disabled');
-        $('select[name="employees_list"]').attr('disabled', 'disabled');
-        $('select[name="area_id"]').attr('disabled', 'disabled');
-    });
-    $('#employee').click(function(){
-        $('#region').attr('checked', false);
-        $('#territory').attr('checked', false);
-        $('#area').attr('checked', false);
-        $(this).attr('checked', true);
-        catalogueAssignmentDataJson.assignment_method = "employee";
-        $('select[name="employees_list"]').removeAttr('disabled');
-        $('select[name="region_id"]').attr('disabled', 'disabled');
-        $('select[name="territory_id"]').attr('disabled', 'disabled');
-        $('select[name="area_id"]').attr('disabled', 'disabled');
-    });
-    if ($('input[name="currentUrl"]').val() == "UpdateCatalogue") {
-        prePopulateEmployeesList();
-    }
-}
-
-function getAssignCatalogueData(){
-    if (catalogueAssignmentDataJson.assignment_method == "region") {
-        catalogueAssignmentDataJson.region_id = $('select[name="region_id"]').val();
-    }else if (catalogueAssignmentDataJson.assignment_method == "area") {
-        catalogueAssignmentDataJson.area_id = $('select[name="area_id"]').val();
-    }else if (catalogueAssignmentDataJson.assignment_method == "territory") {
-        catalogueAssignmentDataJson.territory_id = $('select[name="territory_id"]').val();
-    }else if (catalogueAssignmentDataJson.assignment_method == "employee") {
-        var employee_id = [];
-        $('#employeesListDiv .selected-wrapper a').each(function(){
-            employee_id.push($(this).attr('data-value'));
-        });
-        catalogueAssignmentDataJson.employee_ids = employee_id.join(",");
-    }
-    delete catalogueDataJson.pref_names;
-    $('input[name="catalogue_data"]').val(JSON.stringify(catalogueDataJson));
-    $('input[name="assignment_data"]').val(JSON.stringify(catalogueAssignmentDataJson));
-    $(this).attr('disabled', 'disabled');
-    if ($('input[name="currentUrl"]').val() == "UpdateCatalogue") {
-        $('#updateCatalogueForm').submit();
-    }else{
-        $('#createCatalogueForm').submit();
     }
 }
 
@@ -1521,8 +1311,8 @@ function getAssignCatalogueData(){
  * @param [params=]* {Array} Additional arguments for a method call
  * @chainable
  **/
- $.fn.steps = function (method)
- {
+$.fn.steps = function (method)
+{
     if ($.fn.steps[method])
     {
         return $.fn.steps[method].apply(this, Array.prototype.slice.call(arguments, 1));
@@ -1544,8 +1334,8 @@ function getAssignCatalogueData(){
  * @param step {Object} The step object to add
  * @chainable
  **/
- $.fn.steps.add = function (step)
- {
+$.fn.steps.add = function (step)
+{
     var state = getState(this);
     return insertStep(this, getOptions(this), state, state.stepCount, step);
 };
@@ -1556,8 +1346,8 @@ function getAssignCatalogueData(){
  * @method destroy
  * @chainable
  **/
- $.fn.steps.destroy = function ()
- {
+$.fn.steps.destroy = function ()
+{
     return destroy(this, getOptions(this));
 };
 
@@ -1566,8 +1356,8 @@ function getAssignCatalogueData(){
  *
  * @method finish
  **/
- $.fn.steps.finish = function ()
- {
+$.fn.steps.finish = function ()
+{
     finishStep(this, getState(this));
 };
 
@@ -1578,8 +1368,8 @@ function getAssignCatalogueData(){
  * @return {Integer} The actual step index (zero-based)
  * @for steps
  **/
- $.fn.steps.getCurrentIndex = function ()
- {
+$.fn.steps.getCurrentIndex = function ()
+{
     return getState(this).currentIndex;
 };
 
@@ -1589,8 +1379,8 @@ function getAssignCatalogueData(){
  * @method getCurrentStep
  * @return {Object} The actual step object
  **/
- $.fn.steps.getCurrentStep = function ()
- {
+$.fn.steps.getCurrentStep = function ()
+{
     return getStep(this, getState(this).currentIndex);
 };
 
@@ -1601,8 +1391,8 @@ function getAssignCatalogueData(){
  * @param index {Integer} An integer that belongs to the position of a step
  * @return {Object} A specific step object
  **/
- $.fn.steps.getStep = function (index)
- {
+$.fn.steps.getStep = function (index)
+{
     return getStep(this, index);
 };
 
@@ -1621,8 +1411,8 @@ function getAssignCatalogueData(){
  *     });
  * @chainable
  **/
- $.fn.steps.insert = function (index, step)
- {
+$.fn.steps.insert = function (index, step)
+{
     return insertStep(this, getOptions(this), getState(this), index, step);
 };
 
@@ -1632,8 +1422,8 @@ function getAssignCatalogueData(){
  * @method next
  * @return {Boolean} Indicates whether the action executed
  **/
- $.fn.steps.next = function ()
- {
+$.fn.steps.next = function ()
+{
     return goToNextStep(this, getOptions(this), getState(this));
 };
 
@@ -1643,8 +1433,8 @@ function getAssignCatalogueData(){
  * @method previous
  * @return {Boolean} Indicates whether the action executed
  **/
- $.fn.steps.previous = function ()
- {
+$.fn.steps.previous = function ()
+{
     return goToPreviousStep(this, getOptions(this), getState(this));
 };
 
@@ -1655,8 +1445,8 @@ function getAssignCatalogueData(){
  * @param index {Integer} The position (zero-based) of the step to remove
  * @return Indecates whether the item is removed.
  **/
- $.fn.steps.remove = function (index)
- {
+$.fn.steps.remove = function (index)
+{
     return removeStep(this, getOptions(this), getState(this), index);
 };
 
@@ -1667,8 +1457,8 @@ function getAssignCatalogueData(){
  * @param index {Integer} An integer that belongs to the position of a step
  * @param step {Object} The step object to change
  **/
- $.fn.steps.setStep = function (index, step)
- {
+$.fn.steps.setStep = function (index, step)
+{
     throw new Error("Not yet implemented!");
 };
 
@@ -1679,8 +1469,8 @@ function getAssignCatalogueData(){
  * @param count {Integer} The amount of steps that should be skipped
  * @return {Boolean} Indicates whether the action executed
  **/
- $.fn.steps.skip = function (count)
- {
+$.fn.steps.skip = function (count)
+{
     throw new Error("Not yet implemented!");
 };
 
@@ -1690,7 +1480,7 @@ function getAssignCatalogueData(){
  * @class contentMode
  * @for steps
  **/
- var contentMode = $.fn.steps.contentMode = {
+var contentMode = $.fn.steps.contentMode = {
     /**
      * HTML embedded content
      *
@@ -1699,7 +1489,7 @@ function getAssignCatalogueData(){
      * @type Integer
      * @for contentMode
      **/
-     html: 0,
+    html: 0,
 
     /**
      * IFrame embedded content
@@ -1709,7 +1499,7 @@ function getAssignCatalogueData(){
      * @type Integer
      * @for contentMode
      **/
-     iframe: 1,
+    iframe: 1,
 
     /**
      * Async embedded content
@@ -1719,8 +1509,8 @@ function getAssignCatalogueData(){
      * @type Integer
      * @for contentMode
      **/
-     async: 2
- };
+    async: 2
+};
 
 /**
  * An enum represents the orientation of the steps navigation.
@@ -1728,7 +1518,7 @@ function getAssignCatalogueData(){
  * @class stepsOrientation
  * @for steps
  **/
- var stepsOrientation = $.fn.steps.stepsOrientation = {
+var stepsOrientation = $.fn.steps.stepsOrientation = {
     /**
      * Horizontal orientation
      *
@@ -1737,7 +1527,7 @@ function getAssignCatalogueData(){
      * @type Integer
      * @for stepsOrientation
      **/
-     horizontal: 0,
+    horizontal: 0,
 
     /**
      * Vertical orientation
@@ -1747,8 +1537,8 @@ function getAssignCatalogueData(){
      * @type Integer
      * @for stepsOrientation
      **/
-     vertical: 1
- };
+    vertical: 1
+};
 
 /**
  * An enum that represents the various transition animations.
@@ -1756,7 +1546,7 @@ function getAssignCatalogueData(){
  * @class transitionEffect
  * @for steps
  **/
- var transitionEffect = $.fn.steps.transitionEffect = {
+var transitionEffect = $.fn.steps.transitionEffect = {
     /**
      * No transition animation
      *
@@ -1765,7 +1555,7 @@ function getAssignCatalogueData(){
      * @type Integer
      * @for transitionEffect
      **/
-     none: 0,
+    none: 0,
 
     /**
      * Fade in transition
@@ -1775,7 +1565,7 @@ function getAssignCatalogueData(){
      * @type Integer
      * @for transitionEffect
      **/
-     fade: 1,
+    fade: 1,
 
     /**
      * Slide up transition
@@ -1785,7 +1575,7 @@ function getAssignCatalogueData(){
      * @type Integer
      * @for transitionEffect
      **/
-     slide: 2,
+    slide: 2,
 
     /**
      * Slide left transition
@@ -1795,10 +1585,10 @@ function getAssignCatalogueData(){
      * @type Integer
      * @for transitionEffect
      **/
-     slideLeft: 3
- };
+    slideLeft: 3
+};
 
- var stepModel = $.fn.steps.stepModel = {
+var stepModel = $.fn.steps.stepModel = {
     title: "",
     content: "",
     contentUrl: "",
@@ -1821,7 +1611,7 @@ function getAssignCatalogueData(){
  *   // Initialization approach
  *   $("#wizard").steps({ headerTag: "h3" });
  **/
- var defaults = $.fn.steps.defaults = {
+var defaults = $.fn.steps.defaults = {
     /**
      * The header tag is used to find the step button text within the declared wizard area.
      *
@@ -1830,7 +1620,7 @@ function getAssignCatalogueData(){
      * @default "h1"
      * @for defaults
      **/
-     headerTag: "h1",
+    headerTag: "h1",
 
     /**
      * The body tag is used to find the step content within the declared wizard area.
@@ -1840,7 +1630,7 @@ function getAssignCatalogueData(){
      * @default "div"
      * @for defaults
      **/
-     bodyTag: "div",
+    bodyTag: "div",
 
     /**
      * The content container tag which will be used to wrap all step contents.
@@ -1850,7 +1640,7 @@ function getAssignCatalogueData(){
      * @default "div"
      * @for defaults
      **/
-     contentContainerTag: "div",
+    contentContainerTag: "div",
 
     /**
      * The action container tag which will be used to wrap the pagination navigation.
@@ -1860,7 +1650,7 @@ function getAssignCatalogueData(){
      * @default "div"
      * @for defaults
      **/
-     actionContainerTag: "div",
+    actionContainerTag: "div",
 
     /**
      * The steps container tag which will be used to wrap the steps navigation.
@@ -1870,7 +1660,7 @@ function getAssignCatalogueData(){
      * @default "div"
      * @for defaults
      **/
-     stepsContainerTag: "div",
+    stepsContainerTag: "div",
 
     /**
      * The css class which will be added to the outer component wrapper.
@@ -1884,7 +1674,7 @@ function getAssignCatalogueData(){
      *         ...
      *     </div>
      **/
-     cssClass: "wizard",
+    cssClass: "wizard",
 
     /**
      * The css class which will be used for floating scenarios.
@@ -1894,7 +1684,7 @@ function getAssignCatalogueData(){
      * @default "clearfix"
      * @for defaults
      **/
-     clearFixCssClass: "clearfix",
+    clearFixCssClass: "clearfix",
 
     /**
      * Determines whether the steps are vertically or horizontally oriented.
@@ -1905,7 +1695,7 @@ function getAssignCatalogueData(){
      * @for defaults
      * @since 1.0.0
      **/
-     stepsOrientation: stepsOrientation.horizontal,
+    stepsOrientation: stepsOrientation.horizontal,
 
     /*
      * Tempplates
@@ -1919,7 +1709,7 @@ function getAssignCatalogueData(){
      * @default "<span class=\"number\">#index#.</span> #title#"
      * @for defaults
      **/
-     titleTemplate: "<span class=\"number\">#index#.</span> #title#",
+    titleTemplate: "<span class=\"number\">#index#.</span> #title#",
 
     /**
      * The loading template which will be used to create the loading animation.
@@ -1929,7 +1719,7 @@ function getAssignCatalogueData(){
      * @default "<span class=\"spinner\"></span> #text#"
      * @for defaults
      **/
-     loadingTemplate: "<span class=\"spinner\"></span> #text#",
+    loadingTemplate: "<span class=\"spinner\"></span> #text#",
 
     /*
      * Behaviour
@@ -1944,7 +1734,7 @@ function getAssignCatalogueData(){
      * @for defaults
      * @since 0.9.4
      **/
-     autoFocus: false,
+    autoFocus: false,
 
     /**
      * Enables all steps from the begining if `true` (all steps are clickable).
@@ -1954,7 +1744,7 @@ function getAssignCatalogueData(){
      * @default false
      * @for defaults
      **/
-     enableAllSteps: false,
+    enableAllSteps: false,
 
     /**
      * Enables keyboard navigation if `true` (arrow left and arrow right).
@@ -1964,7 +1754,7 @@ function getAssignCatalogueData(){
      * @default true
      * @for defaults
      **/
-     enableKeyNavigation: true,
+    enableKeyNavigation: true,
 
     /**
      * Enables pagination if `true`.
@@ -1974,7 +1764,7 @@ function getAssignCatalogueData(){
      * @default true
      * @for defaults
      **/
-     enablePagination: true,
+    enablePagination: true,
 
     /**
      * Suppresses pagination if a form field is focused.
@@ -1984,7 +1774,7 @@ function getAssignCatalogueData(){
      * @default true
      * @for defaults
      **/
-     suppressPaginationOnFocus: true,
+    suppressPaginationOnFocus: true,
 
     /**
      * Enables cache for async loaded or iframe embedded content.
@@ -1994,7 +1784,7 @@ function getAssignCatalogueData(){
      * @default true
      * @for defaults
      **/
-     enableContentCache: true,
+    enableContentCache: true,
 
     /**
      * Shows the cancel button if enabled.
@@ -2004,7 +1794,7 @@ function getAssignCatalogueData(){
      * @default false
      * @for defaults
      **/
-     enableCancelButton: false,
+    enableCancelButton: false,
 
     /**
      * Shows the finish button if enabled.
@@ -2014,7 +1804,7 @@ function getAssignCatalogueData(){
      * @default true
      * @for defaults
      **/
-     enableFinishButton: true,
+    enableFinishButton: true,
 
     /**
      * Not yet implemented.
@@ -2024,7 +1814,7 @@ function getAssignCatalogueData(){
      * @default false
      * @for defaults
      **/
-     preloadContent: false,
+    preloadContent: false,
 
     /**
      * Shows the finish button always (on each step; right beside the next button) if `true`. 
@@ -2035,7 +1825,7 @@ function getAssignCatalogueData(){
      * @default false
      * @for defaults
      **/
-     showFinishButtonAlways: false,
+    showFinishButtonAlways: false,
 
     /**
      * Prevents jumping to a previous step.
@@ -2045,7 +1835,7 @@ function getAssignCatalogueData(){
      * @default false
      * @for defaults
      **/
-     forceMoveForward: false,
+    forceMoveForward: false,
 
     /**
      * Saves the current state (step position) to a cookie.
@@ -2056,7 +1846,7 @@ function getAssignCatalogueData(){
      * @default false
      * @for defaults
      **/
-     saveState: false,
+    saveState: false,
 
     /**
      * The position to start on (zero-based).
@@ -2066,7 +1856,7 @@ function getAssignCatalogueData(){
      * @default 0
      * @for defaults
      **/
-     startIndex: 0,
+    startIndex: 0,
 
     /*
      * Animation Effect Configuration
@@ -2080,7 +1870,7 @@ function getAssignCatalogueData(){
      * @default none
      * @for defaults
      **/
-     transitionEffect: transitionEffect.none,
+    transitionEffect: transitionEffect.none,
 
     /**
      * Animation speed for step transitions (in milliseconds).
@@ -2090,7 +1880,7 @@ function getAssignCatalogueData(){
      * @default 200
      * @for defaults
      **/
-     transitionEffectSpeed: 200,
+    transitionEffectSpeed: 200,
 
     /*
      * Events
@@ -2105,7 +1895,7 @@ function getAssignCatalogueData(){
      * @default function (event, currentIndex, newIndex) { return true; }
      * @for defaults
      **/
-     onStepChanging: function (event, currentIndex, newIndex) { return true; },
+    onStepChanging: function (event, currentIndex, newIndex) { return true; },
 
     /**
      * Fires after the step has change. 
@@ -2115,7 +1905,7 @@ function getAssignCatalogueData(){
      * @default function (event, currentIndex, priorIndex) { }
      * @for defaults
      **/
-     onStepChanged: function (event, currentIndex, priorIndex) { },
+    onStepChanged: function (event, currentIndex, priorIndex) { },
 
     /**
      * Fires after cancelation. 
@@ -2125,7 +1915,7 @@ function getAssignCatalogueData(){
      * @default function (event) { }
      * @for defaults
      **/
-     onCanceled: function (event) { },
+    onCanceled: function (event) { },
 
     /**
      * Fires before finishing and can be used to prevent completion by returning `false`. 
@@ -2136,7 +1926,7 @@ function getAssignCatalogueData(){
      * @default function (event, currentIndex) { return true; }
      * @for defaults
      **/
-     onFinishing: function (event, currentIndex) { return true; },
+    onFinishing: function (event, currentIndex) { return true; },
 
     /**
      * Fires after completion. 
@@ -2146,7 +1936,7 @@ function getAssignCatalogueData(){
      * @default function (event, currentIndex) { }
      * @for defaults
      **/
-     onFinished: function (event, currentIndex) { },
+    onFinished: function (event, currentIndex) { },
 
     /**
      * Fires after async content is loaded. 
@@ -2156,7 +1946,7 @@ function getAssignCatalogueData(){
      * @default function (event, index) { }
      * @for defaults
      **/
-     onContentLoaded: function (event, currentIndex) { },
+    onContentLoaded: function (event, currentIndex) { },
 
     /**
      * Fires when the wizard is initialized. 
@@ -2166,7 +1956,7 @@ function getAssignCatalogueData(){
      * @default function (event) { }
      * @for defaults
      **/
-     onInit: function (event, currentIndex) { },
+    onInit: function (event, currentIndex) { },
 
     /**
      * Contains all labels. 
@@ -2175,7 +1965,7 @@ function getAssignCatalogueData(){
      * @type Object
      * @for defaults
      **/
-     labels: {
+    labels: {
         /**
          * Label for the cancel button.
          *
@@ -2184,7 +1974,7 @@ function getAssignCatalogueData(){
          * @default "Cancel"
          * @for defaults
          **/
-         cancel: "Cancel",
+        cancel: "Cancel",
 
         /**
          * This label is important for accessability reasons.
@@ -2195,7 +1985,7 @@ function getAssignCatalogueData(){
          * @default "current step:"
          * @for defaults
          **/
-         current: "current step:",
+        current: "current step:",
 
         /**
          * This label is important for accessability reasons and describes the kind of navigation.
@@ -2206,7 +1996,7 @@ function getAssignCatalogueData(){
          * @for defaults
          * @since 0.9.7
          **/
-         pagination: "Pagination",
+        pagination: "Pagination",
 
         /**
          * Label for the finish button.
@@ -2216,7 +2006,7 @@ function getAssignCatalogueData(){
          * @default "Finish"
          * @for defaults
          **/
-         finish: "Finish",
+        finish: "Finish",
 
         /**
          * Label for the next button.
@@ -2226,7 +2016,7 @@ function getAssignCatalogueData(){
          * @default "Next"
          * @for defaults
          **/
-         next: "Next",
+        next: "Next",
 
         /**
          * Label for the previous button.
@@ -2236,7 +2026,7 @@ function getAssignCatalogueData(){
          * @default "Previous"
          * @for defaults
          **/
-         previous: "Previous",
+        previous: "Previous",
 
         /**
          * Label for the loading animation.
@@ -2246,7 +2036,7 @@ function getAssignCatalogueData(){
          * @default "Loading ..."
          * @for defaults
          **/
-         loading: "Loading ..."
-     }
- };
+        loading: "Loading ..."
+    }
+};
 })(jQuery);
