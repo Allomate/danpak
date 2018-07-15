@@ -6,6 +6,110 @@ $(document).ready(function() {
     var totalWeightage = 0;
     var kpiTypesAlreadyAdded = [];
 
+    $(document).on('click', '.deactivateSingularKpi', function() {
+        var kpiId = $(this).attr('id');
+
+        swal({
+            title: 'Are you sure?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Deactivate It',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve, reject) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Kpi/DeActivateSingularKpi/" + kpiId,
+                        success: function(response) {
+                            if (response == "success") {
+                                swal('KPI Deactivated', 'Kpi has been deactivated successfully', 'success');
+                            } else {
+                                swal('Failed', 'Failed to deactivate the kpi', 'error');
+                            }
+                            $('#myModal').modal('hide');
+                        }
+                    });
+                })
+            },
+            allowOutsideClick: false
+        })
+    });
+
+    $(document).on('click', '.activateSingularKpi', function() {
+        var kpiId = $(this).attr('id');
+
+        swal({
+            title: 'Are you sure?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Activate It',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve, reject) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Kpi/ActivateSingularKpi/" + kpiId,
+                        success: function(response) {
+                            if (response == "success") {
+                                swal('KPI Activated', 'Kpi has been activated successfully', 'success');
+                            } else {
+                                swal('Failed', 'Failed to activate the kpi', 'error');
+                            }
+                            $('#myModal').modal('hide');
+                        }
+                    });
+                })
+            },
+            allowOutsideClick: false
+        })
+    });
+
+    $(document).on('click', '.deleteKpi', function() {
+        var kpiId = $(this).attr('id');
+        var thisRef = $(this);
+
+        swal({
+            title: 'Are you sure?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Delete It',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve, reject) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Kpi/DeleteThisKpi/" + kpiId,
+                        success: function(response) {
+                            if (response == "success") {
+                                swal('KPI Deleted', 'Kpi has been deleted successfully', 'success');
+                            } else {
+                                swal('Failed', 'Failed to delete the kpi', 'error');
+                            }
+                            thisRef.parent().parent().remove();
+                        }
+                    });
+                })
+            },
+            allowOutsideClick: false
+        })
+    });
+
+    $(document).on('click', '.viewEmpKpis', function() {
+        var un = $(this).parent().find('#empUn').val();
+        $.ajax({
+            type: "GET",
+            url: "/Kpi/GetDetailedKpis/" + un,
+            success: function(response) {
+                var response = JSON.parse(response);
+                console.log(response);
+                return;
+                $('.kpisTable tbody').empty();
+                for (var counter = 0; counter < response.length; counter++) {
+                    $('.kpisTable tbody').append('<tr> <td>' + response[counter]["kpi_type"] + '</td><td>' + response[counter]["criteria"] + '</td><td>' + response[counter]["criteria_parameter"] + '</td><td>' + (response[counter]["item_name"] ? response[counter]["item_name"] : "NA") + '</td><td>' + (response[counter]["unit_name"] ? response[counter]["unit_name"] : "NA") + '</td><td>' + response[counter]["target"] + '</td><td>' + response[counter]["eligibility"] + '</td><td>' + response[counter]["weightage"] + '%</td><td>' + response[counter]["incentive"] + '</td><td>' + response[counter]["active"] + '</td><td><a class="deleteKpi" id="' + response[counter]["id"] + '"><i class="fa fa-close"></i></a>' + (response[counter]["active"] == "1" ? '<a class="view-report deactivateSingularKpi" id="' + response[counter]["id"] + '" style="display: none">De-Active</a>' : '<a id="' + response[counter]["id"] + '" class="view-report activateSingularKpi" style="display: none">Active</a>') + '</td> </tr>');
+                }
+                $('#datable_2_filter').remove();
+                $('#myModal').modal('show');
+            }
+        });
+    });
+
     //Check if page has error redirect and contain all previous data
     if ($('input[name="totalKpis"]').val()) {
         totalKpis = $('input[name="totalKpis"]').val();
@@ -242,7 +346,6 @@ $(document).ready(function() {
                             $('#kpiDynamicDiv').fadeIn('fast');
                             $('.modal').modal('hide');
                             totalKpis++;
-
                         }
                     });
                 }

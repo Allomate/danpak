@@ -90,6 +90,7 @@
 											<th>Area</th>
 											<th>Region</th>
 											<th>Status</th>
+											<th>Total KPIs</th>
 											<th>Action</th>
 										</tr>
 									</thead>
@@ -102,6 +103,7 @@
 											<th>Area</th>
 											<th>Region</th>
 											<th>Status</th>
+											<th>Total KPIs</th>
 											<th>Action</th>
 										</tr>
 									</tfoot>
@@ -128,6 +130,10 @@
 												<?php if($employee->kpi_status == "1") : echo "Active"; elseif($employee->kpi_status == "0") : echo "Inactive"; else: echo "Not Set"; endif; ?>
 											</td>
 											<td>
+												<?= $employee->total_kpis ? $employee->total_kpis." <span style='cursor: pointer; font-weight: bolder' class='viewEmpKpis'><small>(VIEW)</small></span> " : "NA"; ?>
+													<input type="text" id="empUn" value="<?= $employee->employee_username; ?>" hidden>
+											</td>
+											<td>
 												<?php if($employee->kpi_status == "1") : ?>
 												<a href="<?= base_url('Kpi/UpdateKpiSettings/'.$employee->employee_username);?>" class="view-report">Update KPI</a>
 												<a href="<?= base_url('Kpi/DeactivateKpi/'.$employee->employee_username);?>" class="view-report">De-Active</a>
@@ -149,5 +155,39 @@
 		</div>
 	</div>
 </div>
+<div id="myModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 90%">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">List of KPIs</h4>
+			</div>
+			<div class="modal-body">
+				<table id="datable_2" class="table table-hover display pb-30 kpisTable">
+					<thead>
+						<tr>
+							<th>Type</th>
+							<th>Criteria</th>
+							<th>Month/Quarter</th>
+							<th>Item</th>
+							<th>Unit</th>
+							<th>Target</th>
+							<th>Eligibility</th>
+							<th>Weightage</th>
+							<th>Incentive</th>
+							<th>Progress</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 <?php require_once APPPATH . '/views/includes/footer.php';?>
-<script type="text/javascript" src="<?=base_url('assets/js/Retailers.js') . '?v=' . time();?>"></script>
+<script type="text/javascript" src="<?=base_url('assets/js/KPI.js') . '?v=' . time();?>"></script>

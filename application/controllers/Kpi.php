@@ -25,6 +25,10 @@ class Kpi extends WebAuth_Controller{
 		return $this->load->view('Kpi/update_employee_kpi_setting', ['Employee' => $this->km->get_this_employee_info($employee_username), 'kpi' => $this->km->get_this_employee_kpi($employee_username)]);
 	}
 
+	public function GetDetailedKpis($employee_username){
+		echo json_encode($this->km->getDetails($employee_username));
+	}
+
 	public function SaveKpi($employee_username){
 		$data = $this->input->post();
 
@@ -115,6 +119,21 @@ class Kpi extends WebAuth_Controller{
 	public function CreateHierarchy($employee_username){
 		// echo "<pre>"; print_r($this->km->get_reportees($employee_username));die;
 		return $this->load->view('Kpi/generate_hierarchy', [ 'Reportees' => $this->km->get_reportees($employee_username) ]);
+	}
+
+	public function DeActivateSingularKpi($kpiId){
+		$response = $this->km->deactivate_singular_kpi($kpiId);
+		echo $response ? "success" : $response;
+	}
+
+	public function ActivateSingularKpi($kpiId){
+		$response = $this->km->activate_singular_kpi($kpiId);
+		echo $response ? "success" : $response;
+	}
+
+	public function DeleteThisKpi($kpiId){
+		$response = $this->km->delete_kpi($kpiId);
+		echo $response ? "success" : $response;
 	}
 
 }
