@@ -40,7 +40,17 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="box-white p-20">
-						<h2 class="m-b-0">Employee Info</h2>
+						<div style="border-bottom: solid 2px #d9dde1;">
+							<h2 class="m-b-0" style="display: inline-block; border: 0px !important">Employee Info</h2>
+							<div class="checkbox checkbox-primary checkbox-circle m-b-20" style="display: inline-block; float: right">
+								<?php if($kpi[0]->evaluation_from_employees) :?>
+								<input type="checkbox" id="evaluateUsingEmployees" value="Reports" checked>
+								<?php else :?>
+								<input type="checkbox" id="evaluateUsingEmployees" value="Reports">
+								<?php endif; ?>
+								<label for="evaluateUsingEmployees" class="lab-medium" style="font-weight: bolder">Evaluate using reporting employees</label>
+							</div>
+						</div>
 						<div class="bg-gl clearfix m-b-30">
 							<div class="col-md-4">
 								<div class="form-group">
@@ -182,6 +192,7 @@
 					</div>
 					<?php $attributes = array('id' => 'updateKpiForm');
 echo form_open('Kpi/UpdateKpi/' . $this->uri->segment(3), $attributes);
+echo form_hidden('evaluation_from_employees', '');
 echo form_hidden('totalKpis', sizeOf($kpi))?>
 					<div id="kpiDynamicDiv" class="box-white p-20 m-t-30">
 						<h2 class="m-b-15">Add KPI </h2>

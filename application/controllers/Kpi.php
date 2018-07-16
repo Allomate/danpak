@@ -39,11 +39,11 @@ class Kpi extends WebAuth_Controller{
 				continue;
 			}
 			if($data["for_kpi_type_".$i] == "product"){
-				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => $data["unitDD_".$i], 'unit_id' => null, 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username);
+				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => $data["unitDD_".$i], 'unit_id' => null, 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username, 'evaluation_from_employees' => $data["evaluation_from_employees"]);
 			}else if($data["for_kpi_type_".$i] == "quantity"){
-				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => null, 'unit_id' => $data["unitDD_".$i], 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username);
+				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => null, 'unit_id' => $data["unitDD_".$i], 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username, 'evaluation_from_employees' => $data["evaluation_from_employees"]);
 			}else{
-				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => null, 'unit_id' => null, 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username);
+				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => null, 'unit_id' => null, 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username, 'evaluation_from_employees' => $data["evaluation_from_employees"]);
 			}
 		}
 
@@ -65,11 +65,11 @@ class Kpi extends WebAuth_Controller{
 				continue;
 			}
 			if($data["for_kpi_type_".$i] == "product"){
-				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => $data["unitDD_".$i], 'unit_id' => null, 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username);
+				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => $data["unitDD_".$i], 'unit_id' => null, 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username, 'evaluation_from_employees' => $data["evaluation_from_employees"]);
 			}else if($data["for_kpi_type_".$i] == "quantity"){
-				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => null, 'unit_id' => $data["unitDD_".$i], 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username);
+				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => null, 'unit_id' => $data["unitDD_".$i], 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username, 'evaluation_from_employees' => $data["evaluation_from_employees"]);
 			}else{
-				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => null, 'unit_id' => null, 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username);
+				$completeData[] = array('kpi_type' => $data["for_kpi_type_".$i], 'pref_id' => null, 'unit_id' => null, 'target' => $data["target_".$i], 'eligibility' => $data["eligibility_".$i], 'weightage' => $data["weightage_".$i], 'incentive' => $data["incentive_".$i], 'criteria' => $data["criteria_".$i], 'criteria_parameter' => $data["for_month_or_criteria_".$i], 'created_for' => $employee_username, 'evaluation_from_employees' => $data["evaluation_from_employees"]);
 			}
 		}
 

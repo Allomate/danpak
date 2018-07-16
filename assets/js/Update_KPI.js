@@ -179,6 +179,8 @@ $(document).ready(function() {
 
         if (impure)
             return;
+
+        $('input[name="evaluation_from_employees"]').val(($('#evaluateUsingEmployees').is(":checked") ? "1" : "0"));
         $('input[name="totalKpis"]').val(totalKpis);
         $('#updateKpiForm').submit();
     });

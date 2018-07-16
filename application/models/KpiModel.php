@@ -18,56 +18,115 @@ class KpiModel extends CI_Model
     }
 
     public function getDetails($employee_username){
-        $kpis = $this->db->select('id, criteria, criteria_parameter, kpi_type, pref_id, unit_id, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = kpi.pref_id )) as item_name, COALESCE((SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = kpi.pref_id )), (SELECT unit_name from inventory_types_units where unit_id = kpi.unit_id)) as unit_name, target, eligibility, weightage, incentive, active')->where('created_for', $employee_username)->get('kpi_management kpi')->result();
+        $validateEvaluation = $this->db->select("evaluation_from_employees")->where('created_for', $employee_username)->get("kpi_management")->row();
+        if($validateEvaluation){
+            if($validateEvaluation->evaluation_from_employees){
+                $kpis = $this->db->select('id, criteria, criteria_parameter, kpi_type, pref_id, unit_id, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = kpi.pref_id )) as item_name, COALESCE((SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = kpi.pref_id )), (SELECT unit_name from inventory_types_units where unit_id = kpi.unit_id)) as unit_name, target, eligibility, weightage, incentive, active')->where('created_for', $employee_username)->get('kpi_management kpi')->result();
 
-        foreach($kpis as $kpi) :
-            if($kpi->criteria == "monthly"):
-                if($kpi->kpi_type == "revenue") :
-                    $kpi->progress = $this->db->select(' (SELECT SUM(final_price) from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and LOWER(MONTHNAME(created_at)) = "'.$kpi->criteria_parameter.'")) ) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                endif;
-                if($kpi->kpi_type == "product") :
-                    $kpi->progress = $this->db->select(' (SELECT SUM(item_quantity_booker) from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and LOWER(MONTHNAME(created_at)) = "'.$kpi->criteria_parameter.'")) ) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                endif;
-                if($kpi->kpi_type == "quantity") :
-                    $kpi->progress = $this->db->select(' (SELECT SUM(item_quantity_booker) from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and LOWER(MONTHNAME(created_at)) = "'.$kpi->criteria_parameter.'")) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' ))) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                endif;
-            else:
-                if($kpi->kpi_type == "revenue") :
-                    if($kpi->criteria_parameter == "q1") :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(final_price) from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (1,2,3) )) ) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                    elseif($kpi->criteria_parameter == "q2") :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(final_price) from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (4,5,6) )) ) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                    elseif($kpi->criteria_parameter == "q3") :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(final_price) from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (7,8,9) )) ) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                    else :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(final_price) from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (10,11,12) )) ) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
+                foreach($kpis as $kpi) :
+                    if($kpi->criteria == "monthly"):
+                        if($kpi->kpi_type == "revenue") :
+                            $kpi->progress = $this->db->query(' (SELECT SUM(final_price) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and LOWER(MONTHNAME(created_at)) = "'.$kpi->criteria_parameter.'")) )')->row()->revenue;
+                        endif;
+                        if($kpi->kpi_type == "product") :
+                            $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and LOWER(MONTHNAME(created_at)) = "'.$kpi->criteria_parameter.'")) )')->row()->revenue;
+                        endif;
+                        if($kpi->kpi_type == "quantity") :
+                            $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and LOWER(MONTHNAME(created_at)) = "'.$kpi->criteria_parameter.'")) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' )))')->row()->revenue;
+                        endif;
+                    else:
+                        if($kpi->kpi_type == "revenue") :
+                            if($kpi->criteria_parameter == "q1") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(final_price) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (1,2,3) )) )')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q2") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(final_price) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (4,5,6) )) )')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q3") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(final_price) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (7,8,9) )) )')->row()->revenue;
+                            else :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(final_price) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (10,11,12) )) )')->row()->revenue;
+                            endif;
+                        endif;
+                        if($kpi->kpi_type == "product") :
+                            if($kpi->criteria_parameter == "q1") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (1,2,3) )) )')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q2") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (4,5,6) )) )')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q3") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (7,8,9) )) )')->row()->revenue;
+                            else :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (10,11,12) )) )')->row()->revenue;
+                            endif;
+                        endif;
+                        if($kpi->kpi_type == "quantity") :
+                            if($kpi->criteria_parameter == "q1") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (1,2,3) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' )))')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q2") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (4,5,6) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' )))')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q3") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (7,8,9) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' )))')->row()->revenue;
+                            else :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where find_in_set(employee_id, (SELECT GROUP_CONCAT(employee_id) from employees_info where find_in_set(employee_username, ((SELECT GROUP_CONCAT(employee_username) from employees_info where reporting_to = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'")))))) and MONTH(created_at) IN (10,11,12) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' )))')->row()->revenue;
+                            endif;
+                        endif;
                     endif;
-                endif;
-                if($kpi->kpi_type == "product") :
-                    if($kpi->criteria_parameter == "q1") :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(item_quantity_booker) from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (1,2,3) )) ) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                    elseif($kpi->criteria_parameter == "q2") :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(item_quantity_booker) from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (4,5,6) )) ) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                    elseif($kpi->criteria_parameter == "q3") :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(item_quantity_booker) from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (7,8,9) )) ) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                    else :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(item_quantity_booker) from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (10,11,12) )) ) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
+                endforeach;
+        
+                return $kpis;
+            }else{
+                $kpis = $this->db->select('id, criteria, criteria_parameter, kpi_type, pref_id, unit_id, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = kpi.pref_id )) as item_name, COALESCE((SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = kpi.pref_id )), (SELECT unit_name from inventory_types_units where unit_id = kpi.unit_id)) as unit_name, target, eligibility, weightage, incentive, active')->where('created_for', $employee_username)->get('kpi_management kpi')->result();
+
+                foreach($kpis as $kpi) :
+                    if($kpi->criteria == "monthly"):
+                        if($kpi->kpi_type == "revenue") :
+                            $kpi->progress = $this->db->query(' (SELECT SUM(final_price) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and LOWER(MONTHNAME(created_at)) = "'.$kpi->criteria_parameter.'")) )')->row()->revenue;
+                        endif;
+                        if($kpi->kpi_type == "product") :
+                            $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and LOWER(MONTHNAME(created_at)) = "'.$kpi->criteria_parameter.'")) )')->row()->revenue;
+                        endif;
+                        if($kpi->kpi_type == "quantity") :
+                            $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and LOWER(MONTHNAME(created_at)) = "'.$kpi->criteria_parameter.'")) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' )))')->row()->revenue;
+                        endif;
+                    else:
+                        if($kpi->kpi_type == "revenue") :
+                            if($kpi->criteria_parameter == "q1") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(final_price) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (1,2,3) )) )')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q2") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(final_price) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (4,5,6) )) )')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q3") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(final_price) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (7,8,9) )) )')->row()->revenue;
+                            else :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(final_price) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (10,11,12) )) )')->row()->revenue;
+                            endif;
+                        endif;
+                        if($kpi->kpi_type == "product") :
+                            if($kpi->criteria_parameter == "q1") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (1,2,3) )) )')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q2") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (4,5,6) )) )')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q3") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (7,8,9) )) )')->row()->revenue;
+                            else :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where pref_id = '.$kpi->pref_id.' and find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (10,11,12) )) )')->row()->revenue;
+                            endif;
+                        endif;
+                        if($kpi->kpi_type == "quantity") :
+                            if($kpi->criteria_parameter == "q1") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (1,2,3) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' )))')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q2") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (4,5,6) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' )))')->row()->revenue;
+                            elseif($kpi->criteria_parameter == "q3") :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (7,8,9) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' )))')->row()->revenue;
+                            else :
+                                $kpi->progress = $this->db->query(' (SELECT SUM(item_quantity_booker) as revenue from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (10,11,12) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' )))')->row()->revenue;
+                            endif;
+                        endif;
                     endif;
-                endif;
-                if($kpi->kpi_type == "quantity") :
-                    if($kpi->criteria_parameter == "q1") :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(item_quantity_booker) from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (1,2,3) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' ))) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                    elseif($kpi->criteria_parameter == "q2") :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(item_quantity_booker) from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (4,5,6) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' ))) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                    elseif($kpi->criteria_parameter == "q3") :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(item_quantity_booker) from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (7,8,9) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' ))) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                    else :
-                        $kpi->progress = $this->db->select(' (SELECT SUM(item_quantity_booker) from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where employee_id = (SELECT employee_id from employees_info where employee_username = "'.$employee_username.'" ) and MONTH(created_at) IN (10,11,12) )) and find_in_set(pref_id, (SELECT GROUP_CONCAT(pref_id) from inventory_preferences where unit_id = '.$kpi->unit_id.' ))) as revenue')->where('created_for', $employee_username)->get('kpi_management')->row()->revenue;
-                    endif;
-                endif;
-            endif;
-        endforeach;
-        return $kpis;
+                endforeach;
+        
+                return $kpis;
+            }
+        }
+        
     }
 
     public function get_reportees($employee_username){
@@ -98,7 +157,7 @@ class KpiModel extends CI_Model
 
     public function get_this_employee_kpi($employee_username)
     {
-        return $this->db->select('`id`, `kpi_type`, (SELECT item_id from inventory_preferences where pref_id = kpi.pref_id) as item_id, `pref_id`, `unit_id`, `target`, `eligibility`, `weightage`, `incentive`, `criteria`, `criteria_parameter`, `created_by`, `created_for`, `created_at`')->where(['created_for' => $employee_username, 'YEAR(created_at)' => date("Y")])->get("kpi_management kpi")->result();
+        return $this->db->select('`id`, `kpi_type`, (SELECT item_id from inventory_preferences where pref_id = kpi.pref_id) as item_id, `pref_id`, `unit_id`, `target`, `eligibility`, `weightage`, `incentive`, `criteria`, `criteria_parameter`, `evaluation_from_employees`, `created_by`, `created_for`, `created_at`')->where(['created_for' => $employee_username, 'YEAR(created_at)' => date("Y")])->get("kpi_management kpi")->result();
     }
 
     public function save_kpi($data)

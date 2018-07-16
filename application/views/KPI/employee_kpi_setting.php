@@ -40,7 +40,13 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="box-white p-20">
-						<h2 class="m-b-0">Employee Info</h2>
+						<div style="border-bottom: solid 2px #d9dde1;">
+							<h2 class="m-b-0" style="display: inline-block; border: 0px !important">Employee Info</h2>
+							<div class="checkbox checkbox-primary checkbox-circle m-b-20" style="display: inline-block; float: right">
+								<input type="checkbox" id="evaluateUsingEmployees" value="Reports" checked>
+								<label for="evaluateUsingEmployees" class="lab-medium" style="font-weight: bolder">Evaluate using reporting employees</label>
+							</div>
+						</div>
 						<div class="bg-gl clearfix m-b-30">
 							<div class="col-md-4">
 								<div class="form-group">
@@ -183,6 +189,7 @@
 					<?php if(isset($error)) : ?>
 					<?php $attributes = array('id' => 'addKpiForm');
 						echo form_open('Kpi/SaveKpi/'.$this->uri->segment(3), $attributes);
+						echo form_hidden('evaluation_from_employees', '');
 						echo form_hidden('totalKpis', $error["totalKpis"]) ?>
 					<div id="kpiDynamicDiv" class="box-white p-20 m-t-30">
 						<h2 class="m-b-15">Add KPI </h2>
@@ -330,6 +337,7 @@
 					<?php else: ?>
 					<?php $attributes = array('id' => 'addKpiForm');
 						echo form_open('Kpi/SaveKpi/'.$this->uri->segment(3), $attributes);
+						echo form_hidden('evaluation_from_employees', '');
 						echo form_hidden('totalKpis', '') ?>
 					<div id="kpiDynamicDiv" class="box-white p-20 m-t-30" style="display: none">
 						<h2 class="m-b-15">Add KPI </h2>
