@@ -416,7 +416,7 @@ class WebServices extends CI_Model
 
     public function GetOverviewStat($data){
         $employee_id = $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $data['session'] . '"))')->get('employees_info')->row()->employee_id;
-        $orders = $this->db->select('GROUP_CONCAT(id) as orders')->where(['employee_id'=>'43', 'DATE(created_at)'=>date("Y-m-d")])->get('orders')->row()->orders;
+        $orders = $this->db->select('GROUP_CONCAT(id) as orders')->where(['employee_id'=>$employee_id, 'DATE(created_at)'=>date("Y-m-d")])->get('orders')->row()->orders;
         $totalOrders = 0;
         $total_sale = 0;
         if($orders):

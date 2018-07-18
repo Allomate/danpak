@@ -208,6 +208,8 @@ $(document).ready(function() {
         if (replicatedKpi) {
             return;
         }
+        var thisRef = $(this);
+        thisRef.attr('disabled', 'disabled');
 
         if (selectedKpiType == "product") {
             if (totalKpis !== 0) {
@@ -240,6 +242,7 @@ $(document).ready(function() {
                             }
                             $('#kpiDynamicDiv').fadeIn('fast');
                             $('.modal').modal('hide');
+                            thisRef.removeAttr('disabled');
                             totalKpis++;
 
                         }

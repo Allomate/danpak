@@ -130,12 +130,14 @@
 												<?php if($employee->kpi_status == "1") : echo "Active"; elseif($employee->kpi_status == "0") : echo "Inactive"; else: echo "Not Set"; endif; ?>
 											</td>
 											<td>
-												<?= $employee->total_kpis ? $employee->total_kpis." <span style='cursor: pointer; font-weight: bolder' class='viewEmpKpis'><small>(VIEW)</small></span> " : "NA"; ?>
+												<?= $employee->total_kpis ? $employee->total_kpis . " <span style='cursor: pointer; font-weight: bolder' class='viewEmpKpis'><small>(VIEW)</small></span> " : "NA"; ?>
 													<input type="text" id="empUn" value="<?= $employee->employee_username; ?>" hidden>
 											</td>
 											<td>
 												<?php if($employee->kpi_status == "1") : ?>
-												<a href="<?= base_url('Kpi/UpdateKpiSettings/'.$employee->employee_username);?>" class="view-report">Update KPI</a>
+												<a href="<?= base_url('Kpi/UpdateKpiSettings/'.$employee->employee_username);?>">
+													<i class="fa fa-pencil"></i>
+												</a>
 												<a href="<?= base_url('Kpi/DeactivateKpi/'.$employee->employee_username);?>" class="view-report">De-Active</a>
 												<?php elseif($employee->kpi_status == "0") : ?>
 												<a href="<?= base_url('Kpi/ActivateKpi/'.$employee->employee_username);?>" class="view-report">Active</a>

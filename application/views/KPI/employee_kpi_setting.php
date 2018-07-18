@@ -43,7 +43,7 @@
 						<div style="border-bottom: solid 2px #d9dde1;">
 							<h2 class="m-b-0" style="display: inline-block; border: 0px !important">Employee Info</h2>
 							<div class="checkbox checkbox-primary checkbox-circle m-b-20" style="display: inline-block; float: right">
-								<input type="checkbox" id="evaluateUsingEmployees" value="Reports" checked>
+								<input type="checkbox" id="evaluateUsingEmployees" value="Reports">
 								<label for="evaluateUsingEmployees" class="lab-medium" style="font-weight: bolder">Evaluate using reporting employees</label>
 							</div>
 						</div>

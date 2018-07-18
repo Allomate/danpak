@@ -91,11 +91,14 @@ class RetailersModel extends CI_Model{
 				$dists = $dists . ", " . $distributor->id;
 			}
 		endforeach;
+		if($dists){
 		$data = $this->db->select('employee_id, assigned_for_day,
 		(SELECT CONCAT(employee_first_name, " ", employee_last_name) from employees_info where employee_id = rd.employee_id) as employee,
 		(SELECT count(*) FROM `retailers_assignment` where employee_id = rd.employee_id and assigned_for_day = rd.assigned_for_day and retailer_id IN ('.$dists.')) as total_distributors_assigned,
 		(SELECT territory_name from territory_management where id = (SELECT territory_id from employees_info where employee_id = rd.employee_id)) as territory_name')->where('retailer_id IN ('.$dists.')')->get('retailers_assignment rd')->result();
-		return $data;
+			return $data;
+		}
+		return null;
 	}
 
 	public function GetSingleRetailerAssignment($employee_id, $assigned_for_day){

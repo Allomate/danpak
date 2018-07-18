@@ -129,25 +129,28 @@ class Retailers extends WebAuth_Controller{
 		$response = $this->rem->ListRetailersAssignments();
 		$finalResponse = array();
 		$loopedData = array();
-		foreach($response as $data) :
-			$exist = false;
-			foreach($loopedData as $looper) :
-				if(in_array($data->employee_id, $looper)){
-					if(in_array($data->assigned_for_day, $looper)){
-						$exist = true;
-						break;
+		if($response){
+			foreach($response as $data) :
+				$exist = false;
+				foreach($loopedData as $looper) :
+					if(in_array($data->employee_id, $looper)){
+						if(in_array($data->assigned_for_day, $looper)){
+							$exist = true;
+							break;
+						}
 					}
+				endforeach;
+				if(!$exist){
+					$finalResponse[] = $data;
 				}
+				$loopedData[] = array(
+					'employee_id' => $data->employee_id,
+					'assigned_for_day' => $data->assigned_for_day,
+				);
 			endforeach;
-			if(!$exist){
-				$finalResponse[] = $data;
-			}
-			$loopedData[] = array(
-				'employee_id' => $data->employee_id,
-				'assigned_for_day' => $data->assigned_for_day,
-			);
-		endforeach;
-		return $this->load->view('Retailer/ListRetailerAssignments', [ 'RetailersAssignments' => $finalResponse ]);
+			return $this->load->view('Retailer/ListRetailerAssignments', [ 'RetailersAssignments' => $finalResponse ]);
+		}
+		return $this->load->view('Retailer/ListRetailerAssignments', [ 'RetailersAssignments' => [] ]);
 	}
 
 	public function ViewCompleteRetailersListForAnEmployeeAjaxRequest(){

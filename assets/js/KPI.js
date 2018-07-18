@@ -98,10 +98,12 @@ $(document).ready(function() {
             url: "/Kpi/GetDetailedKpis/" + un,
             success: function(response) {
                 var response = JSON.parse(response);
-                console.log(response);
-                return;
                 $('.kpisTable tbody').empty();
                 for (var counter = 0; counter < response.length; counter++) {
+                    $('.modal-title').text('List of KPIs');
+                    if (response[counter]["evaluation_from_employees"] == "1") {
+                        $('.modal-title').append('<small> (Evaluation using employees) </small>');
+                    }
                     $('.kpisTable tbody').append('<tr> <td>' + response[counter]["kpi_type"] + '</td><td>' + response[counter]["criteria"] + '</td><td>' + response[counter]["criteria_parameter"] + '</td><td>' + (response[counter]["item_name"] ? response[counter]["item_name"] : "NA") + '</td><td>' + (response[counter]["unit_name"] ? response[counter]["unit_name"] : "NA") + '</td><td>' + response[counter]["target"] + '</td><td>' + response[counter]["eligibility"] + '</td><td>' + response[counter]["weightage"] + '%</td><td>' + response[counter]["incentive"] + '</td><td>' + numberWithCommas(Math.round(response[counter]["progress"])) + (response[counter]["progress"] ? " (" + (parseInt(response[counter]["progress"]) / parseInt(response[counter]["target"])) * 100 + "%)" : " (0%)") + '</td><td><a class="deleteKpi" id="' + response[counter]["id"] + '"><i class="fa fa-close"></i></a>' + (response[counter]["active"] == "1" ? '<a class="view-report deactivateSingularKpi" id="' + response[counter]["id"] + '" style="display: none">De-Active</a>' : '<a id="' + response[counter]["id"] + '" class="view-report activateSingularKpi" style="display: none">Active</a>') + '</td> </tr>');
                 }
                 $('#datable_2_filter').remove();
@@ -315,6 +317,8 @@ $(document).ready(function() {
         if (replicatedKpi) {
             return;
         }
+        var thisRef = $(this);
+        thisRef.attr('disabled', 'disabled');
 
         if (selectedKpiType == "product") {
             if (totalKpis !== 0) {
@@ -347,6 +351,7 @@ $(document).ready(function() {
                             }
                             $('#kpiDynamicDiv').fadeIn('fast');
                             $('.modal').modal('hide');
+                            thisRef.removeAttr('disabled');
                             totalKpis++;
                         }
                     });
@@ -373,6 +378,7 @@ $(document).ready(function() {
                     }
                     $('#kpiDynamicDiv').fadeIn('fast');
                     $('.modal').modal('hide');
+                    thisRef.removeAttr('disabled');
                     totalKpis++;
 
                 }
@@ -389,6 +395,7 @@ $(document).ready(function() {
             }
             $('#kpiDynamicDiv').fadeIn('fast');
             $('.modal').modal('hide');
+            thisRef.removeAttr('disabled');
             totalKpis++;
         }
         kpiTypesAlreadyAdded.push({ "criteria": selectedKpiCriteria, "month_or_quarter": selectedMonthOrCriteria, "kpi_type": selectedKpiType });

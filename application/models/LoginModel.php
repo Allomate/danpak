@@ -8,8 +8,8 @@ class LoginModel extends CI_Model{
 			unset($empData["username"]);
 			unset($empData["password"]);
 			$empData["admin_id"] = $data->employee_id;
-			if($this->db->delete('admin_session', array('admin_id' => $data->employee_id)))
-				return $this->db->insert('admin_session', $empData);
+			$this->db->delete('admin_session', array('admin_id' => $data->employee_id));
+			return $this->db->insert('admin_session', $empData);
 		endif;
 	}
 
