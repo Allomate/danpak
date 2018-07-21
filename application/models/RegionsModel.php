@@ -25,7 +25,7 @@ class RegionsModel extends CI_Model{
 	}
 
 	public function getMerchantsInRegion($regionId){
-		return $this->db->select('retailer_lats, retailer_longs')->where('find_in_set(retailer_territory_id, (SELECT GROUP_CONCAT(id) from territory_management where find_in_set(area_id, (SELECT GROUP_CONCAT(id) from area_management where region_id = '.$regionId.' ))))')->get('retailers_details')->result();
+		return $this->db->select('retailer_lats, retailer_longs, retailer_name')->where('find_in_set(retailer_territory_id, (SELECT GROUP_CONCAT(id) from territory_management where find_in_set(area_id, (SELECT GROUP_CONCAT(id) from area_management where region_id = '.$regionId.' ))))')->get('retailers_details')->result();
 	}
 
 }

@@ -288,19 +288,12 @@ class WebServices extends CI_Model
                                 $this->db->where('pref_id', $campaign_pref_id[$i])->update('inventory_preferences', array('item_quantity' => $finalQuantity));
                             }
 
-                            if ($this->db->insert_batch('order_contents', $orderContentsForCampaign)):
-                                $this->db->delete('visits_marked', 'employee_id = '.$employee_id.' and retailer_id = '.$orderDetails['retailer_id'].' and DATE(created_at) = CURDATE()');
-                                $orderVisitMarkedData = array('retailer_id' => $orderDetails["retailer_id"], 'employee_id' => $employee_id, 'took_order' => '1');
-                                if($this->db->insert('visits_marked', $orderVisitMarkedData)){
-                                    return "Success";
-                                }
-                            endif;
-                        }else{
-                            $this->db->delete('visits_marked', 'employee_id = '.$employee_id.' and retailer_id = '.$orderDetails['retailer_id'].' and DATE(created_at) = CURDATE()');
-                            $orderVisitMarkedData = array('retailer_id' => $orderDetails["retailer_id"], 'employee_id' => $employee_id, 'took_order' => '1');
-                            if($this->db->insert('visits_marked', $orderVisitMarkedData)){
-                                return "Success";
-                            }
+                            $this->db->insert_batch('order_contents', $orderContentsForCampaign);
+                        }
+                        $this->db->delete('visits_marked', 'employee_id = '.$employee_id.' and retailer_id = '.$orderDetails['retailer_id'].' and DATE(created_at) = CURDATE()');
+                        $orderVisitMarkedData = array('retailer_id' => $orderDetails["retailer_id"], 'latitude' => $orderDetails["booker_lats"], 'longitude' => $orderDetails["booker_longs"], 'employee_id' => $employee_id, 'took_order' => '1');
+                        if($this->db->insert('visits_marked', $orderVisitMarkedData)){
+                            return "Success";
                         }
                     endif;
                 else:
@@ -409,6 +402,8 @@ class WebServices extends CI_Model
             'retailer_id' => $visitData["retailer_id"],
             'picture' => $visitData["picture"] ? $visitData["picture"] : "",
             'took_order' => 0,
+            'latitude' => $visitData["latitude"],
+            'longitude' => $visitData["longitude"],
             'employee_id' => $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $visitData['session'] . '"))')->get('employees_info')->row()->employee_id,
         );
         return $this->db->insert('visits_marked', $markVisit);

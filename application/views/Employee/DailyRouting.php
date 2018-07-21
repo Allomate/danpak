@@ -98,26 +98,36 @@
 					var latRepeated = [];
 					var lngRepeated = [];
 					var repeatCounter = 0;
-					for (var i = 0; i < response.length; i++) {
-						if (jQuery.inArray(response[i].route_lats, latRepeated) != -1) {
-							if (lngRepeated[jQuery.inArray(response[i].route_lats, latRepeated)] == response[i].route_longs) {
+					for (var i = 0; i < response.data.length; i++) {
+						if (jQuery.inArray(response.data[i].route_lats, latRepeated) != -1) {
+							if (lngRepeated[jQuery.inArray(response.data[i].route_lats, latRepeated)] == response.data[i].route_longs) {
 								repeatCounter++;
 								continue;
 							}
 						}
-						latRepeated.push(response[i].route_lats);
-						lngRepeated.push(response[i].route_longs);
-						completeLocations.push([parseFloat(response[i].route_lats), parseFloat(response[i].route_longs)]);
+						latRepeated.push(response.data[i].route_lats);
+						lngRepeated.push(response.data[i].route_longs);
+						if (i == 0) {
+							completeLocations.push([parseFloat(response.attendance.route_lats), parseFloat(response.attendance.route_longs),
+								"", ""
+							]);
+						} else {
+							completeLocations.push([parseFloat(response.data[i].route_lats), parseFloat(response.data[i].route_longs),
+								response.data[i].took_order, response.data[i].retailer_name
+							]);
+						}
 						if (i == 1) {
-							centerLat = parseFloat(response[i].route_lats);
-							centerLng = parseFloat(response[i].route_longs);
+							centerLat = parseFloat(response.data[i].route_lats);
+							centerLng = parseFloat(response.data[i].route_longs);
 						}
 					}
+
 					for (var i = 0; i < completeLocations.length; i++) {
 						stations.push({
 							lat: completeLocations[i][0],
 							lng: completeLocations[i][1],
-							name: 'Location ' + (i + 1)
+							name: completeLocations[i][3],
+							took_order: completeLocations[i][2]
 						});
 					}
 					initMap();
@@ -127,199 +137,11 @@
 
 	});
 
-	// function initialize() {
-	// 	directionsDisplay = new google.maps.DirectionsRenderer();
-	// 	var map = new google.maps.Map(document.getElementById('map'), {
-	// 		zoom: 13,
-	// 		center: new google.maps.LatLng(centerLat, centerLng),
-	// 	});
-	// 	directionsDisplay.setMap(map);
-	// 	var infowindow = new google.maps.InfoWindow();
-	// 	var marker, i;
-	// 	var request = {
-	// 		travelMode: google.maps.TravelMode.DRIVING
-	// 	};
-	// 	for (i = 0; i < locations.length; i++) {
-	// 		marker = new google.maps.Marker({
-	// 			position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-	// 		});
-
-	// 		google.maps.event.addListener(marker, 'click', (function (marker, i) {
-	// 			return function () {
-	// 				infowindow.setContent(locations[i][0]);
-	// 				infowindow.open(map, marker);
-	// 			}
-	// 		})(marker, i));
-
-	// 		if (i == 0) {
-	// 			request.origin = marker.getPosition();
-	// 		} else if (i == locations.length - 1) {
-	// 			request.destination = marker.getPosition();
-	// 		} else {
-	// 			if (!request.waypoints) {
-	// 				request.waypoints = [];
-	// 			}
-	// 			request.waypoints.push({
-	// 				location: marker.getPosition(),
-	// 				stopover: true
-	// 			});
-	// 		}
-
-	// 	}
-	// 	directionsService.route(request, function (result, status) {
-	// 		if (status == google.maps.DirectionsStatus.OK) {
-	// 			directionsDisplay.setDirections(result);
-	// 		}
-	// 	});
-	// }
-
 	function initMap() {
 		var service = new google.maps.DirectionsService;
-		var map = new google.maps.Map(document.getElementById('map'));
-
-		// list of points
-		// var stations = [{
-		// 		lat: 48.9812840,
-		// 		lng: 21.2171920,
-		// 		name: 'Station 1'
-		// 	},
-		// 	{
-		// 		lat: 48.9832841,
-		// 		lng: 21.2176398,
-		// 		name: 'Station 2'
-		// 	},
-		// 	{
-		// 		lat: 48.9856443,
-		// 		lng: 21.2209088,
-		// 		name: 'Station 3'
-		// 	},
-		// 	{
-		// 		lat: 48.9861461,
-		// 		lng: 21.2261563,
-		// 		name: 'Station 4'
-		// 	},
-		// 	{
-		// 		lat: 48.9874682,
-		// 		lng: 21.2294855,
-		// 		name: 'Station 5'
-		// 	},
-		// 	{
-		// 		lat: 48.9909244,
-		// 		lng: 21.2295512,
-		// 		name: 'Station 6'
-		// 	},
-		// 	{
-		// 		lat: 48.9928871,
-		// 		lng: 21.2292352,
-		// 		name: 'Station 7'
-		// 	},
-		// 	{
-		// 		lat: 48.9921334,
-		// 		lng: 21.2246742,
-		// 		name: 'Station 8'
-		// 	},
-		// 	{
-		// 		lat: 48.9943196,
-		// 		lng: 21.2234792,
-		// 		name: 'Station 9'
-		// 	},
-		// 	{
-		// 		lat: 48.9966345,
-		// 		lng: 21.2221262,
-		// 		name: 'Station 10'
-		// 	},
-		// 	{
-		// 		lat: 48.9981191,
-		// 		lng: 21.2271386,
-		// 		name: 'Station 11'
-		// 	},
-		// 	{
-		// 		lat: 49.0009168,
-		// 		lng: 21.2359527,
-		// 		name: 'Station 12'
-		// 	},
-		// 	{
-		// 		lat: 49.0017950,
-		// 		lng: 21.2392890,
-		// 		name: 'Station 13'
-		// 	},
-		// 	{
-		// 		lat: 48.9991912,
-		// 		lng: 21.2398272,
-		// 		name: 'Station 14'
-		// 	},
-		// 	{
-		// 		lat: 48.9959850,
-		// 		lng: 21.2418410,
-		// 		name: 'Station 15'
-		// 	},
-		// 	{
-		// 		lat: 48.9931772,
-		// 		lng: 21.2453901,
-		// 		name: 'Station 16'
-		// 	},
-		// 	{
-		// 		lat: 48.9963512,
-		// 		lng: 21.2525850,
-		// 		name: 'Station 17'
-		// 	},
-		// 	{
-		// 		lat: 48.9985134,
-		// 		lng: 21.2508423,
-		// 		name: 'Station 18'
-		// 	},
-		// 	{
-		// 		lat: 49.0085000,
-		// 		lng: 21.2508000,
-		// 		name: 'Station 19'
-		// 	},
-		// 	{
-		// 		lat: 49.0093000,
-		// 		lng: 21.2528000,
-		// 		name: 'Station 20'
-		// 	},
-		// 	{
-		// 		lat: 49.0103000,
-		// 		lng: 21.2560000,
-		// 		name: 'Station 21'
-		// 	},
-		// 	{
-		// 		lat: 49.0112000,
-		// 		lng: 21.2590000,
-		// 		name: 'Station 22'
-		// 	},
-		// 	{
-		// 		lat: 49.0124000,
-		// 		lng: 21.2620000,
-		// 		name: 'Station 23'
-		// 	},
-		// 	{
-		// 		lat: 49.0135000,
-		// 		lng: 21.2650000,
-		// 		name: 'Station 24'
-		// 	},
-		// 	{
-		// 		lat: 49.0149000,
-		// 		lng: 21.2680000,
-		// 		name: 'Station 25'
-		// 	},
-		// 	{
-		// 		lat: 49.0171000,
-		// 		lng: 21.2710000,
-		// 		name: 'Station 26'
-		// 	},
-		// 	{
-		// 		lat: 49.0198000,
-		// 		lng: 21.2740000,
-		// 		name: 'Station 27'
-		// 	},
-		// 	{
-		// 		lat: 49.0305000,
-		// 		lng: 21.3000000,
-		// 		name: 'Station 28'
-		// 	},
-		// 	// ... as many other stations as you need
-		// ];
+		var map = new google.maps.Map(document.getElementById('map'), {
+			zoom: 18
+		});
 
 		// Zoom and center map automatically by stations (each station will be in visible map area)
 		var lngs = stations.map(function (station) {
@@ -335,14 +157,35 @@
 			north: Math.min.apply(null, lats),
 			south: Math.max.apply(null, lats),
 		});
-
 		// Show stations on the map as markers
 		for (var i = 0; i < stations.length; i++) {
-			new google.maps.Marker({
-				position: stations[i],
-				map: map,
-				title: stations[i].name
-			});
+			if (i == 0) {
+				new google.maps.Marker({
+					position: stations[i],
+					map: map,
+					icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+					animation: google.maps.Animation.DROP,
+					title: "Attendance Location"
+				});
+			} else {
+				if (stations[i].took_order == "1") {
+					new google.maps.Marker({
+						position: stations[i],
+						map: map,
+						icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+						animation: google.maps.Animation.DROP,
+						title: stations[i].name
+					});
+				} else {
+					new google.maps.Marker({
+						position: stations[i],
+						map: map,
+						icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+						animation: google.maps.Animation.DROP,
+						title: stations[i].name
+					});
+				}
+			}
 		}
 
 		// Divide route to several parts because max stations limit is 25 (23 waypoints + 1 origin + 1 destination)

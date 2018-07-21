@@ -25,7 +25,7 @@ class TerritoriesModel extends CI_Model{
 	}
 
 	public function getMerchantsInTerritory($territoryId){
-		return $this->db->select('retailer_lats, retailer_longs')->where('retailer_territory_id', $territoryId)->get('retailers_details')->result();
+		return $this->db->select('retailer_lats, retailer_longs, retailer_name')->where('retailer_territory_id', $territoryId)->get('retailers_details')->result();
 	}
 
 }

@@ -8,7 +8,8 @@ $(document).ready(function() {
         });
     }
 
-    $('.table').DataTable();
+    var table = $('.table').DataTable();
+
     $('.dataTables_wrapper').hide();
     setTimeout(function() {
         $('select[name="DataTables_Table_0_length"]').css({
@@ -64,6 +65,17 @@ $(document).ready(function() {
         });
         $(this).parent().parent().remove();
         $('#retailersForAssignments').val(retailersAddedForAssignment.join(","));
+
+        table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+            var data = this.data();
+            var rowRequired = $(this.node());
+            var columnRequired = rowRequired.find('td:eq(4)');
+            var retIdSearch = columnRequired.find('input[type="number"]').val();
+            if (retIdSearch == retailerId) {
+                rowRequired.find('td:eq(4) a.addRetailerForAssignment').css('background-color', '#001e35');
+                rowRequired.find('td:eq(4) a.addRetailerForAssignment').text('Add');
+            }
+        });
     });
 
     $(document).on('click', '.addRetailerForAssignment', function() {
@@ -72,10 +84,13 @@ $(document).ready(function() {
             alert('You\'ve already added this retailer');
             return;
         }
+        var thisRef = $(this);
         var retailerName = $.trim($(this).parent().parent().find('td:eq(0)').text());
         $('#addedAssignmentsList').append('<li style="margin-top: 10px"><div><input type="text" value="' + retailerName + '" class="form-control" style="width: 70%; display: inline; height: 50px" disabled="disabled"><a type="button" class="btn btn-cancel removeAddedAssignment" id="' + retailerId + '">Remove</a></div></li>');
         retailersAddedForAssignment.push(retailerId);
         $('#retailersForAssignments').val(retailersAddedForAssignment.join(","));
+        $(this).css('background-color', 'green');
+        thisRef.text("Added");
     });
 
     $('#addRetailerButton').click(function() {

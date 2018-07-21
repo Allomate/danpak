@@ -12,8 +12,14 @@
 				</div>
 				<div class="col-lg-6 col-md-6">
 					<ol class="breadcrumb">
-						<li><a href="#"><span>Organization</span></a></li>
-						<li><span>Distributor Management</span></li>
+						<li>
+							<a href="#">
+								<span>Organization</span>
+							</a>
+						</li>
+						<li>
+							<span>Distributor Management</span>
+						</li>
 					</ol>
 				</div>
 			</div>
@@ -25,7 +31,7 @@
 						echo form_open('Retailers/UpdateRetailerOps/'.$Retailer->id, $attributes); ?>
 						<div class="form-wrap">
 							<div class="form-body">
-								<div class="row"> 
+								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributor Name*</label>
@@ -36,15 +42,16 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributor Territory*</label>
-											<select class="selectpicker" name="retailer_territory_id" data-style="form-control btn-default btn-outline">
-												<?php foreach( $Territories as $territory ) : ?>
-													<option value="<?= $territory->id; ?>"><?= $territory->territory_name; ?></option>
-												<?php endforeach; ?>
-											</select>
+											<?php
+												foreach ($Territories as $territory) : 
+													$options[$territory->id] = $territory->territory_name;
+												endforeach; 
+												$atts = array( 'class' => 'form-control' );
+												echo form_dropdown('retailer_territory_id', $options, $Retailer->retailer_territory_id, $atts); ?>
 										</div>
-									</div>	
+									</div>
 								</div>
-								<div class="row"> 
+								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributor Phone</label>
@@ -60,7 +67,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="row"> 
+								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributor Latitude</label>
@@ -76,7 +83,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="row"> 
+								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributor City*</label>
@@ -89,33 +96,37 @@
 											<label class="control-label mb-10">Distributor Type*</label>
 											<select class="selectpicker" name="retailer_type_id" data-style="form-control btn-default btn-outline">
 												<?php foreach( $RetailerTypes as $type ) : ?>
-													<option value="<?= $type->id; ?>"><?= $type->retailer_type_name; ?></option>
+												<option value="<?= $type->id; ?>">
+													<?= $type->retailer_type_name; ?>
+												</option>
 												<?php endforeach; ?>
 											</select>
 										</div>
-									</div>	
+									</div>
 								</div>
-								<div class="row"> 
+								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributor Address*</label>
-											<textarea type="text" name="retailer_address" class="form-control" placeholder="Enter Address" rows="5"><?= $Retailer->retailer_address; ?></textarea>
+											<textarea type="text" name="retailer_address" class="form-control" placeholder="Enter Address" rows="5">
+												<?= $Retailer->retailer_address; ?>
+											</textarea>
 											<?= form_error('retailer_address', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</form>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row button-section">
-			<a type="button" href="<?= base_url('Retailers/ListRetailers'); ?>" id="backFromRetailersButton" class="btn btn-cancel">Cancel</a>
-			<a type="button" id="updateRetailerButton" class="btn btn-save">Save</a>						
+			<div class="row button-section">
+				<a type="button" href="<?= base_url('Retailers/ListRetailers'); ?>" id="backFromRetailersButton" class="btn btn-cancel">Cancel</a>
+				<a type="button" id="updateRetailerButton" class="btn btn-save">Save</a>
+			</div>
 		</div>
 	</div>
-</div>
 </div>
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
 <script type="text/javascript" src="<?= base_url('assets/js/Retailers.js').'?v='.time(); ?>"></script>

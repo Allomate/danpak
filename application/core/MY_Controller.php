@@ -6,7 +6,7 @@ class Web_Services_Controller extends CI_Controller{
 		$this->load->database('default');
 		$service_module = $this->uri->segment(2) ? $this->uri->segment(2) : "";
 		$service_name = $this->uri->segment(3) ? $this->uri->segment(3) : "";
-		$existServData = $this->db->select('id, hits')->where('service_name', $service_name)->get('services_hit_counter')->row();
+		$existServData = $this->db->select('id, hits')->where('service_name = "'.$service_name.'" and DATE(created_at) = CURDATE()')->get('services_hit_counter')->row();
 		if($existServData):
 			$this->db->where('id', $existServData->id)->update('services_hit_counter', array('hits' => (((int) $existServData->hits) + 1) ));
 		else:

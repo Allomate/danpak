@@ -35,11 +35,11 @@ class EmployeesModel extends CI_Model{
 	}
 
 	public function getDailyRouteData(){
-		return $this->db->select('(SELECT employee_username from employees_info where employee_id = ed.employee_id) as employee_username, DATE(routing_day) as route_date, employee_id')->group_by('DATE(routing_day)')->get('employee_daily_routing ed')->result();
+		return $this->db->select('(SELECT employee_username from employees_info where employee_id = vm.employee_id) as employee_username, (SELECT retailer_name from retailers_details where id = vm.retailer_id) as retailer_name, DATE(created_at) as route_date, employee_id')->group_by('DATE(created_at)')->get('visits_marked vm')->result();
 	}
 
 	public function GetLatLongsForDailyRouting($routeData){
-		return $this->db->select('route_lats, route_longs')->where('DATE(routing_day) = "'.$routeData["curr_date"].'" and employee_id = '.$routeData['employee_id'])->get('employee_daily_routing')->result();
+		return array('attendance' => $this->db->select('latitude as route_lats, longitude as route_longs')->where('employee_id = '.$routeData['employee_id'].' and checking_status = 1 and DATE(created_at) = CURDATE()')->get('ams')->row(), 'data' => $this->db->select('took_order, latitude as route_lats, longitude as route_longs, (SELECT retailer_name from retailers_details where id = vm.retailer_id) as retailer_name')->where('DATE(created_at) = "'.$routeData["curr_date"].'" and employee_id = '.$routeData['employee_id'] . ' and latitude IS NOT NULL and latitude != 0 and latitude > 0')->get('visits_marked vm')->result());
 	}
 
 	public function GetAttendanceData(){
