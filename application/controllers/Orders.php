@@ -23,6 +23,10 @@ class Orders extends WebAuth_Controller{
 		return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrders($employee, urldecode($date), strtolower($status)) ]);
 	}
 
+	public function ListOrdersIndividualAgainstRetailer($employee, $date, $retailer_id){
+		return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrdersAgainstRetailer($employee, urldecode($date), $retailer_id) ]);
+	}
+
 	public function UpdateOrder($orderId){
 		return $this->load->view('Order/UpdateOrder', [ 'Order' => $this->om->getSingleOrder($orderId), 'Inventory' => $this->im->get_inventory_for_this_order($orderId) ]);
 	}

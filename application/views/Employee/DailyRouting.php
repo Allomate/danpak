@@ -1,4 +1,4 @@
-<?php require_once(APPPATH.'/views/includes/header.php'); ?>
+<?php require_once APPPATH . '/views/includes/header.php';?>
 <style type="text/css">
 	#map {
 		height: 400px;
@@ -10,7 +10,7 @@
 	<div class="la-anim-1"></div>
 </div>
 <div class="wrapper theme-1-active">
-	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
+	<?php require_once APPPATH . '/views/includes/navbar&sidebar.php';?>
 	<div class="page-wrapper">
 		<div class="container-fluid">
 			<div class="row" style="margin-top: 20px">
@@ -31,19 +31,19 @@
 							</tr>
 						</tfoot>
 						<tbody>
-							<?php foreach($routing as $route) : ?>
+							<?php foreach ($routing as $route): ?>
 							<tr>
 								<td>
-									<?= $route->route_date; ?>
+									<?=$route->route_date;?>
 								</td>
 								<td>
-									<?= $route->employee_username; ?>
+									<?=$route->employee_username;?>
 								</td>
 								<td>
-									<button class="view-report" id="<?= $route->employee_id; ?>">View Activity</button>
+									<button class="view-report" id="<?=$route->employee_id;?>">View Activity</button>
 								</td>
 							</tr>
-							<?php endforeach; ?>
+							<?php endforeach;?>
 						</tbody>
 					</table>
 				</div>
@@ -68,9 +68,9 @@
 			</div>
 		</div>
 	</div>
-	<input type="text" value="<?= base_url('Employees/GetDailyRouteLatLongsAjax'); ?>" id="getLatLongs" hidden>
+	<input type="text" value="<?=base_url('Employees/GetDailyRouteLatLongsAjax');?>" id="getLatLongs" hidden>
 </div>
-<?php require_once(APPPATH.'/views/includes/footer.php'); ?>
+<?php require_once APPPATH . '/views/includes/footer.php';?>
 <script>
 	var map;
 	var directionsDisplay;
@@ -98,6 +98,7 @@
 					var latRepeated = [];
 					var lngRepeated = [];
 					var repeatCounter = 0;
+					debugger;
 					for (var i = 0; i < response.data.length; i++) {
 						if (jQuery.inArray(response.data[i].route_lats, latRepeated) != -1) {
 							if (lngRepeated[jQuery.inArray(response.data[i].route_lats, latRepeated)] == response.data[i].route_longs) {
@@ -108,10 +109,22 @@
 						latRepeated.push(response.data[i].route_lats);
 						lngRepeated.push(response.data[i].route_longs);
 						if (i == 0) {
-							completeLocations.push([parseFloat(response.attendance.route_lats), parseFloat(response.attendance.route_longs),
-								"", ""
-							]);
-						} else {
+							if(response.attendance != null){
+								completeLocations.push([parseFloat(response.attendance.route_lats), parseFloat(response.attendance.route_longs),
+									"", ""
+								]);
+							}else{
+								completeLocations.push(["", "","", ""]);
+							}
+						} else if (i == (response.data.length-1)) {
+							if(response.shift_end != null){
+								completeLocations.push([parseFloat(response.shift_end.route_lats), parseFloat(response.shift_end.route_longs),
+									"", ""
+								]);
+							}else{
+								completeLocations.push(["", "","", ""]);
+							}
+						}else{
 							completeLocations.push([parseFloat(response.data[i].route_lats), parseFloat(response.data[i].route_longs),
 								response.data[i].took_order, response.data[i].retailer_name
 							]);
@@ -167,6 +180,14 @@
 					animation: google.maps.Animation.DROP,
 					title: "Attendance Location"
 				});
+			} else if(i == (stations.length-1)){
+				new google.maps.Marker({
+					position: stations[i],
+					map: map,
+					icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+					animation: google.maps.Animation.DROP,
+					title: "Shift End"
+				});
 			} else {
 				if (stations[i].took_order == "1") {
 					new google.maps.Marker({
@@ -180,7 +201,7 @@
 					new google.maps.Marker({
 						position: stations[i],
 						map: map,
-						icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+						icon: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png",
 						animation: google.maps.Animation.DROP,
 						title: stations[i].name
 					});

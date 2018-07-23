@@ -25,6 +25,11 @@ class Retailers extends WebAuth_Controller{
 		return $this->load->view('Retailer/AddRetailerType');
 	}
 
+	public function DistributorProfile($id){
+		// echo "<pre>"; print_r($this->rem->getDistributorCompleteProfile($id)); die;
+		return $this->load->view('Retailer/Profile', [ 'retailer' => $this->rem->GetSingleRetailer($id), "data" => $this->rem->getDistributorCompleteProfile($id) ]);
+	}
+
 	public function AddRetailerTypeOps()
 	{
 		$this->form_validation->set_rules('retailer_type_name', 'Distributor Type', 'required|max_length[100]');

@@ -31,6 +31,10 @@
 <script src="<?= base_url('assets/vendors/bower_components/nestable2/jquery.nestable.js'); ?> "></script>
 <script src="<?= base_url('assets/dist/js/nestable-data.js'); ?> "></script>
 <script src="<?= base_url('assets/dist/js/dropdown-bootstrap-extended.js'); ?> "></script>
+
+<script src="<?= base_url('assets/vendors/bower_components/waypoints/lib/jquery.waypoints.min.js'); ?>"></script>
+<script src="<?= base_url('assets/vendors/bower_components/jquery.counterup/jquery.counterup.min.js'); ?>"></script>
+
 <script src="<?= base_url('assets/dist/js/init.js'); ?> "></script>
 <script src="<?= base_url('assets/multi/multi.min.js'); ?> "></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.18.0/sweetalert2.all.min.js"></script>
