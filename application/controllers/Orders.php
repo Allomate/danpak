@@ -18,7 +18,7 @@ class Orders extends WebAuth_Controller{
 
 	public function ListOrdersIndividual($employee, $date, $status){
 		if ($status == "EmployeesList"){
-			return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrders(null) ]);
+			return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrders($employee, urldecode($date), null) ]);
 		}
 		return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrders($employee, urldecode($date), strtolower($status)) ]);
 	}

@@ -119,7 +119,7 @@
 													<i class="fa fa-pencil"></i>
 												</a>
 												&nbsp;
-												<a href="<?=base_url('Retailers/DistributorProfile/' . $retailer->id);?>">
+												<a class="view-report" href="<?=base_url('RealRetailers/RetailerProfile/' . $retailer->id);?>">
 													View Profile
 												</a>
 												&nbsp;

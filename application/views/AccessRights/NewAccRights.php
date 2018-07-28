@@ -214,6 +214,14 @@
 													<label for="ListRetailerTypes" class="lab-medium">View Distributor Types</label>
 												</div>
 												<div class="checkbox checkbox-primary checkbox-circle m-b-20">
+													<input type="checkbox" id="DistributorProfile" name="access_rights" value="DistributorProfile">
+													<label for="DistributorProfile" class="lab-medium">View Distributor Profile</label>
+												</div>
+												<div class="checkbox checkbox-primary checkbox-circle m-b-20">
+													<input type="checkbox" id="RetailerProfile" name="access_rights" value="RetailerProfile">
+													<label for="RetailerProfile" class="lab-medium">View Retailer Profile</label>
+												</div>
+												<div class="checkbox checkbox-primary checkbox-circle m-b-20">
 													<input type="checkbox" id="ListRetailersAssignments" name="access_rights" value="ListRetailersAssignments">
 													<label for="ListRetailersAssignments" class="lab-medium">View Distributor Assignments</label>
 												</div>

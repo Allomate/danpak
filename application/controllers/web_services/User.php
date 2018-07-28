@@ -19,6 +19,8 @@ class User extends Web_Services_Controller{
 	public function Login(){
 		if ($GLOBALS['authentication']) :
 			$loginInfo = $this->input->post();
+			$failedLoginInfo = $this->input->post();
+			unset($failedLoginInfo["api_secret_key"]);
 			if (!$loginInfo['username'] || !$loginInfo['password']) :
 				return $this->ResponseMessage('Failed', 'Missing Username/Password');
 			else:
@@ -27,12 +29,15 @@ class User extends Web_Services_Controller{
 				if ($this->ws->AuthenticateLogin($loginInfo)) :
 					unset($loginInfo['password']);
 					unset($loginInfo['api_secret_key']);
+					$failedLoginInfo["status"] = "authenticated";
+					$this->ws->StoreLoginAttempt($failedLoginInfo);
 					if ($this->ws->GenerateSession($loginInfo)) :
 						return $this->ResponseMessage('Success', array('session'=>$loginInfo['session']));
 					else:
 						return $this->ResponseMessage('Failed', 'Unable to generate session at the time. Please try again');
 					endif;
 				else:
+					$this->ws->StoreLoginAttempt($failedLoginInfo);
 					return $this->ResponseMessage('Failed', 'Invalid Username/Password');
 				endif;
 			endif;

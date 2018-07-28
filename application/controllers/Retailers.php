@@ -26,7 +26,6 @@ class Retailers extends WebAuth_Controller{
 	}
 
 	public function DistributorProfile($id){
-		// echo "<pre>"; print_r($this->rem->getDistributorCompleteProfile($id)); die;
 		return $this->load->view('Retailer/Profile', [ 'retailer' => $this->rem->GetSingleRetailer($id), "data" => $this->rem->getDistributorCompleteProfile($id) ]);
 	}
 

@@ -36,6 +36,24 @@ class RealRetailersModel extends CI_Model{
 		->update('retailers_details', $retailerInfo);
 	}
 
+	public function getRetailerCompleteProfile($id){
+
+		$dates = $this->db->select('DATE(created_at) as date')->where('retailer_id', $id)->group_by('DATE(created_at)')->get('orders')->result();
+		$emps = $this->db->select('employee_id, retailer_id, (SELECT employee_username from employees_info where employee_id = orders.employee_id) as employee_username')->where('retailer_id', $id)->group_by('employee_id')->get('orders')->result();
+		$orderDetails = array();
+		foreach($dates as $today):
+			for($i = 0; $i < sizeOf($emps); $i++){
+				$ordersCount = $this->db->select('count(*) as totalOrders')->where('DATE(created_at) = "'.$today->date.'" and retailer_id = '.$id.' and employee_id = '.$emps[$i]->employee_id)->get('orders')->row()->totalOrders;
+				if($ordersCount){
+					$orderDetails[] = array('totalOrders' => $ordersCount, 'employee_username' => $emps[$i]->employee_username , 'date' => $today->date, 'employee_id' => $emps[$i]->employee_id, 'retailer_id' => $emps[$i]->retailer_id);
+				}
+			}
+		endforeach;
+
+		return array('retailer_additional_info' => $this->db->select('(SELECT territory_name from territory_management where id = rd.retailer_territory_id) as territory, (SELECT area_name from area_management where id = (SELECT area_id from territory_management where id = rd.retailer_territory_id)) as area, (SELECT region_name from regions_info where id = (SELECT region_id from area_management where id = (SELECT area_id from territory_management where id = rd.retailer_territory_id))) as region')->where('id', $id)->get('retailers_details rd')->row(), 'order_stats' => $this->db->query('SELECT (SELECT count(*) from orders where retailer_id = '.$id.' and MONTH(created_at) = "'.date('m').'" ) as total_orders_this_month, (SELECT count(*) from visits_marked where retailer_id = '.$id.' ) as total_visits, (SELECT count(*) from orders where retailer_id = '.$id.' ) as total_orders, (SELECT SUM(final_price) from order_contents where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where retailer_id = '.$id.' ))) as total_sale')->row(), 'visits' => $this->db->select('DATE_FORMAT(TIME(created_at), "%r") as time, DATE(created_at) as date, (SELECT CONCAT(employee_first_name, " ", employee_last_name) from employees_info where employee_id = vm.employee_id) as employee, picture')->where('retailer_id', $id)->get('visits_marked vm')->result(), 'top_products' => $this->db->query('SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), " (", (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = oc.pref_id)), ")") as product, item_quantity_booker, ROUND(((item_quantity_booker/(SELECT SUM(item_quantity_booker) as total_quantities
+        from ((SELECT item_quantity_booker FROM `order_contents` oc where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where retailer_id = '.$id.' )) order by item_quantity_booker desc LIMIT 0,5)) as sumed))*100), 2) as percent_value FROM `order_contents` oc where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where retailer_id = '.$id.' )) order by item_quantity_booker desc LIMIT 0,5')->result(), 'orders' => $orderDetails);
+	}
+
 	public function get_non_assigned_retailers(){
 		return $this->db->select('`id`, `retailer_name`, `retailer_phone`, `retailer_email`, `retailer_address`, `retailer_lats`, `retailer_longs`, `retailer_city`, `retailer_type_id`, (SELECT retailer_type_name from retailer_types where id = rd.retailer_type_id) as retailer_type, `retailer_territory_id`, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as retailer_territory, `retailer_image`, `added_by`, `updated_by`, `created_at`, (SELECT IFNULL((SELECT count(retailer_id) from retailers_assignment where retailer_id = rd.id), 0)) as assigned')->where('find_in_set(rd.retailer_type_id, (SELECT GROUP_CONCAT(id) from retailer_types where retailer_or_distributor = "ret"))')->get('retailers_details rd')->result();
 	}

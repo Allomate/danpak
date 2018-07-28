@@ -25,6 +25,10 @@ class RealRetailers extends WebAuth_Controller{
 		return $this->load->view('RealRetailers/AddRetailerType');
 	}
 
+	public function RetailerProfile($id){
+		return $this->load->view('Retailer/Profile', [ 'retailer' => $this->rem->GetSingleRetailer($id), "data" => $this->rem->getRetailerCompleteProfile($id) ]);
+	}
+
 	public function AddRetailerTypeOps()
 	{
 		$this->form_validation->set_rules('retailer_type_name', 'Retailer Type', 'required|max_length[100]');

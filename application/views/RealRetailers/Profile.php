@@ -44,7 +44,7 @@
 												</p>
 											</div>
 										</div>
-										<a href="<?= base_url('Retailers/UpdateRetailer/'.$this->uri->segment(3)); ?>">
+										<a href="<?= base_url('RealRetailers/UpdateRetailer/'.$this->uri->segment(3)); ?>">
 											<button class="btn btn-blue btn-block btn-anim">
 												<i class="fa fa-pencil"></i>
 												<span class="btn-text">edit profile</span>

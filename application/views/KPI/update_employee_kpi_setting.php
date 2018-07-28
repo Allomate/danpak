@@ -122,7 +122,6 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<select class="form-control" name="monthDD" data-style="form-control btn-default btn-outline">
-										<option value="0">Select month</option>
 										<option value="january">January</option>
 										<option value="february">February</option>
 										<option value="march">March</option>
@@ -141,7 +140,6 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<select class="form-control" name="quarterDD" data-style="form-control btn-default btn-outline" disabled="disabled">
-										<option value="0">Select Quarter</option>
 										<option value="q1">Q1</option>
 										<option value="q2">Q2</option>
 										<option value="q3">Q3</option>

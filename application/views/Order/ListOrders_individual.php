@@ -294,7 +294,7 @@
 												<?= $order->status ? $order->status : "Pending"; ?>
 											</td>
 											<td>
-												<?php if($this->uri->segment(3) !== "EmployeesList") : ?>
+												<?php if($this->uri->segment(5) !== "EmployeesList") : ?>
 												<?php if (strtolower($order->status) == strtolower("Processed")) : ?>
 												<a href="<?= base_url('Orders/UpdateOrder/'.$order->id); ?>">
 													<i class="fa fa-pencil"></i>

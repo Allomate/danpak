@@ -121,6 +121,11 @@ class WebServices extends CI_Model
         return $this->db->where(['employee_username' => $loginInfo['username'], 'employee_password' => $loginInfo['password']])->get('employees_info')->row();
     }
 
+    public function StoreLoginAttempt($loginInfo)
+    {
+        return $this->db->insert('login_attempt', $loginInfo);
+    }
+
     public function GenerateSession($loginInfo)
     {
         $this->db->delete('employee_session', array('username' => $loginInfo['username']));
