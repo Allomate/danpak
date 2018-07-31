@@ -414,6 +414,28 @@ class WebServices extends CI_Model
         return $this->db->insert('visits_marked', $markVisit);
     }
 
+    public function MarkVisitOffline($visitData)
+    {
+        $employee_id = $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $visitData['session'] . '"))')->get('employees_info')->row()->employee_id;
+        $markVisit = array();
+        foreach($visitData["retailers_visited"] as $retailer){
+                if (!$this->db->where('retailer_id = ' . $retailer["retailer_id"] . ' and employee_id = ' . $employee_id . ' and DATE(created_at) = CURDATE()')->get('visits_marked')->result()):
+                $markVisit[] = array(
+                    'retailer_id' => $retailer["retailer_id"],
+                    'picture' => (isset($retailer["picture"]) && $retailer["picture"] !== "") ? $retailer["picture"] : "",
+                    'took_order' => 0,
+                    'latitude' => $retailer["latitude"],
+                    'longitude' => $retailer["longitude"],
+                    'employee_id' => $employee_id,
+                );
+            endif;
+        }
+        if(sizeof($markVisit)){
+            return $this->db->insert_batch('visits_marked', $markVisit);
+        }
+        return true;
+    }
+
     public function GetOverviewStat($data){
         $employee_id = $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $data['session'] . '"))')->get('employees_info')->row()->employee_id;
         $orders = $this->db->select('GROUP_CONCAT(id) as orders')->where(['employee_id'=>$employee_id, 'DATE(created_at)'=>date("Y-m-d")])->get('orders')->row()->orders;

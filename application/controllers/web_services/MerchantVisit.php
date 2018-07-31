@@ -9,15 +9,78 @@ class MerchantVisit extends Web_Services_Controller{
         $this->load->helper('string');
 		$this->load->model('WebServices', 'ws');
 		global $authentication;
-		if (!$this->AuthenticateWebServiceCall($this->input->post("api_secret_key"))) :
-			return $this->ResponseMessage('Failed', 'Failed Api Authentication');
-		endif;
+		if($this->input->post("api_secret_key") !== null){
+			if (!$this->AuthenticateWebServiceCall($this->input->post("api_secret_key"))) :
+				return $this->ResponseMessage('Failed', 'Failed Api Authentication');
+			endif;
+		}
 	}
-
+	
 	public function MarkVisit(){
 		if (!$this->AuthenticateSession($this->input->post("session"))) :
 			return $this->ResponseMessage('Failed', 'Failed session Authentication');
 		endif;
+		$markVisit = $this->input->post();
+		if ($markVisit['retailer_id']) :
+			unset($markVisit["api_secret_key"]);
+			$config['upload_path'] = './assets/uploads/mark_visit/';
+			if (isset($markVisit['picture']) && $markVisit['picture'] !== ""):
+				$imgData = base64_decode($_POST['picture']);
+				$imageName = $config['upload_path'] . random_string('alnum', 10) . '_' . time() . '.jpg';
+				$ifp = fopen($imageName, 'wb');
+				fwrite($ifp, $imgData);
+				fclose($ifp);
+				unset($markVisit['picture']);
+				$markVisit['picture'] = $imageName;
+			endif;
+			$visitStatus = $this->ws->MarkVisit($markVisit);
+			if ($visitStatus == "Success") :
+				return $this->ResponseMessage('Success', 'Visit marked successfully');
+			else:
+				return $this->ResponseMessage('Failed', $visitStatus);
+			endif;
+		else:
+			return $this->ResponseMessage('Failed', 'Missing values');
+		endif;
+	}
+
+	public function MarkVisitOffline(){
+		$visitInfo = (array) json_decode(file_get_contents('php://input'), true);
+		if (!$this->AuthenticateSession($visitInfo["session"])) :
+			return $this->ResponseMessage('Failed', 'Failed session Authentication');
+		endif;
+
+		if ($this->AuthenticateWebServiceCall($visitInfo["api_secret_key"])):
+            unset($visitInfo['api_secret_key']);
+            $counter = 0;
+            $config['upload_path'] = './assets/uploads/mark_visit/';
+            foreach ($visitInfo["retailers_visited"] as $ret) {
+                if (isset($ret['picture']) && $ret['picture'] != ''):
+                    $imgData = base64_decode($ret['picture']);
+                    $imageName = $config['upload_path'] . random_string('alnum', 10) . '_' . time() . '.jpg';
+                    $ifp = fopen($imageName, 'wb');
+                    fwrite($ifp, $imgData);
+                    fclose($ifp);
+                	unset($visitInfo["retailers_visited"][$counter]['picture']);
+                    $visitInfo["retailers_visited"][$counter]['picture'] = $imageName;
+                endif;
+                if (isset($ret['picture']) && $ret['picture'] == ''):
+		                unset($visitInfo["retailers_visited"][$counter]['picture']);
+                endif;
+                $counter++;
+            }
+
+			$response = $this->ws->MarkVisitOffline($visitInfo);
+            if ($response):
+                return $this->ResponseMessage('Success', "Visits marked synced successfully");
+            else:
+                return $this->ResponseMessage('Failed', $response["response"]);
+            endif;
+        else:
+            return $this->ResponseMessage('Failed', 'Failed Api Authentication');
+        endif;
+
+		
 		$markVisit = $this->input->post();
 		if ($markVisit['retailer_id']) :
 			unset($markVisit["api_secret_key"]);

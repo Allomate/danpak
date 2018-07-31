@@ -13,8 +13,14 @@
 				<div class="col-lg-6 col-md-6">
 					<ol class="breadcrumb">
 
-						<li><a href="#"><span>Catalogue</span></a></li>
-						<li><span>Update Catalogue</span></li>
+						<li>
+							<a href="#">
+								<span>Catalogue</span>
+							</a>
+						</li>
+						<li>
+							<span>Update Catalogue</span>
+						</li>
 					</ol>
 				</div>
 			</div>
@@ -22,7 +28,9 @@
 				<div class="col-md-12">
 					<div class="box-white m-b-30">
 						<div id="example-basic">
-							<h3><span class="head-font capitalize-font wz-pt">Update Catalogue</span></h3>
+							<h3>
+								<span class="head-font capitalize-font wz-pt">Update Catalogue</span>
+							</h3>
 							<section>
 								<div class="form-body">
 									<div class="row">
@@ -38,7 +46,8 @@
 											<div class="form-group">
 												<label class="control-label mb-10">Active from</label>
 												<div class='input-group date' id='datetimepicker1'>
-													<input type='text' id="active_from" value="<?= $CatalogueDetails->catalogue_assignment_data[0]->active_from; ?>" class="form-control r-l-0" />
+													<input type='text' id="active_from" value="<?= $CatalogueDetails->catalogue_assignment_data[0]->active_from; ?>" class="form-control r-l-0"
+													/>
 													<span class="input-group-addon r-l-6">
 														<span class="fa fa-calendar"></span>
 													</span>
@@ -49,7 +58,8 @@
 											<div class="form-group">
 												<label class="control-label mb-10">Active till</label>
 												<div class='input-group date' id='datetimepicker1'>
-													<input type='text' id="active_till" value="<?= $CatalogueDetails->catalogue_assignment_data[0]->active_till; ?>" class="form-control r-l-0" />
+													<input type='text' id="active_till" value="<?= $CatalogueDetails->catalogue_assignment_data[0]->active_till; ?>" class="form-control r-l-0"
+													/>
 													<span class="input-group-addon r-l-6">
 														<span class="fa fa-calendar"></span>
 													</span>
@@ -59,18 +69,24 @@
 									</div>
 								</div>
 							</section>
-							<h3><span class="head-font capitalize-font wz-pt">Select Product</span></h3>
+							<h3>
+								<span class="head-font capitalize-font wz-pt">Select Product</span>
+							</h3>
 							<section>
 								<div class="col-md-12" id="productsDiv">
 									<h3 class="m-b-15">Select Products for Catalogue</h3>
 									<select multiple="multiple" name="inventory_items" id="inventory_items">
 										<?php foreach($inventoryList as $inventory) : ?>
-											<option value="<?= $inventory->pref_id; ?>"><?= $inventory->item_name; ?></option>
+										<option value="<?= $inventory->pref_id; ?>">
+											<?= $inventory->item_name; ?>
+										</option>
 										<?php endforeach; ?>
 									</select>
 								</div>
 							</section>
-							<h3><span class="head-font capitalize-font wz-pt">Set List Priority</span></h3>
+							<h3>
+								<span class="head-font capitalize-font wz-pt">Set List Priority</span>
+							</h3>
 							<section>
 								<div class="col-md-12">
 									<h3 class="m-b-15">Set Products List Priority</h3>
@@ -80,7 +96,9 @@
 									</div>
 								</div>
 							</section>
-							<h3><span class="head-font capitalize-font wz-pt">Assign Catalogue</span></h3>
+							<h3>
+								<span class="head-font capitalize-font wz-pt">Assign Catalogue</span>
+							</h3>
 							<section>
 								<div class="row">
 									<div class="col-md-6">
@@ -95,7 +113,9 @@
 														<label class="control-label mb-10">Region</label>
 														<select class="selectpicker" name="region_id" data-style="form-control btn-default btn-outline">
 															<?php foreach ($Regions as $region) : ?>
-																<option value="<?= $region->id; ?>"><?= $region->region_name; ?></option>
+															<option value="<?= $region->id; ?>">
+																<?= $region->region_name; ?>
+															</option>
 															<?php endforeach; ?>
 														</select>
 													</div>
@@ -115,7 +135,9 @@
 														<label class="control-label mb-10">Areas</label>
 														<select class="selectpicker" name="area_id" data-style="form-control btn-default btn-outline">
 															<?php foreach ($Areas as $area) : ?>
-																<option value="<?= $area->id; ?>"><?= $area->area_name; ?></option>
+															<option value="<?= $area->id; ?>">
+																<?= $area->area_name; ?>
+															</option>
 															<?php endforeach; ?>
 														</select>
 													</div>
@@ -135,13 +157,15 @@
 														<label class="control-label mb-10">Territory</label>
 														<select class="selectpicker" name="territory_id" data-style="form-control btn-default btn-outline">
 															<?php foreach ($Territories as $territory) : ?>
-																<option value="<?= $territory->id; ?>"><?= $territory->territory_name; ?></option>
+															<option value="<?= $territory->id; ?>">
+																<?= $territory->territory_name; ?>
+															</option>
 															<?php endforeach; ?>
 														</select>
 													</div>
 												</div>
 											</div>
-										</div>								 
+										</div>
 									</div>
 								</div>
 								<div class="row" id="employeesListDiv">
@@ -157,13 +181,15 @@
 														<label class="control-label mb-10">Employees</label>
 														<select multiple="multiple" name="employees_list" disabled="disabled" id="employees_list">
 															<?php foreach ($Employees as $employee) : ?>
-																<option value="<?= $employee->employee_id ?>"><?= $employee->employee_username; ?></option>
+															<option value="<?= $employee->employee_id ?>">
+																<?= $employee->employee_username; ?>
+															</option>
 															<?php endforeach; ?>
-														</select>	
+														</select>
 													</div>
 												</div>
 											</div>
-										</div>									 
+										</div>
 									</div>
 								</div>
 							</section>
@@ -171,21 +197,21 @@
 							echo form_open('Catalogue/UpdateCatalogueOps/'.$CatalogueDetails->catalogue_id, $attributes);
 							echo form_hidden('catalogue_data', '');
 							echo form_hidden('assignment_data', ''); ?>
-						</form>
-						<input type="text" name="currentUrl" value="<?= $this->uri->segment(2); ?>" hidden>
-						<?php $pref_ids = array(); foreach ($CatalogueDetails->preferences as $pref_id) :
+							</form>
+							<input type="text" name="currentUrl" value="<?= $this->uri->segment(2); ?>" hidden>
+							<?php $pref_ids = array(); foreach ($CatalogueDetails->preferences as $pref_id) :
 								$pref_ids[] = $pref_id->pref_id;
 						endforeach; $employee_ids = array(); foreach ($CatalogueDetails->catalogue_assignment_data as $employee_id) :
 								$employee_ids[] = $employee_id->employee_id;
 						endforeach;?>
-						<input type="text" name="productsAddedList" value="<?= implode(",", $pref_ids); ?>" hidden>
-						<input type="text" name="employeeAddedList" value="<?= implode(",", $employee_ids); ?>" hidden>
-					</div> 
+							<input type="text" name="productsAddedList" value="<?= implode(" , ", $pref_ids); ?>" hidden>
+							<input type="text" name="employeeAddedList" value="<?= implode(" , ", $employee_ids); ?>" hidden>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 </div>
 </div>
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>

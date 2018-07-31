@@ -210,30 +210,6 @@
 								<label for="radio2" class="rad-large">No</label>
 							</div>
 						</div>
-						<!-- <div class="form-wrap">
-							<form action="#">
-								<div class="row">
-									<div class="col-md-12">
-										<div class="switch-sec">
-											<label class="control-label float-L">Admin User</label>
-											<div class="float-R"><input type="checkbox" checked class="js-switch js-switch-1"  data-color="#001f37" data-size="small"/></div>
-										</div>
-										<div class="switch-sec">
-											<label class="control-label float-L">Inventory Management</label>
-											<div class="float-R"><input type="checkbox" checked class="js-switch js-switch-1"  data-color="#001f37" data-size="small"/></div>
-										</div>
-										<div class="switch-sec">
-											<label class="control-label float-L">Catalogue Management</label>
-											<div class="float-R"><input type="checkbox" checked class="js-switch js-switch-1"  data-color="#001f37" data-size="small"/></div>
-										</div>
-										<div class="switch-sec">
-											<label class="control-label float-L">Active/Inactive</label>
-											<div class="float-R"><input type="checkbox" checked class="js-switch js-switch-1"  data-color="#001f37" data-size="small"/></div>
-										</div>
-									</div>
-								</div>		 	  
-							</form>
-						</div>  -->
 					</div>
 				</div>
 				</form>

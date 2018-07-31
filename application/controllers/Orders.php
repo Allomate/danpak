@@ -36,11 +36,11 @@ class Orders extends WebAuth_Controller{
 	}
 
 	public function DeliveryChallan($employee, $date, $status){
-		// echo "<pre>"; print_r($this->om->generateDeliveryChallan($employee, $date, strtolower($status)));die;
 		return $this->load->view('Order/DeliveryChallan', [ 'details' => $this->om->generateDeliveryChallan($employee, $date, strtolower($status)) ]);
 	}
 
 	public function ManualOrders(){
+		// echo "<pre>"; print_r($this->om->getAllRetsDetsList());die;
 		return $this->load->view('Order/ManualOrderCreation', [ 'employees' => $this->em->get_employees_list(), 'inventorySku' => $this->im->get_inventory_sku_wise() ]);
 	}
 

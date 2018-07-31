@@ -3,7 +3,7 @@ $(document).ready(function() {
     $('.dataTables_wrapper').hide();
     var itemsAddedInOrderExpansion = [];
     var stockItemsInOrderExpansion = [];
-
+    debugger;
     setTimeout(function() {
         $('select[name="DataTables_Table_0_length"]').css({
             'font-size': '10pt',

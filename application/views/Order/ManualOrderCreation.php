@@ -85,13 +85,8 @@
 								</div>
 								<div class="row">
 									<div class="col-md-6">
-										<label class="control-label mb-10">Select Distributor</label>
+										<label class="control-label mb-10">Select Distributor/Retailer</label>
 										<select class="form-control" name="distributor_id">
-											<?php foreach( $distributors as $dist ) : ?>
-											<option value="<?= $dist->id; ?>">
-												<?= $dist->retailer_name; ?>
-											</option>
-											<?php endforeach; ?>
 										</select>
 									</div>
 									<div class="col-md-6">

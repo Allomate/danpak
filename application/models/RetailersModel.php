@@ -135,6 +135,25 @@ class RetailersModel extends CI_Model{
 
 	public function AssignRetailers($assignmentsData){
 		$distributors = $this->db->select('id')->where('retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")')->get('retailers_details')->result();
+		$retailersForAssignments = "";
+		if(isset($assignmentsData["bunchAssignment"])){
+			if($assignmentsData["bunchAssignment"] == "region"){
+				$areaIds = $this->db->select('GROUP_CONCAT(id) as areas')->where('region_id', $assignmentsData["region_id"])->get('area_management')->row()->areas;
+				$territory_ids = $this->db->select('GROUP_CONCAT(id) as territories')->where('find_in_set(area_id, ("'.$areaIds.'") )')->get('territory_management')->row()->territories;
+			}else if($assignmentsData["bunchAssignment"] == "area"){
+				$territory_ids = $this->db->select('GROUP_CONCAT(id) as territories')->where('area_id', $assignmentsData["area_id"])->get('territory_management')->row()->territories;
+			}else if($assignmentsData["bunchAssignment"] == "territory"){
+				$territory_ids = $assignmentsData["territory_id"];
+			}
+			
+			$existingAssignedDets = $this->db->select('GROUP_CONCAT(retailer_id) as retailers')->get('retailers_assignment')->row()->retailers;
+			if($existingAssignedDets != ""){
+				$retailersForAssignments = $this->db->select('GROUP_CONCAT(id) as ids')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist") and id NOT IN ('.$existingAssignedDets.')')->get('retailers_details')->row()->ids;
+			}else{
+				$retailersForAssignments = $this->db->select('GROUP_CONCAT(id) as ids')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")')->get('retailers_details')->row()->ids;
+			}
+		}
+
 		$dists = null;
 		foreach($distributors as $distributor) :
 			if(!$dists){
@@ -146,7 +165,11 @@ class RetailersModel extends CI_Model{
 		if ($this->db->where('employee_id = '.$assignmentsData["employee"].' and assigned_for_day = "'.$assignmentsData["assigned_for_day"].'" and retailer_id IN ('.$dists.')')->get('retailers_assignment')->result()) {
 			return "Exist";
 		}
+
 		$retailers = explode(",", $assignmentsData["retailersForAssignments"]);
+		if(isset($assignmentsData["bunchAssignment"])){
+			$retailers = explode(",", $retailersForAssignments);
+		}
 		$assignmentsBatch = array();
 		for ($i=0; $i < sizeof($retailers); $i++) :
 			$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]);
@@ -161,6 +184,25 @@ class RetailersModel extends CI_Model{
 
 	public function UpdateRetailersAssignment($existingEmployeeId, $assignmentsData){
 		$distributors = $this->db->select('id')->where('retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")')->get('retailers_details')->result();
+		$retailersForAssignments = "";
+		if(isset($assignmentsData["bunchAssignment"])){
+			if($assignmentsData["bunchAssignment"] == "region"){
+				$areaIds = $this->db->select('GROUP_CONCAT(id) as areas')->where('region_id', $assignmentsData["region_id"])->get('area_management')->row()->areas;
+				$territory_ids = $this->db->select('GROUP_CONCAT(id) as territories')->where('find_in_set(area_id, ("'.$areaIds.'") )')->get('territory_management')->row()->territories;
+			}else if($assignmentsData["bunchAssignment"] == "area"){
+				$territory_ids = $this->db->select('GROUP_CONCAT(id) as territories')->where('area_id', $assignmentsData["area_id"])->get('territory_management')->row()->territories;
+			}else if($assignmentsData["bunchAssignment"] == "territory"){
+				$territory_ids = $assignmentsData["territory_id"];
+			}
+			
+			$existingAssignedDets = $this->db->select('GROUP_CONCAT(retailer_id) as retailers')->get('retailers_assignment')->row()->retailers;
+			if($existingAssignedDets != ""){
+				$retailersForAssignments = $this->db->select('GROUP_CONCAT(id) as ids')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist") and id NOT IN ('.$existingAssignedDets.')')->get('retailers_details')->row()->ids;
+			}else{
+				$retailersForAssignments = $this->db->select('GROUP_CONCAT(id) as ids')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")')->get('retailers_details')->row()->ids;
+			}
+		}
+
 		$dists = null;
 		foreach($distributors as $distributor) :
 			if(!$dists){
@@ -183,6 +225,9 @@ class RetailersModel extends CI_Model{
 		endforeach;
 		if ($this->db->where('id IN ('.$deleteIds.')')->delete('retailers_assignment')) :
 			$retailers = explode(",", $assignmentsData["retailersForAssignments"]);
+			if(isset($assignmentsData["bunchAssignment"])){
+				$retailers = explode(",", $retailersForAssignments);
+			}
 			$assignmentsBatch = array();
 			for ($i=0; $i < sizeof($retailers); $i++) :
 				$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]);

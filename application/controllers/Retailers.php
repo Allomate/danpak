@@ -7,6 +7,9 @@ class Retailers extends WebAuth_Controller{
 		$this->load->model('TerritoriesModel', 'tm');
 		$this->load->model('RetailersModel', 'rem');
 		$this->load->model('EmployeesModel', 'em');
+		$this->load->model('RegionsModel', 'rm');
+		$this->load->model('AreasModel', 'am');
+		$this->load->model('TerritoriesModel', 'tm');
 	}
 
 	public function ListRetailers(){
@@ -162,17 +165,18 @@ class Retailers extends WebAuth_Controller{
 	}
 
 	public function AddMoreAssignments(){
-		return $this->load->view('Retailer/AddMoreAssignments', [ 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list() ] );
+		return $this->load->view('Retailer/AddMoreAssignments', [ 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ] );
 	}
 
 	public function RetailerAssignemntOps(){
 		$retailersAssignmentsData = $this->input->post();
 		unset($retailersAssignmentsData['DataTables_Table_0_length']);
-		if (!$retailersAssignmentsData["employee"] || !$retailersAssignmentsData["retailersForAssignments"] || !$retailersAssignmentsData["assigned_for_day"]) {
+		if (!$retailersAssignmentsData["employee"] || !$retailersAssignmentsData["assigned_for_day"]) {
 			$this->session->set_flashdata("missing_information", "Missing Information. Please provide complete details");
 			return redirect('Retailers/AddMoreAssignments');
 		}
 		$status = $this->rem->AssignRetailers($retailersAssignmentsData);
+		// echo "<pre>"; print_r($status);die;
 		if ($status == "Exist") :
 			$this->session->set_flashdata("retailer_assignment_Exist", "This employee is already assigned distibutor. Please update existing record");
 		elseif ($status == "Success") :
@@ -186,7 +190,7 @@ class Retailers extends WebAuth_Controller{
 	public function UpdateRetailersAssignments($employeeId, $assignedDay){
 		// echo sizeOf(explode(",", $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay)->retailer_names));die;
 		// echo "<pre>"; print_r($this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay)); die;
-		return $this->load->view('Retailer/UpdateRetailersAssignments', [ 'RetailersAssignment' => $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay), 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list() ] );
+		return $this->load->view('Retailer/UpdateRetailersAssignments', [ 'RetailersAssignment' => $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay), 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ] );
 	}
 
 	public function UpdateRetailerAssignemntsOps($employeeId){

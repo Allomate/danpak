@@ -27,9 +27,11 @@ $(document).ready(function() {
     }, 300);
 
     $('#addRetailersAssignmentsButton').click(function() {
-        if (!retailersAddedForAssignment.length) {
-            alert('Please add distributors');
-            return;
+        if (!$('#territoryRadio').is(':checked')) {
+            if (!retailersAddedForAssignment.length) {
+                alert('Please add distributors');
+                return;
+            }
         }
         $(this).attr('disabled', 'disabled');
         $('#backFromRetailersAssignmentsButton').attr('disabled', 'disabled');
@@ -49,9 +51,11 @@ $(document).ready(function() {
     });
 
     $('#updateRetailersAssignmentsButton').click(function() {
-        if (!retailersAddedForAssignment.length) {
-            alert('Please add distributors');
-            return;
+        if (!$('#territoryRadio').is(':checked')) {
+            if (!retailersAddedForAssignment.length) {
+                alert('Please add distributors');
+                return;
+            }
         }
         $(this).attr('disabled', 'disabled');
         $('#backFromUpdateRetailersAssignmentsButton').attr('disabled', 'disabled');

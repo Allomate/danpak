@@ -7,11 +7,12 @@
 	<div class="page-wrapper">
 		<div class="container-fluid">
 			<?php if ($feedback = $this->session->flashdata('missing_information')) : ?>
-				<div class="row" style="margin-top: 20px;">
-					<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
-						<strong>Missing Information</strong> <?= $feedback; ?>
-					</div>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Missing Information</strong>
+					<?= $feedback; ?>
 				</div>
+			</div>
 			<?php endif; ?>
 			<div class="row heading-bg">
 				<div class="col-lg-6 col-md-6">
@@ -19,8 +20,14 @@
 				</div>
 				<div class="col-lg-6 col-md-6">
 					<ol class="breadcrumb">
-						<li><a href="#"><span>Organization</span></a></li>
-						<li><span>Distributor Assignment Management</span></li>
+						<li>
+							<a href="#">
+								<span>Organization</span>
+							</a>
+						</li>
+						<li>
+							<span>Distributor Assignment Management</span>
+						</li>
 					</ol>
 				</div>
 			</div>
@@ -32,13 +39,15 @@
 						echo form_open('Retailers/RetailerAssignemntOps', $attributes); ?>
 						<div class="form-wrap">
 							<div class="form-body">
-								<div class="row"> 
+								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Select Employee</label>
 											<select class="selectpicker" name="employee" data-style="form-control btn-default btn-outline">
 												<?php foreach ($Employees as $employee): ?>
-													<option value="<?= $employee->employee_id; ?>"><?= $employee->employee_username; ?></option>
+												<option value="<?= $employee->employee_id; ?>">
+													<?= $employee->employee_username; ?>
+												</option>
 												<?php endforeach ?>
 											</select>
 										</div>
@@ -58,15 +67,83 @@
 										</div>
 									</div>
 								</div>
-								<div class="row"> 
+								<div class="row">
+									<!-- <div class="col-md-6">
+										<div class="radio radio-info m-b-15">
+											<input id="region" name="bunchAssignment" type="radio" value="region">
+											<label for="region" class="lab-large"> Assign Distributors by Region </label>
+										</div>
+										<div id="checkbox-circle001">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group">
+														<label class="control-label mb-10">Region</label>
+														<select class="selectpicker" name="region_id" data-style="form-control btn-default btn-outline">
+															<?php foreach ($Regions as $region) : ?>
+															<option value="<?= $region->id; ?>">
+																<?= $region->region_name; ?>
+															</option>
+															<?php endforeach; ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="radio radio-info m-b-15">
+											<input id="area" name="bunchAssignment" type="radio" value="area">
+											<label for="area" class="lab-large"> Assign Distributors by Area </label>
+										</div>
+										<div id="checkbox-circle001">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group">
+														<label class="control-label mb-10">Areas</label>
+														<select class="selectpicker" name="area_id" data-style="form-control btn-default btn-outline">
+															<?php foreach ($Areas as $area) : ?>
+															<option value="<?= $area->id; ?>">
+																<?= $area->area_name; ?>
+															</option>
+															<?php endforeach; ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div> -->
+									<div class="col-md-6">
+										<div class="radio radio-info m-b-15">
+											<input id="territoryRadio" name="bunchAssignment" type="radio" value="territory">
+											<label for="territoryRadio" class="lab-large"> Assign Distributors by Territory </label>
+										</div>
+										<div id="checkbox-circle001">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group">
+														<label class="control-label mb-10">Territory</label>
+														<select class="selectpicker" name="territory_id" data-style="form-control btn-default btn-outline">
+															<?php foreach ($Territories as $territory) : ?>
+															<option value="<?= $territory->id; ?>">
+																<?= $territory->territory_name; ?>
+															</option>
+															<?php endforeach; ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributors Added</label>
 											<ul style="list-style: none; padding: 0px" id="addedAssignmentsList">
 											</ul>
 										</div>
-									</div>	
-								</div>	
+									</div>
+								</div>
 								<div class="row">
 									<div class="col-md-12">
 										<div class="table-wrap">
@@ -83,20 +160,28 @@
 													</thead>
 													<tbody>
 														<?php foreach ($Distributors as $retailer) : ?>
-															<tr>
-																<td><?= $retailer->retailer_name; ?></td>
-																<td><?= $retailer->retailer_address; ?></td>
-																<td><?= $retailer->retailer_type; ?></td>
-																<td><?= $retailer->retailer_territory; ?></td>
-																<td>
-																	<?php if($retailer->assigned) : ?>
-																		<span style="font-weight: bold">Already Assigned</span>
-																	<?php else: ?>
-																		<input type="number" value="<?= $retailer->id; ?>" hidden>
-																		<a type="button" class="btn btn-save addRetailerForAssignment">ADD</a>	
-																	<?php endif;?>	
-																</td>
-															</tr>
+														<tr>
+															<td>
+																<?= $retailer->retailer_name; ?>
+															</td>
+															<td>
+																<?= $retailer->retailer_address; ?>
+															</td>
+															<td>
+																<?= $retailer->retailer_type; ?>
+															</td>
+															<td>
+																<?= $retailer->retailer_territory; ?>
+															</td>
+															<td>
+																<?php if($retailer->assigned) : ?>
+																<span style="font-weight: bold">Already Assigned</span>
+																<?php else: ?>
+																<input type="number" value="<?= $retailer->id; ?>" hidden>
+																<a type="button" class="btn btn-save addRetailerForAssignment">ADD</a>
+																<?php endif;?>
+															</td>
+														</tr>
 														<?php endforeach; ?>
 													</tbody>
 												</table>
@@ -107,16 +192,16 @@
 								<input type="text" name="retailersForAssignments" id="retailersForAssignments" hidden>
 							</div>
 						</div>
-					</form>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row button-section">
-			<a type="button" href="<?= base_url('Retailers/ListRetailersAssignments'); ?>" id="backFromRetailersAssignmentsButton" class="btn btn-cancel">Cancel</a>
-			<a type="button" id="addRetailersAssignmentsButton" class="btn btn-save">Save</a>						
+			<div class="row button-section">
+				<a type="button" href="<?= base_url('Retailers/ListRetailersAssignments'); ?>" id="backFromRetailersAssignmentsButton" class="btn btn-cancel">Cancel</a>
+				<a type="button" id="addRetailersAssignmentsButton" class="btn btn-save">Save</a>
+			</div>
 		</div>
 	</div>
-</div>
 </div>
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
 <script type="text/javascript" src="<?= base_url('assets/js/Retailers.js').'?v='.time(); ?>"></script>

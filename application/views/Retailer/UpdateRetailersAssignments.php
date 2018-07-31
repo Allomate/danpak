@@ -68,6 +68,77 @@
 										</div>
 									</div>
 								</div>
+								<div class="row">
+									<!-- <div class="col-md-6">
+										<div class="radio radio-info m-b-15">
+											<input id="region" name="bunchAssignment" type="radio" value="region">
+											<label for="region" class="lab-large"> Assign Distributors by Region </label>
+										</div>
+										<div id="checkbox-circle001">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group">
+														<label class="control-label mb-10">Region</label>
+														<select class="selectpicker" name="region_id" data-style="form-control btn-default btn-outline">
+															<?php foreach ($Regions as $region) : ?>
+															<option value="<?= $region->id; ?>">
+																<?= $region->region_name; ?>
+															</option>
+															<?php endforeach; ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="radio radio-info m-b-15">
+											<input id="area" name="bunchAssignment" type="radio" value="area">
+											<label for="area" class="lab-large"> Assign Distributors by Area </label>
+										</div>
+										<div id="checkbox-circle001">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group">
+														<label class="control-label mb-10">Areas</label>
+														<select class="selectpicker" name="area_id" data-style="form-control btn-default btn-outline">
+															<?php foreach ($Areas as $area) : ?>
+															<option value="<?= $area->id; ?>">
+																<?= $area->area_name; ?>
+															</option>
+															<?php endforeach; ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div> -->
+									<div class="col-md-6">
+										<div class="radio radio-info m-b-15">
+											<input id="territoryRadio" name="bunchAssignment" type="radio" value="territory">
+											<label for="territoryRadio" class="lab-large"> Assign Distributors by Territory</label>
+											<br>
+											<small>
+												<strong>Caution</strong> Updating the distribors using Territory will remove all the existing assignments of this employee</small>
+										</div>
+										<div id="checkbox-circle001">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group">
+														<label class="control-label mb-10">Territory</label>
+														<select class="selectpicker" name="territory_id" data-style="form-control btn-default btn-outline">
+															<?php foreach ($Territories as $territory) : ?>
+															<option value="<?= $territory->id; ?>">
+																<?= $territory->territory_name; ?>
+															</option>
+															<?php endforeach; ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 								<br>
 								<div class="row">
 									<div class="col-md-6">
