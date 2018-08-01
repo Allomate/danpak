@@ -32,6 +32,7 @@ class Orders extends WebAuth_Controller{
 	}
 
 	public function BookingSheet($employee, $date, $status){
+		// echo "<pre>"; print_r($this->om->generateBookingSheet($employee, $date, strtolower($status)));die;
 		return $this->load->view('Order/BookingSheet', [ 'details' => $this->om->generateBookingSheet($employee, $date, strtolower($status)) ]);
 	}
 
@@ -85,7 +86,7 @@ class Orders extends WebAuth_Controller{
 		}else{
 			$this->session->set_flashData('order_creation_failed', 'Failed to create the order');
 		}
-		return redirect('/Dashboard/Home');
+		return redirect('Orders/ManualOrders');
 	}
 
 	public function OrderInvoice($orderId){

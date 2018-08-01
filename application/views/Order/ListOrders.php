@@ -226,7 +226,8 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="box-white p-20">
-						<h2 class="m-b-0">Orders List </h2>
+						<h2 class="m-b-0">Orders List (
+							<?= $this->uri->segment(3)." Orders"; ?>) </h2>
 						<div class="table-wrap">
 							<div class="table-responsive">
 								<table class="table table-hover display pb-30">

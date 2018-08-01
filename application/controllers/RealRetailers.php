@@ -7,6 +7,9 @@ class RealRetailers extends WebAuth_Controller{
 		$this->load->model('TerritoriesModel', 'tm');
 		$this->load->model('RealRetailersModel', 'rem');
 		$this->load->model('EmployeesModel', 'em');
+		$this->load->model('RegionsModel', 'rm');
+		$this->load->model('AreasModel', 'am');
+		$this->load->model('TerritoriesModel', 'tm');
 	}
 
 	public function ListRetailers(){
@@ -159,19 +162,21 @@ class RealRetailers extends WebAuth_Controller{
 	}
 
 	public function AddMoreAssignments(){
-		return $this->load->view('RealRetailers/AddMoreAssignments', [ 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list() ] );
+		return $this->load->view('RealRetailers/AddMoreAssignments', [ 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ] );
 	}
 
 	public function RetailerAssignemntOps(){
 		$retailersAssignmentsData = $this->input->post();
 		unset($retailersAssignmentsData['DataTables_Table_0_length']);
-		if (!$retailersAssignmentsData["employee"] || !$retailersAssignmentsData["retailersForAssignments"]) {
+		if (!$retailersAssignmentsData["employee"] || !$retailersAssignmentsData["assigned_for_day"]) {
 			$this->session->set_flashdata("missing_information", "Missing Information. Please provide complete details");
 			return redirect('RealRetailers/AddMoreAssignments');
 		}
 		$status = $this->rem->AssignRetailers($retailersAssignmentsData);
 		if ($status == "Exist") :
 			$this->session->set_flashdata("retailer_assignment_Exist", "This employee is already assigned retailers. Please update existing record");
+		elseif ($status == "all_retailers_assigned") :
+			$this->session->set_flashdata("retailer_assignment_reserved", "There are no retailers to assiged");
 		elseif ($status == "Success") :
 			$this->session->set_flashdata("retailer_assignment_added", "Retailers assigned successfully");
 		else:
@@ -181,13 +186,14 @@ class RealRetailers extends WebAuth_Controller{
 	}
 
 	public function UpdateRetailersAssignments($employeeId, $assignedDay){
-		return $this->load->view('RealRetailers/UpdateRetailersAssignments', [ 'RetailersAssignment' => $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay), 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list() ] );
+		// echo "<pre>"; print_r($this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay));die;
+		return $this->load->view('RealRetailers/UpdateRetailersAssignments', [ 'RetailersAssignment' => $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay), 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ] );
 	}
 
 	public function UpdateRetailerAssignemntsOps($employeeId){
 		$retailersAssignmentsData = $this->input->post();
 		unset($retailersAssignmentsData["DataTables_Table_0_length"]);
-		if (!$retailersAssignmentsData["employee"] || !$retailersAssignmentsData["retailersForAssignments"]) {
+		if (!$retailersAssignmentsData["employee"] || !$retailersAssignmentsData["assigned_for_day"]) {
 			$this->session->set_flashdata("missing_information", "Missing Information. Please provide complete details");
 			return redirect('RealRetailers/UpdateRetailersAssignments');
 		}

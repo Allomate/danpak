@@ -201,6 +201,7 @@ class Retailers extends WebAuth_Controller{
 			return redirect('Retailers/UpdateRetailersAssignments');
 		}
 		$status = $this->rem->UpdateRetailersAssignment($employeeId, $retailersAssignmentsData);
+		// echo "<pre>"; print_r($status);die;
 		if ($status && $status != "Exist") :
 			$this->session->set_flashdata("retailer_assignment_updated", "Distributors assignment updated successfully");
 		elseif ($status == "Exist") :

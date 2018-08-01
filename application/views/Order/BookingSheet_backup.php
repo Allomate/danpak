@@ -61,72 +61,61 @@
 									</div>
 									<h4 class="font-20" align="center">Outlets Information</h4>
 
+									<?php foreach($details["results"] as $orders) : ?>
 									<div>
+										<div class="O_info">
+											<strong>01 - Retailer:</strong>
+											<?= $orders["main_order"]->retailer_name; ?>
+												<span>
+													<strong> Phone No:</strong>
+													<?= $orders["main_order"]->retailer_phone; ?>
+												</span>
+												<span>
+													<strong>Address:</strong>
+													<?= $orders["main_order"]->retailer_address; ?>
+												</span>
+										</div>
 										<div class="invoice-bill-table">
 											<div class="table-responsive">
 												<table class="table table-hover">
 													<thead>
 														<tr>
-															<th>SN</th>
-															<th>Retailer</th>
-															<th>Address</th>
-															<th>Phone</th>
 															<th>Product</th>
-															<th>Unit</th>
-															<th>TP</th>
-															<th>DIS %</th>
-															<th>Total</th>
+															<th>Unit Type</th>
+															<th>Trade Price</th>
+															<th>Booker Discount</th>
+															<th>Scheme</th>
+															<th>Amount</th>
 															<th>Status</th>
 														</tr>
 													</thead>
 													<tbody>
-														<?php $sno = 1; foreach($details["results"] as $orders) : ?>
+														<?php $orderTotal = 0; $discTotal = 0; $subTotal = 0; foreach($orders["order_contents"] as $contents) : ?>
 														<tr>
-															<td style="padding: 5px; text-align: center" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
-																<?= $sno; ?>
-															</td>
-															<td style="padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
-																<?= $orders["main_order"]->retailer_name; ?>
-															</td>
-															<td style="padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
-																<?= $orders["main_order"]->retailer_address; ?>
-															</td>
-															<td style="padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
-																<?= $orders["main_order"]->retailer_phone; ?>
-															</td>
-														</tr>
-														<?php $subTotal = 0; foreach($orders['order_contents'] as $contents): ?>
-														<tr>
-															<td style="padding: 5px">
+															<td>
 																<?= $contents->product;?>
 															</td>
-															<td style="padding: 5px">
+															<td>
 																<?= $contents->unit_type;?>
 															</td>
-															<td style="padding: 5px">
-																<?= number_format($contents->trade_price);?>
+															<td>
+																<?= $contents->trade_price;?>
 															</td>
-															<td style="padding: 5px">
-																<?= $contents->booker_discount;?>
+															<td>
+																<?= $contents->booker_discount;?>%</td>
+															<td>
+																<?= $contents->scheme;?>
 															</td>
-															<td style="padding: 5px">
-																<?= number_format($contents->amount);?>
+															<td>
+																<?= $contents->amount;?>
 															</td>
-															<td style="padding: 5px">
+															<td>
 																<?= $contents->status ? $contents->status : "Pending";?>
 															</td>
 														</tr>
-														<?php $subTotal += $contents->amount; endforeach; ?>
-														<tr>
-															<td style="padding: 5px; font-weight: bolder; text-align: center" colspan="4">Total Order Amount</td>
-															<td style="padding: 5px; font-weight: bolder">
-																<?= number_format($subTotal); ?>
-															</td>
-															<td style="padding: 5px"></td>
-														</tr>
-														<?php $sno++; endforeach; ?>
+														<?php $discTotal += $contents->booker_discount; $orderTotal += $contents->amount; $subTotal += $contents->trade_price; endforeach; ?>
 													</tbody>
-													<!-- <tfoot>
+													<tfoot>
 														<tr class="txt-dark">
 															<td></td>
 															<td>Subtotal</td>
@@ -150,12 +139,13 @@
 															</td>
 															<td></td>
 														</tr>
-													</tfoot> -->
+													</tfoot>
 												</table>
 											</div>
 											<div class="clearfix"></div>
 										</div>
 									</div>
+									<?php endforeach; ?>
 
 									<div class="button-list pull-right">
 										<div class="seprator-block"></div>

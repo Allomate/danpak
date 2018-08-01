@@ -36,8 +36,9 @@
 					<div class="box-white m-b-30">
 						<h2>Update Retailer Assignment</h2>
 						<?php $attributes = array('id' => 'updateRetailerAssignmentForm');
-						echo form_open('RealRetailers/UpdateRetailerAssignemntsOps/'.$RetailersAssignment->employee_id, $attributes);
-						echo form_hidden('existingAssignmentIds', $RetailersAssignment->retailer_assignment_id); ?>
+						echo form_open('RealRetailers/UpdateRetailerAssignemntsOps/'.$RetailersAssignment["verbose"]->employee_id, $attributes);
+						echo form_hidden('existingAssignmentIds', $RetailersAssignment["verbose"]->retailer_assignment_id);
+						echo form_hidden('existing_day', $RetailersAssignment["verbose"]->assigned_for_day); ?>
 						<div class="form-wrap">
 							<div class="form-body">
 								<div class="row">
@@ -49,7 +50,7 @@
 												$options[$employee->employee_id] = $employee->employee_username;
 											endforeach; 
 											$atts = array( 'class' => 'selectpicker', "data-style" => "form-control btn-default btn-outline" );
-											echo form_dropdown('employee', $options, $RetailersAssignment->employee_id, $atts); ?>
+											echo form_dropdown('employee', $options, $RetailersAssignment["verbose"]->employee_id, $atts); ?>
 										</div>
 									</div>
 									<div class="col-md-6">
@@ -64,27 +65,93 @@
 											$optionsNew["saturday"] = "Saturday";
 											$optionsNew["sunday"] = "Sunday";
 											$atts = array( 'class' => 'selectpicker', "data-style" => "form-control btn-default btn-outline" );
-											echo form_dropdown('assigned_for_day', $optionsNew, $RetailersAssignment->assigned_for_day, $atts); ?>
+											echo form_dropdown('assigned_for_day', $optionsNew, $RetailersAssignment["verbose"]->assigned_for_day, $atts); ?>
 										</div>
 									</div>
 								</div>
-								<br>
+								<div class="row">
+									<!-- <div class="col-md-6">
+										<div class="radio radio-info m-b-15">
+											<input id="region" name="bunchAssignment" type="radio" value="region">
+											<label for="region" class="lab-large"> Assign Distributors by Region </label>
+										</div>
+										<div id="checkbox-circle001">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group">
+														<label class="control-label mb-10">Region</label>
+														<select class="selectpicker" name="region_id" data-style="form-control btn-default btn-outline">
+															<?php foreach ($Regions as $region) : ?>
+															<option value="<?= $region->id; ?>">
+																<?= $region->region_name; ?>
+															</option>
+															<?php endforeach; ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="radio radio-info m-b-15">
+											<input id="area" name="bunchAssignment" type="radio" value="area">
+											<label for="area" class="lab-large"> Assign Distributors by Area </label>
+										</div>
+										<div id="checkbox-circle001">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group">
+														<label class="control-label mb-10">Areas</label>
+														<select class="selectpicker" name="area_id" data-style="form-control btn-default btn-outline">
+															<?php foreach ($Areas as $area) : ?>
+															<option value="<?= $area->id; ?>">
+																<?= $area->area_name; ?>
+															</option>
+															<?php endforeach; ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div> -->
+									<div class="col-md-6">
+										<div class="radio radio-info m-b-15">
+											<input id="territoryRadio" name="bunchAssignment" type="radio" value="territory">
+											<label for="territoryRadio" class="lab-large"> Assign Distributors by Territory </label>
+										</div>
+										<div id="checkbox-circle001">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group">
+														<label class="control-label mb-10">Territory</label>
+														<select class="selectpicker" name="territory_id" data-style="form-control btn-default btn-outline">
+															<?php foreach ($Territories as $territory) : ?>
+															<option value="<?= $territory->id; ?>">
+																<?= $territory->territory_name; ?>
+															</option>
+															<?php endforeach; ?>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 								<div class="row">
 									<div class="col-md-6">
 										<label class="control-label mb-10">Retailers Added</label>
 										<ul style="list-style: none; padding: 0px" id="addedAssignmentsList">
 											<?php 
-											$RetailersAssignmentsUlListRetIds = explode(",", $RetailersAssignment->retailer_id);
-											$RetailersAssignmentsUlListRetNames = explode("<>", $RetailersAssignment->retailer_names);
-											for($i = 0; $i < sizeof($RetailersAssignmentsUlListRetIds); $i++) : ?>
+											$retailerIds = array();
+											foreach($RetailersAssignment["details"] as $retailer) : ?>
 											<li style="margin-top: 10px">
 												<div>
-													<input type="text" value="<?= $RetailersAssignmentsUlListRetNames[$i] ?> " class="form-control" style="width: 70%; display: inline; height: 50px"
+													<input type="text" value="<?= $retailer->retailer_name ?> " class="form-control" style="width: 70%; display: inline; height: 50px"
 													disabled="disabled">
-													<button type="button" class="btn btn-danger removeAddedAssignment" id="<?= $RetailersAssignmentsUlListRetIds[$i]; ?>">Remove</button>
+													<button type="button" class="btn btn-danger removeAddedAssignment" id="<?= $retailer->id; ?>">Remove</button>
 												</div>
 											</li>
-											<?php endfor; ?>
+											<?php $retailerIds[] = $retailer->id; endforeach; ?>
 										</ul>
 									</div>
 								</div>
@@ -125,7 +192,7 @@
 										</div>
 									</div>
 								</div>
-								<input type="text" name="retailersForAssignments" value="<?= $RetailersAssignment->retailer_id; ?>" id="retailersForAssignments"
+								<input type="text" name="retailersForAssignments" value="<?= implode(',', $retailerIds); ?>" id="retailersForAssignments"
 								hidden>
 							</div>
 						</div>

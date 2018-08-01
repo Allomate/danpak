@@ -37,7 +37,8 @@
 						<h2>Update Distributor Assignment</h2>
 						<?php $attributes = array('id' => 'updateRetailerAssignmentForm');
 						echo form_open('Retailers/UpdateRetailerAssignemntsOps/'.$RetailersAssignment["verbose"]->employee_id, $attributes);
-						echo form_hidden('existingAssignmentIds', $RetailersAssignment["verbose"]->retailer_assignment_id); ?>
+						echo form_hidden('existingAssignmentIds', $RetailersAssignment["verbose"]->retailer_assignment_id);
+						echo form_hidden('existing_day', $RetailersAssignment["verbose"]->assigned_for_day); ?>
 						<div class="form-wrap">
 							<div class="form-body">
 								<div class="row">
@@ -145,7 +146,6 @@
 										<label class="control-label mb-10">Distributors Added</label>
 										<ul style="list-style: none; padding: 0px" id="addedAssignmentsList">
 											<?php 
-											// echo "<pre>"; print_r(RetailersAssignmentsUlListRetNames);
 											$retailerIds = array();
 											foreach($RetailersAssignment["details"] as $retailer) : ?>
 											<li style="margin-top: 10px">

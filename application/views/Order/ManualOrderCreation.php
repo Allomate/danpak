@@ -6,6 +6,22 @@
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
 	<div class="page-wrapper">
 		<div class="container-fluid">
+			<?php if ($feedback = $this->session->flashdata('order_created')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Created</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('order_creation_failed')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Failed</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
 			<div class="row heading-bg">
 				<div class="col-lg-6 col-md-6">
 					<h2 class="m-heading">Orders Management</h2>
@@ -49,7 +65,7 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Select Employee</label>
-											<select class="selectpicker" name="employee_id" data-style="form-control btn-default btn-outline">
+											<select name="employee_id" data-style="form-control btn-default btn-outline">
 												<?php foreach( $employees as $employee ) : ?>
 												<option value="<?= $employee->employee_id; ?>">
 													<?= $employee->employee_username; ?>

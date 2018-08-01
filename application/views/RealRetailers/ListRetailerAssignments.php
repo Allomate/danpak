@@ -14,6 +14,14 @@
 				</div>
 			</div>
 			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('all_retailers_assigned')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Failed</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
 			<?php if ($feedback = $this->session->flashdata('retailer_add_failed')) : ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">

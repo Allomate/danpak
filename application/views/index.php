@@ -6,22 +6,6 @@
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
 	<div class="page-wrapper">
 		<div class="container">
-			<?php if ($feedback = $this->session->flashdata('order_created')) : ?>
-			<div class="row" style="margin-top: 20px;">
-				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
-					<strong>Created</strong>
-					<?= $feedback; ?>
-				</div>
-			</div>
-			<?php endif; ?>
-			<?php if ($feedback = $this->session->flashdata('order_creation_failed')) : ?>
-			<div class="row" style="margin-top: 20px;">
-				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
-					<strong>Failed</strong>
-					<?= $feedback; ?>
-				</div>
-			</div>
-			<?php endif; ?>
 			<div class="row m-t-30">
 				<div class="col-md-12 align-center">
 					<h1 class="txt-dark uppercase-font">Sales and Distributor</h1>

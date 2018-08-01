@@ -35,14 +35,26 @@
 <script src="<?= base_url('assets/vendors/bower_components/waypoints/lib/jquery.waypoints.min.js'); ?>"></script>
 <script src="<?= base_url('assets/vendors/bower_components/jquery.counterup/jquery.counterup.min.js'); ?>"></script>
 
+<script src="<?= base_url('assets/dist/js/select2.min.js'); ?>"></script>
+
 <script src="<?= base_url('assets/dist/js/init.js'); ?> "></script>
 <script src="<?= base_url('assets/multi/multi.min.js'); ?> "></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.18.0/sweetalert2.all.min.js"></script>
+<input type="text" value="<?= $this->uri->segment(2); ?>" id="thisUrl" hidden>
+
 <script type="text/javascript">
 	$(document).ready(function () {
 		var pathname = window.location.pathname;
 		if (pathname.indexOf("DashboardHrm") == -1 && pathname.indexOf("Dashboardv1") == -1) {
 			$('.table').DataTable();
+		}
+
+		if ($('#thisUrl').val() == "ManualOrders") {
+			$("select").select2();
+			setTimeout(function () {
+				$(".select2-selection").css('border', '0px');
+				$(".select2-selection__rendered").css('line-height', '40px');
+			}, 500);
 		}
 	});
 

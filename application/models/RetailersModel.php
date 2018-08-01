@@ -195,7 +195,16 @@ class RetailersModel extends CI_Model{
 				$territory_ids = $assignmentsData["territory_id"];
 			}
 			
-			$existingAssignedDets = $this->db->select('GROUP_CONCAT(retailer_id) as retailers')->get('retailers_assignment')->row()->retailers;
+			$existingAssignedDetsLive = $this->db->select('retailer_id as id')->get('retailers_assignment')->result();
+			$existingAssignedDets = "";
+			foreach($existingAssignedDetsLive as $dets){
+				if($existingAssignedDets == ""){
+					$existingAssignedDets = $dets->id;
+				}else{
+					$existingAssignedDets .= "," . $dets->id;
+				}
+			}
+
 			if($existingAssignedDets != ""){
 				$retailersForAssignments = $this->db->select('GROUP_CONCAT(id) as ids')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist") and id NOT IN ('.$existingAssignedDets.')')->get('retailers_details')->row()->ids;
 			}else{
@@ -214,28 +223,38 @@ class RetailersModel extends CI_Model{
 		if ($this->db->where('employee_id = '. $assignmentsData["employee"] . ' and assigned_for_day = "'.$assignmentsData['assigned_for_day'].'" and retailer_id IN ('.$dists.') and id NOT IN ('.$assignmentsData['existingAssignmentIds'].')')->get('retailers_assignment')->result()) {
 			return "Exist";
 		}
-		$toDelete = $this->db->select('id')->where('employee_id = '.$existingEmployeeId.' and assigned_for_day = "'.$assignmentsData["assigned_for_day"].'" and retailer_id IN ('.$dists.')')->get('retailers_assignment')->result();
-		$deleteIds = null;
-		foreach($toDelete as $delete) :
-			if(!$deleteIds){
-				$deleteIds = $delete->id;
-			}else{
-				$deleteIds = $deleteIds . ", " . $delete->id;
-			}
-		endforeach;
-		if ($this->db->where('id IN ('.$deleteIds.')')->delete('retailers_assignment')) :
-			$retailers = explode(",", $assignmentsData["retailersForAssignments"]);
-			if(isset($assignmentsData["bunchAssignment"])){
-				$retailers = explode(",", $retailersForAssignments);
-			}
-			$assignmentsBatch = array();
-			for ($i=0; $i < sizeof($retailers); $i++) :
-				$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]);
-			endfor;
-			return $this->db->insert_batch('retailers_assignment', $assignmentsBatch);
-		else :
-			return false;
-		endif;
+		if($assignmentsData["existing_day"] == $assignmentsData["assigned_for_day"]){
+			if ($this->db->where('employee_id = '.$existingEmployeeId.' and assigned_for_day = "'.$assignmentsData["assigned_for_day"].'" and retailer_id IN ('.$dists.')')->delete('retailers_assignment')) :
+				$retailers = explode(",", $assignmentsData["retailersForAssignments"]);
+				if(isset($assignmentsData["bunchAssignment"])){
+					if($retailersForAssignments == ""){
+						return "all_retailers_assigned";
+					}
+					$retailers = explode(",", $retailersForAssignments);
+				}
+				$assignmentsBatch = array();
+				for ($i=0; $i < sizeof($retailers); $i++) :
+					$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]);
+				endfor;
+				return $this->db->insert_batch('retailers_assignment', $assignmentsBatch);
+			else :
+				return false;
+			endif;
+		}else{
+			if ($this->db->where('employee_id = '.$existingEmployeeId.' and assigned_for_day = "'.$assignmentsData["existing_day"].'" and retailer_id IN ('.$dists.')')->delete('retailers_assignment')) :
+				$retailers = explode(",", $assignmentsData["retailersForAssignments"]);
+				if(isset($assignmentsData["bunchAssignment"])){
+					$retailers = explode(",", $retailersForAssignments);
+				}
+				$assignmentsBatch = array();
+				for ($i=0; $i < sizeof($retailers); $i++) :
+					$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]);
+				endfor;
+				return $this->db->insert_batch('retailers_assignment', $assignmentsBatch);
+			else :
+				return false;
+			endif;
+		}
 	}
 
 }
