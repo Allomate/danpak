@@ -1,4 +1,13 @@
 <?php require_once(APPPATH.'/views/includes/header.php'); ?>
+<style>
+	.invoice-bill-table .table>tbody>tr>td,
+	.invoice-bill-table .table>thead>tr>th {
+		/* font-size: 8pt;
+		font-family: tahoma;
+		padding: 1px !important; */
+	}
+
+</style>
 <div class="wrapper theme-1-active">
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
 	<div class="page-wrapper">
@@ -22,12 +31,7 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12 BS_div">
-					<div class="box-white p-20">
-						<div class="invoice-logo m-b-5">
-							<img class="float-L" src="<?= base_url('assets/images/logo.jpg'); ?>" alt="" />
-							<h3 class="font-20 float-R">Booking Sheet</h3>
-							<hr class="clearfix m-b-10">
-						</div>
+					<div class="box-white p-20" id="printResult" style="display: block; width: auto; height: auto; overflow: visible;">
 						<div class="form-wrap order-detail">
 							<form action="#">
 								<div class="form-body">
@@ -59,70 +63,73 @@
 											<strong>Lala Khan</strong> -->
 										</div>
 									</div>
-									<h4 class="font-20" align="center">Outlets Information</h4>
-
+									<!-- <h4 class="font-20" align="center">Load Sheet</h4> -->
+									<center>
+										<h6 style="font-weight: bolder">Load Sheet</h6>
+									</center>
 									<div>
 										<div class="invoice-bill-table">
 											<div class="table-responsive">
-												<table class="table table-hover">
+												<table class="table table-hover dataTable no-footer table-bordered">
 													<thead>
 														<tr>
-															<th>SN</th>
-															<th>Retailer</th>
-															<th>Address</th>
-															<th>Phone</th>
-															<th>Product</th>
-															<th>Unit</th>
-															<th>TP</th>
-															<th>DIS %</th>
-															<th>Total</th>
-															<th>Status</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">SN</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Retailer</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Address</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Phone</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Product</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Unit</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">TP</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">DIS %</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Total</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Status</th>
 														</tr>
 													</thead>
 													<tbody>
 														<?php $sno = 1; foreach($details["results"] as $orders) : ?>
 														<tr>
-															<td style="padding: 5px; text-align: center" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px; text-align: center" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
 																<?= $sno; ?>
 															</td>
-															<td style="padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
 																<?= $orders["main_order"]->retailer_name; ?>
 															</td>
-															<td style="padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
 																<?= $orders["main_order"]->retailer_address; ?>
 															</td>
-															<td style="padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
 																<?= $orders["main_order"]->retailer_phone; ?>
 															</td>
 														</tr>
 														<?php $subTotal = 0; foreach($orders['order_contents'] as $contents): ?>
 														<tr>
-															<td style="padding: 5px">
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= $contents->product;?>
 															</td>
-															<td style="padding: 5px">
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= $contents->unit_type;?>
 															</td>
-															<td style="padding: 5px">
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= number_format($contents->trade_price);?>
 															</td>
-															<td style="padding: 5px">
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= $contents->booker_discount;?>
 															</td>
-															<td style="padding: 5px">
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= number_format($contents->amount);?>
 															</td>
-															<td style="padding: 5px">
-																<?= $contents->status ? $contents->status : "Pending";?>
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
+
 															</td>
 														</tr>
 														<?php $subTotal += $contents->amount; endforeach; ?>
 														<tr>
-															<td style="padding: 5px; font-weight: bolder; text-align: center" colspan="4">Total Order Amount</td>
-															<td style="padding: 5px; font-weight: bolder">
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder; text-align: center"
+															colspan="4">Total Order Amount</td>
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder">
 																<?= number_format($subTotal); ?>
 															</td>
-															<td style="padding: 5px"></td>
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px"></td>
 														</tr>
 														<?php $sno++; endforeach; ?>
 													</tbody>
@@ -152,30 +159,70 @@
 														</tr>
 													</tfoot> -->
 												</table>
+												<br>
+												<center>
+													<h6 style="font-weight: bolder">Delivery Challan</h6>
+												</center>
+												<table class="table table-hover dataTable no-footer table-bordered">
+													<thead>
+														<tr>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">SN</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Product</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Unit</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Quantity</th>
+															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Return Stock</th>
+														</tr>
+													</thead>
+													<tbody>
+														<?php $sno = 0; foreach ($delivChallan["data"] as $data): ?>
+														<tr>
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">
+																<?= ++$sno; ?>
+															</td>
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">
+																<?=$data->product;?>
+															</td>
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">
+																<?=$data->unit;?>
+															</td>
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">
+																<?=$data->required_stock;?>
+															</td>
+															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important;"></td>
+														</tr>
+														<?php endforeach;?>
+													</tbody>
+												</table>
+												<div class="seprator-block"></div>
+												<div class="float-R">
+													<span class="D_C_line">Issued By</span>
+													<span class="D_C_line">Entered By</span>
+													<span class="D_C_line">Checked By</span>
+												</div>
 											</div>
 											<div class="clearfix"></div>
 										</div>
-									</div>
-
-									<div class="button-list pull-right">
-										<div class="seprator-block"></div>
-										<button type="button" class="btn btn-primary btn-outline btn-icon left-icon" onclick="#">
-											<i class="fa fa-file-pdf-o"></i>
-											<span> Save PDF</span>
-										</button>
-										<button type="button" class="btn btn-primary btn-outline btn-icon left-icon" onclick="#">
-											<i class="fa fa-envelope"></i>
-											<span> Send Email</span>
-										</button>
-										<button type="button" class="btn btn-primary btn-outline btn-icon left-icon" onclick="javascript:window.print();">
-											<i class="fa fa-print"></i>
-											<span> Print</span>
-										</button>
 									</div>
 									<div class="clearfix"></div>
 								</div>
 							</form>
 						</div>
+					</div>
+
+					<div class="button-list pull-right">
+						<div class="seprator-block"></div>
+						<button type="button" class="btn btn-primary btn-outline btn-icon left-icon" onclick="#">
+							<i class="fa fa-file-pdf-o"></i>
+							<span> Save PDF</span>
+						</button>
+						<button type="button" class="btn btn-primary btn-outline btn-icon left-icon" onclick="#">
+							<i class="fa fa-envelope"></i>
+							<span> Send Email</span>
+						</button>
+						<button type="button" class="btn btn-primary btn-outline btn-icon left-icon" onclick="printDiv();">
+							<i class="fa fa-print"></i>
+							<span> Print</span>
+						</button>
 					</div>
 				</div>
 				<!-- /Row -->
@@ -185,4 +232,14 @@
 	</div>
 </div>
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
+<script type="text/javascript">
+	function printDiv() {
+		var printContents = document.getElementById('printResult').innerHTML;
+		var originalContents = document.body.innerHTML;
+		document.body.innerHTML = printContents;
+		window.print();
+		document.body.innerHTML = originalContents;
+	}
+
+</script>
 <script src="<?= base_url('assets/js/jquery.printElement.min.js'); ?>" />

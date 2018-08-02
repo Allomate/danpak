@@ -240,7 +240,11 @@
 											<th>Region</th>
 											<th>Area</th>
 											<th>Territory</th>
+											<?php if($this->uri->segment(3) == "EmployeesList") : ?>
 											<th>Order Within Circle</th>
+											<?php else : ?>
+											<th>Total Price</th>
+											<?php endif; ?>
 											<th>Status</th>
 											<th>Action</th>
 										</tr>
@@ -255,7 +259,11 @@
 											<th>Region</th>
 											<th>Area</th>
 											<th>Territory</th>
+											<?php if($this->uri->segment(3) == "EmployeesList") : ?>
 											<th>Order Within Circle</th>
+											<?php else : ?>
+											<th>Total Price</th>
+											<?php endif; ?>
 											<th>Status</th>
 											<th>Action</th>
 										</tr>
@@ -287,52 +295,60 @@
 											<td>
 												<?= $order->territory; ?>
 											</td>
+											<?php if($this->uri->segment(3) == "EmployeesList") : ?>
 											<td>
 												<?= $order->within_radius ? "Yes" : "No"; ?>
 											</td>
+											<?php else : ?>
+											<td>
+												<?= number_format($order->final_price); ?>
+											</td>
+											<?php endif; ?>
 											<td>
 												<?= $order->status ? $order->status : "Pending"; ?>
 											</td>
 											<td>
-												<?php if($this->uri->segment(5) !== "EmployeesList") : ?>
+												<?php if($this->uri->segment(3) !== "EmployeesList") : ?>
 												<?php if (strtolower($order->status) == strtolower("Processed")) : ?>
-												<a href="<?= base_url('Orders/UpdateOrder/'.$order->id); ?>">
+												<a href="<?= base_url('Orders/UpdateOrder/'.$order->id); ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit">
 													<i class="fa fa-pencil"></i>
 												</a>
-												<a href="<?= base_url('Orders/CompleteOrder/'.$this->uri->segment(3).'/'.$order->id); ?>">
+												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="Invoice">
+													<i class="fa fa-list-alt"></i>
+												</a>
+												<a href="<?= base_url('Orders/CancelOrder/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$order->id); ?>"
+												data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel">
+													<i class="fa fa-close"></i>
+												</a>
+												<a href="<?= base_url('Orders/CompleteOrder/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$order->id); ?>">
 													<button class="btn view-report">Complete</button>
 												</a>
-												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>">
-													<button class="btn view-report">Invoice</button>
-												</a>
-												<a href="<?= base_url('Orders/CancelOrder/'.$this->uri->segment(3).'/'.$order->id); ?>">
-													<button class="btn view-report">Cancel</button>
-												</a>
 												<?php elseif (!$order->status) : ?>
-												<a href="<?= base_url('Orders/UpdateOrder/'.$order->id); ?>">
+												<<a href="<?= base_url('Orders/UpdateOrder/'.$order->id); ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit">
 													<i class="fa fa-pencil"></i>
-												</a>
-												<a href="<?= base_url('Orders/ProcessOrder/'.$this->uri->segment(3).'/'.$order->id); ?>">
-													<button class="btn view-report">Process</button>
-												</a>
-												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>">
-													<button class="btn view-report">Invoice</button>
-												</a>
-												<a href="<?= base_url('Orders/CancelOrder/'.$this->uri->segment(3).'/'.$order->id); ?>">
-													<button class="btn view-report">Cancel</button>
-												</a>
-												<?php else: ?>
-												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>">
-													<button class="btn view-report">View Order Detail</button>
-												</a>
-												<?php endif; ?>
-												<?php else: ?>
-												<input type="text" id="empLats" value="<?= $order->booker_lats; ?>" hidden>
-												<input type="text" id="empLongs" value="<?= $order->booker_longs; ?>" hidden>
-												<input type="text" id="retailerLats" value="<?= $order->retailer_lats; ?>" hidden>
-												<input type="text" id="retailerLongs" value="<?= $order->retailer_longs; ?>" hidden>
-												<a class="view-report" id="viewDetail" style="cursor: pointer">View Detail</a>
-												<?php endif; ?>
+													</a>
+													<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="Invoice">
+														<i class="fa fa-list-alt"></i>
+													</a>
+													<a href="<?= base_url('Orders/CancelOrder/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$order->id); ?>"
+													data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel">
+														<i class="fa fa-close"></i>
+													</a>
+													<a href="<?= base_url('Orders/ProcessOrder/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$order->id); ?>">
+														<button class="btn view-report">Process</button>
+													</a>
+													<?php else: ?>
+													<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>">
+														<button class="btn view-report">View Order Detail</button>
+													</a>
+													<?php endif; ?>
+													<?php else: ?>
+													<input type="text" id="empLats" value="<?= $order->booker_lats; ?>" hidden>
+													<input type="text" id="empLongs" value="<?= $order->booker_longs; ?>" hidden>
+													<input type="text" id="retailerLats" value="<?= $order->retailer_lats; ?>" hidden>
+													<input type="text" id="retailerLongs" value="<?= $order->retailer_longs; ?>" hidden>
+													<a class="view-report" id="viewDetail" style="cursor: pointer">View Detail</a>
+													<?php endif; ?>
 											</td>
 										</tr>
 										<?php endforeach; ?>

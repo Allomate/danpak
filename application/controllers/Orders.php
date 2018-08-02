@@ -11,15 +11,15 @@ class Orders extends WebAuth_Controller{
 
 	public function ListOrders($status){
 		if ($status == "EmployeesList"){
-			return $this->load->view('Order/ListOrders', [ 'Orders' => $this->om->getCollectiveOrders(null) ]);
+			// echo "<pre>"; print_r($this->om->getAllOrders(null, null, "employee"));die;
+			return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrders(null, null, "employee") ]);
 		}
+		// echo "<pre>"; print_r($this->om->getCollectiveOrders(strtolower($status)));die;
 		return $this->load->view('Order/ListOrders', [ 'Orders' => $this->om->getCollectiveOrders(strtolower($status)) ]);
 	}
 
 	public function ListOrdersIndividual($employee, $date, $status){
-		if ($status == "EmployeesList"){
-			return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrders($employee, urldecode($date), null) ]);
-		}
+		// echo "<pre>"; print_r($this->om->getAllOrders($employee, urldecode($date), strtolower($status)));die;
 		return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrders($employee, urldecode($date), strtolower($status)) ]);
 	}
 
@@ -33,7 +33,7 @@ class Orders extends WebAuth_Controller{
 
 	public function BookingSheet($employee, $date, $status){
 		// echo "<pre>"; print_r($this->om->generateBookingSheet($employee, $date, strtolower($status)));die;
-		return $this->load->view('Order/BookingSheet', [ 'details' => $this->om->generateBookingSheet($employee, $date, strtolower($status)) ]);
+		return $this->load->view('Order/BookingSheet', [ 'details' => $this->om->generateBookingSheet($employee, $date, strtolower($status)), 'delivChallan' => $this->om->generateDeliveryChallan($employee, $date, strtolower($status)) ]);
 	}
 
 	public function DeliveryChallan($employee, $date, $status){
@@ -90,6 +90,7 @@ class Orders extends WebAuth_Controller{
 	}
 
 	public function OrderInvoice($orderId){
+		// echo "<pre>"; print_r($this->om->GetOrderInvoice($orderId));die;
 		return $this->load->view('Order/OrderInvoice', [ 'OrderInvoice' => $this->om->GetOrderInvoice($orderId) ]);
 	}
 
@@ -130,31 +131,31 @@ class Orders extends WebAuth_Controller{
 		return redirect('Orders/ListOrders/Pending');
 	}
 
-	public function ProcessOrder($status, $orderId){
+	public function ProcessOrder($employee_id, $date, $status, $orderId){
 		if ($this->om->ProcessOrder($orderId)) :
 			$this->session->set_flashData('order_processed', 'Order has been processed successfully');
 		else:
 			$this->session->set_flashData('order_process_failed', 'Unable to process the order at the moment');
 		endif;
-		return redirect('Orders/ListOrders/'.$status);
+		return redirect('Orders/ListOrdersIndividual/'.$employee_id.'/'.$date.'/'.$status);
 	}
 
-	public function CompleteOrder($status, $orderId){
+	public function CompleteOrder($employee_id, $date, $status, $orderId){
 		if ($this->om->CompleteOrder($orderId)) :
 			$this->session->set_flashData('order_completed', 'Order has been completed successfully');
 		else:
 			$this->session->set_flashData('order_complete_failed', 'Unable to complete the order at the moment');
 		endif;
-		return redirect('Orders/ListOrders/'.$status);
+		return redirect('Orders/ListOrdersIndividual/'.$employee_id.'/'.$date.'/'.$status);
 	}
 
-	public function CancelOrder($status, $orderId){
+	public function CancelOrder($employee_id, $date, $status, $orderId){
 		if ($this->om->CancelOrder($orderId)) :
 			$this->session->set_flashData('order_cancelled', 'Order has been cancelled');
 		else:
 			$this->session->set_flashData('order_cancel_failed', 'Unable to cancel the order at the moment');
 		endif;
-		return redirect('Orders/ListOrders/'.$status);
+		return redirect('Orders/ListOrdersIndividual/'.$employee_id.'/'.$date.'/'.$status);
 	}
 
 }

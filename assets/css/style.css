@@ -201,3 +201,7 @@ ol.limited_drop_targets li {
 .O_info .span {
     margin-right: 30px;
 }
+
+.box-white .table-wrap th {
+    vertical-align: text-top
+}

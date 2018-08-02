@@ -145,7 +145,7 @@
 						<a href="<?= base_url('Employees/Attendance');?>">Attendance Management</a>
 					</li>
 					<li>
-						<a href="<?= base_url('Orders/ListOrders/EmployeesList'); ?>">Order Compliance</a>
+						<a href="<?= base_url('Orders/ListOrders/EmployeesList/'); ?>">Order Compliance</a>
 					</li>
 					<li>
 						<a href="<?= base_url('Employees/DailyRouting');?>">Daily Routing</a>

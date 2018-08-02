@@ -62,16 +62,19 @@
 											<table class="table table-hover">
 												<thead>
 													<tr>
+														<th>SN</th>
 														<th>Product</th>
-														<th>Unit Type</th>
-														<th>Required Stock</th>
-														<th>Issue Stsock</th>
-														<th>Return</th>
+														<th>Unit</th>
+														<th>Quantity</th>
+														<th>Return Stock</th>
 													</tr>
 												</thead>
 												<tbody>
-													<?php foreach ($details["data"] as $data): ?>
+													<?php $sno = 0; foreach ($details["data"] as $data): ?>
 													<tr>
+														<td>
+															<?= ++$sno; ?>
+														</td>
 														<td>
 															<?=$data->product;?>
 														</td>
@@ -81,7 +84,6 @@
 														<td>
 															<?=$data->required_stock;?>
 														</td>
-														<td></td>
 														<td></td>
 													</tr>
 													<?php endforeach;?>

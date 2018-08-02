@@ -227,7 +227,7 @@
 				<div class="col-md-12">
 					<div class="box-white p-20">
 						<h2 class="m-b-0">Orders List (
-							<?= $this->uri->segment(3)." Orders"; ?>) </h2>
+							<?= $this->uri->segment(3)." Orders"; ?> ) </h2>
 						<div class="table-wrap">
 							<div class="table-responsive">
 								<table class="table table-hover display pb-30">
@@ -238,6 +238,7 @@
 											<th>Employee Name</th>
 											<th>Territory</th>
 											<th>Total Orders</th>
+											<th>Total Price</th>
 											<th>Action</th>
 										</tr>
 									</thead>
@@ -248,6 +249,7 @@
 											<th>Employee Name</th>
 											<th>Territory</th>
 											<th>Total Orders</th>
+											<th>Total Price</th>
 											<th>Action</th>
 										</tr>
 									</tfoot>
@@ -270,16 +272,19 @@
 												<?= $order["totalOrders"]; ?>
 											</td>
 											<td>
+												<?= number_format($order["orders_price"]); ?>
+											</td>
+											<td>
 												<a href="<?= base_url('Orders/ListOrdersIndividual/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
 													<button class="btn view-report">View Orders List</button>
 												</a>
-												<?php if($this->uri->segment(3) == "Latest") : ?>
+												<?php if($this->uri->segment(3) == "Latest" || $this->uri->segment(3) == "Pending") : ?>
 												<a href="<?= base_url('Orders/BookingSheet/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
-													<button class="btn view-report">Booking Sheet</button>
+													<button class="btn view-report">Load Sheet & Challan</button>
 												</a>
-												<a href="<?= base_url('Orders/DeliveryChallan/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
+												<!-- <a href="<?= base_url('Orders/DeliveryChallan/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
 													<button class="btn view-report">Delivery Challan</button>
-												</a>
+												</a> -->
 												<?php endif; ?>
 											</td>
 										</tr>
