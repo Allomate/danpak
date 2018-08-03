@@ -2,7 +2,7 @@
 <style>
 	.invoice-bill-table .table>tbody>tr>td,
 	.invoice-bill-table .table>thead>tr>th {
-		/* font-size: 8pt;
+		/* font-size: 7pt;
 		font-family: tahoma;
 		padding: 1px !important; */
 	}
@@ -36,7 +36,7 @@
 							<form action="#">
 								<div class="form-body">
 									<div class="row">
-										<div class="float-L m-l-15">
+										<div class="float-L m-l-15" style="font-size: 7pt; font-family: tahoma;">
 											Date:
 											<strong>
 												<?= $this->uri->segment(4); ?>
@@ -50,7 +50,7 @@
 												<?= number_format($details["totalAmount"]); ?>
 											</strong>
 										</div>
-										<div class="float-R m-r-15">
+										<div class="float-R m-r-15" style="font-size: 7pt; font-family: tahoma;">
 											Order Booker
 											<strong>
 												<?= $details["results"][0]["main_order"]->employee_username; ?>
@@ -73,63 +73,63 @@
 												<table class="table table-hover dataTable no-footer table-bordered">
 													<thead>
 														<tr>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">SN</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Retailer</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Address</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Phone</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Product</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Unit</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">TP</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">DIS %</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Total</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Status</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">SN</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Retailer</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Address</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Phone</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Product</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Unit</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">TP</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">DIS %</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Total</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Status</th>
 														</tr>
 													</thead>
 													<tbody>
 														<?php $sno = 1; foreach($details["results"] as $orders) : ?>
 														<tr>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px; text-align: center" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px; text-align: center" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
 																<?= $sno; ?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
 																<?= $orders["main_order"]->retailer_name; ?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
 																<?= $orders["main_order"]->retailer_address; ?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
 																<?= $orders["main_order"]->retailer_phone; ?>
 															</td>
 														</tr>
 														<?php $subTotal = 0; foreach($orders['order_contents'] as $contents): ?>
 														<tr>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= $contents->product;?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= $contents->unit_type;?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= number_format($contents->trade_price);?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= $contents->booker_discount;?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= number_format($contents->amount);?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 
 															</td>
 														</tr>
 														<?php $subTotal += $contents->amount; endforeach; ?>
 														<tr>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder; text-align: center"
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder; text-align: center"
 															colspan="4">Total Order Amount</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder">
 																<?= number_format($subTotal); ?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important; padding: 5px"></td>
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px"></td>
 														</tr>
 														<?php $sno++; endforeach; ?>
 													</tbody>
@@ -166,29 +166,29 @@
 												<table class="table table-hover dataTable no-footer table-bordered">
 													<thead>
 														<tr>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">SN</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Product</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Unit</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Quantity</th>
-															<th style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">Return Stock</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">SN</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Product</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Unit</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Quantity</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Return Stock</th>
 														</tr>
 													</thead>
 													<tbody>
 														<?php $sno = 0; foreach ($delivChallan["data"] as $data): ?>
 														<tr>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">
 																<?= ++$sno; ?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">
 																<?=$data->product;?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">
 																<?=$data->unit;?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important;">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">
 																<?=$data->required_stock;?>
 															</td>
-															<td style="font-size: 8pt; font-family: tahoma; padding: 1px !important;"></td>
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important;"></td>
 														</tr>
 														<?php endforeach;?>
 													</tbody>
