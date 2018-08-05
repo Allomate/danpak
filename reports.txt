@@ -81,25 +81,39 @@ Delayed as asked by Wakas Bhai
     order by DATE(created_at) desc
     LIMIT 1)) as projected_mtd_sales
     
-5- Gross Margin (percentage):
-    SELECT (ROUND((final_price/item_quantity_booker))/(SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id)) as gross_margin from order_contents oc
+5- Gross Margin (percentage) - Correction Pending:
+    SELECT ((SELECT SUM(final_price) from order_contents
+    where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed'))/(SELECT SUM(gross_margin) from (SELECT (SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id) as gross_margin from order_contents oc
     where order_id IN (SELECT id from orders
     where LOWER(status) = "completed"
-    and MONTH(created_at) = 7)
+    and MONTH(created_at) = 7)) as gm_query)) as final_result
+    /*SELECT (ROUND((final_price/item_quantity_booker))/(SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id)) as gross_margin from order_contents oc
+    where order_id IN (SELECT id from orders
+    where LOWER(status) = "completed"
+    and MONTH(created_at) = 7)*/
 
-6- Profit:
-    SELECT (ROUND((final_price/item_quantity_booker))-(SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id)) as profit from order_contents oc
+6- Profit - (Verification Needed):
+    SELECT ((SELECT SUM(final_price) from order_contents
+    where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed'))-(SELECT SUM(gross_margin) from (SELECT (SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id) as gross_margin from order_contents oc
     where order_id IN (SELECT id from orders
     where LOWER(status) = "completed"
-    and MONTH(created_at) = 7)
+    and MONTH(created_at) = 7)) as gm_query)) as final_result
+
+    /*SELECT (ROUND((final_price/item_quantity_booker))-(SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id)) as profit from order_contents oc
+    where order_id IN (SELECT id from orders
+    where LOWER(status) = "completed"
+    and MONTH(created_at) = 7)*/
 
 7- Avg Daily Sale:
-    SELECT DATE(created_at) as date, ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as avg_sale from orders
+    SELECT ((SELECT SUM(avg_sale) from (SELECT (SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id))) as avg_sale from orders
     where LOWER(status) = "completed"
     and MONTH(created_at) = 7
-        group by DAY(created_at)
+        group by DAY(created_at)) as result_set)/(SELECT count(*) from (SELECT DATE(created_at) as date, (SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id))) as avg_sale from orders
+    where LOWER(status) = "completed"
+    and MONTH(created_at) = 7
+        group by DAY(created_at)) as result_set)) as final_set
 
-8- High Selling Days:
+8- High Selling Days - Average/Days Neeeded out of the result_set below:
     SELECT DAYNAME(created_at) as day, ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as avg_sale from orders
     where LOWER(status) = "completed"
     and MONTH(created_at) = 7
@@ -122,7 +136,7 @@ Delayed as asked by Wakas Bhai
         order by total_sale desc
         LIMIT 0, 10
 
-11- Top 10 Products:
+11- Top 10 Products - Correction Neeeded - Wrong Result_set:
     SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), " (", (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = oc.pref_id)), ")") as product, item_quantity_booker, ROUND(((item_quantity_booker/(SELECT SUM(item_quantity_booker) as total_quantities
         from ((SELECT item_quantity_booker FROM `order_contents` oc order by item_quantity_booker desc LIMIT 0,5)) as sumed))*100), 2) as percent_value FROM `order_contents` oc where order_id IN (SELECT id from orders
     where LOWER(status) = "completed"
@@ -136,11 +150,29 @@ Delayed as asked by Wakas Bhai
         order by total_sale desc
         LIMIT 0, 10
 
-13. Order Bookers Ranking:
+13. Order Bookers Ranking - Pending:
     Report#3 of top 10 employees and this report are same, as wakas bhai described. So consultation required
 
 14- Regular Vs Discounted Product Sales %:
 SELECT (((SELECT count(*) as total_products_on_reg_price from (SELECT final_price, ((SELECT ip.item_trade_price from inventory_preferences ip where ip.pref_id = oc.pref_id)*oc.item_quantity_booker) as sold_price, (case when (final_price = ((SELECT ip.item_trade_price from inventory_preferences ip where ip.pref_id = oc.pref_id)*oc.item_quantity_booker)) THEN "Reg Price" ELSE "Disc Price" END) reg_or_disc FROM `order_contents` oc
 where oc.pref_id IN (SELECT pref_id from inventory_preferences)
-and (case when (final_price = ((SELECT ip.item_trade_price from inventory_preferences ip where ip.pref_id = oc.pref_id)*oc.item_quantity_booker)) THEN "Reg Price" ELSE "Disc Price" END) = "Reg Price") as test) / (SELECT count(*) as total_products_sold from (SELECT final_price, ((SELECT ip.item_trade_price from inventory_preferences ip where ip.pref_id = oc.pref_id)*oc.item_quantity_booker) as sold_price, (case when (final_price = ((SELECT ip.item_trade_price from inventory_preferences ip where ip.pref_id = oc.pref_id)*oc.item_quantity_booker)) THEN "Reg Price" ELSE "Disc Price" END) reg_or_disc FROM `order_contents` oc
-where oc.pref_id IN (SELECT pref_id from inventory_preferences)) as test))*100) as result
+and (case when (final_price = ((SELECT ip.item_trade_price from inventory_preferences ip where ip.pref_id = oc.pref_id)*oc.item_quantity_booker)) THEN "Reg Price" ELSE "Disc Price" END) = "Reg Price") as test)/(SELECT count(*)
+FROM `order_contents` oc
+where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+and oc.pref_id IN (SELECT pref_id from inventory_preferences))*100)) as result
+
+Order Reports:
+3: Avg. Prod/Order:
+SELECT FORMAT(((SELECT count(*) from order_contents
+where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed'))/(SELECT count(*) from orders where MONTH(created_at) = 7 and LOWER(status) = 'completed')), 2)
+
+8: Successfull Order Ratio:
+SELECT (SELECT CONCAT(ei.employee_first_name, " ", ei.employee_last_name) from employees_info ei where ei.employee_id = orders.employee_id) as employee_name,
+count(*) as total_orders, (SELECT count(*) from visits_marked where employee_id = orders.employee_id) as total_visits from orders
+where LOWER(status) = "completed"
+group by employee_id
+
+Product Reports:
+1- Total number of products (SKU Wise)
+4- Product Sales Report by Area, Region, Territory, Employee (Konse area etc men product ziada bikti hai)
+5- 

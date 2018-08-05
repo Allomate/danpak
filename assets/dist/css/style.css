@@ -18579,11 +18579,27 @@ h6 {
     font-size: 13px;
     white-space: nowrap;
     text-indent: 5px;
+    color: #001e35!important;
 }
 
 .eure_set {
     display: inline-block;
     float: right
+}
+
+.fixed-sidebar-left img {
+    width: 20px;
+    position: absolute;
+    top: 12px;
+}
+
+.emp-stats {
+    background-color: #fff;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border-color: #e8eaec;
+    overflow: hidden
 }
 
 @media (max-width:600px) {
@@ -18597,7 +18613,8 @@ h6 {
     .emp-stats img {
         margin-top: 5px;
         height: 50px;
-        opacity: 0.2;
+        opacity: 0.3;
+        margin-right: -30px;
     }
     .emp-stats span {
         font-size: 12px;
