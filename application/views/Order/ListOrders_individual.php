@@ -224,9 +224,26 @@
 			<?php endif; ?>
 
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-12" style="">
 					<div class="box-white p-20">
-						<h2 class="m-b-0">Orders List </h2>
+						<?php if($this->uri->segment(5) == "Pending") : ?>
+						<div class="row" style="font-size: 22px; border-bottom: solid 2px #d9dde1; line-height: normal; padding-bottom: 15px;">
+							<div class="col-md-9">
+								<h3>Orders List (
+									<?= $this->uri->segment(5); ?> )
+								</h3>
+							</div>
+							<div class="col-md-3" style="text-align: right; padding-right: 50px;">
+								<a href="<?= base_url('Orders/ProcessAll/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'); ?>">
+									<button class="btn view-report">Process All</button>
+								</a>
+							</div>
+						</div>
+						<?php else: ?>
+						<h2 class="m-b-0">Orders List (
+							<?= $this->uri->segment(5); ?> )
+						</h2>
+						<?php endif; ?>
 						<div class="table-wrap">
 							<div class="table-responsive">
 								<table class="table table-hover display pb-30">

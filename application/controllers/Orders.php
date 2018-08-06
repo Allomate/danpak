@@ -116,7 +116,7 @@ class Orders extends WebAuth_Controller{
 		else:
 			$this->session->set_flashData('order_update_failed', 'Unable to update the order at the moment');
 		endif;
-		return redirect('Orders/ListOrders/Pending');
+		return redirect('Orders/UpdateOrder/'.$orderId);
 	}
 
 	public function ExpandOrderOps($orderId){
@@ -128,7 +128,7 @@ class Orders extends WebAuth_Controller{
 		else:
 			$this->session->set_flashData('order_update_failed', 'Unable to update the order at the moment');
 		endif;
-		return redirect('Orders/ListOrders/Pending');
+		return redirect('Orders/UpdateOrder/'.$orderId);
 	}
 
 	public function ProcessOrder($employee_id, $date, $status, $orderId){
@@ -138,6 +138,15 @@ class Orders extends WebAuth_Controller{
 			$this->session->set_flashData('order_process_failed', 'Unable to process the order at the moment');
 		endif;
 		return redirect('Orders/ListOrdersIndividual/'.$employee_id.'/'.$date.'/'.$status);
+	}
+
+	public function ProcessAll($employee_id, $date, $status){
+		if ($this->om->ProcessAll($employee_id, $date, $status)) :
+			$this->session->set_flashData('order_processed', 'All orders has been processed successfully');
+		else:
+			$this->session->set_flashData('order_process_failed', 'Unable to process the orders at the moment');
+		endif;
+		return redirect('Orders/ListOrders/'.$status);
 	}
 
 	public function CompleteOrder($employee_id, $date, $status, $orderId){

@@ -243,9 +243,9 @@
 					<li>
 						<a href="<?= base_url('Orders/ManualOrders'); ?>">Order Entry</a>
 					</li>
-					<li>
+					<!-- <li>
 						<a href="<?= base_url('Orders/ListOrders/Latest'); ?>">Today's Orders</a>
-					</li>
+					</li> -->
 					<li>
 						<a href="<?= base_url('Orders/ListOrders/Pending'); ?>">New Orders</a>
 					</li>

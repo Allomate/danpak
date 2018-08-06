@@ -36,3 +36,4 @@ assets/*
 .tmp.drivedownload
 *.xlsx
 *.zip
+*.sql

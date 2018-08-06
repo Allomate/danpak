@@ -13,22 +13,6 @@
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
 	<div class="page-wrapper">
 		<div class="container-fluid">
-			<?php if ($feedback = $this->session->flashdata('order_updated')) : ?>
-			<div class="row" style="margin-top: 20px;">
-				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
-					<strong>Updated</strong>
-					<?= $feedback; ?>
-				</div>
-			</div>
-			<?php endif; ?>
-			<?php if ($feedback = $this->session->flashdata('order_update_failed')) : ?>
-			<div class="row" style="margin-top: 20px;">
-				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
-					<strong>Failed</strong>
-					<?= $feedback; ?>
-				</div>
-			</div>
-			<?php endif; ?>
 			<?php if ($feedback = $this->session->flashdata('order_processed')) : ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
@@ -280,7 +264,7 @@
 												</a>
 												<?php if($this->uri->segment(3) == "Latest" || $this->uri->segment(3) == "Pending") : ?>
 												<a href="<?= base_url('Orders/BookingSheet/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
-													<button class="btn view-report">Load Sheet & Challan</button>
+													<button class="btn view-report">Load Sheet</button>
 												</a>
 												<!-- <a href="<?= base_url('Orders/DeliveryChallan/'.$order['employee_id'].'/'.urlencode($order['date']).'/'.$this->uri->segment(3)); ?>">
 													<button class="btn view-report">Delivery Challan</button>

@@ -11,6 +11,7 @@ class AccessRights extends CI_Model{
   }
     
   public function getAllRights(){
+    
     return $this->db->select('id, (SELECT employee_username from employees_info where employee_id = ar.admin_id) as username')->where('admin_id != 1')->get('access_rights ar')->result();    
   }
 

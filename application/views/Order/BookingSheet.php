@@ -1,13 +1,4 @@
 <?php require_once(APPPATH.'/views/includes/header.php'); ?>
-<style>
-	.invoice-bill-table .table>tbody>tr>td,
-	.invoice-bill-table .table>thead>tr>th {
-		/* font-size: 7pt;
-		font-family: tahoma;
-		padding: 1px !important; */
-	}
-
-</style>
 <div class="wrapper theme-1-active">
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
 	<div class="page-wrapper">
@@ -59,11 +50,8 @@
 											<strong>
 												<?= $details["results"][0]["main_order"]->territory; ?>
 											</strong>
-											<!-- <br> Distributor:
-											<strong>Lala Khan</strong> -->
 										</div>
 									</div>
-									<!-- <h4 class="font-20" align="center">Load Sheet</h4> -->
 									<center>
 										<h6 style="font-weight: bolder">Load Sheet</h6>
 									</center>
@@ -80,6 +68,8 @@
 															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Product</th>
 															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Unit</th>
 															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">TP</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Scheme</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Scheme Amount/Discount</th>
 															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">DIS %</th>
 															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Total</th>
 															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Status</th>
@@ -113,19 +103,24 @@
 																<?= number_format($contents->trade_price);?>
 															</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
+																<?= $contents->scheme; ?>
+															</td>
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
+																<?= $contents->scheme_amount_or_discount; ?>
+															</td>
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= $contents->booker_discount;?>
 															</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= number_format($contents->amount);?>
 															</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
-
 															</td>
 														</tr>
 														<?php $subTotal += $contents->amount; endforeach; ?>
 														<tr>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder; text-align: center"
-															colspan="4">Total Order Amount</td>
+															colspan="5">Total Order Amount</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder">
 																<?= number_format($subTotal); ?>
 															</td>
@@ -133,31 +128,6 @@
 														</tr>
 														<?php $sno++; endforeach; ?>
 													</tbody>
-													<!-- <tfoot>
-														<tr class="txt-dark">
-															<td></td>
-															<td>Subtotal</td>
-															<td>
-																<?= number_format($subTotal); ?>
-															</td>
-															<td>-
-																<?= $discTotal; ?>%</td>
-															<td></td>
-															<td></td>
-															<td></td>
-														</tr>
-														<tr class="txt-dark">
-															<td></td>
-															<td></td>
-															<td></td>
-															<td></td>
-															<td>Total</td>
-															<td>Rs:
-																<?= number_format($orderTotal); ?>
-															</td>
-															<td></td>
-														</tr>
-													</tfoot> -->
 												</table>
 												<br>
 												<center>

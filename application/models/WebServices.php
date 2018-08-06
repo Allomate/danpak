@@ -445,8 +445,8 @@ class WebServices extends CI_Model
             $totalOrders = sizeOf(explode(",", $orders));
             $total_sale = $this->db->select('IFNULL(SUM(final_price), "0") as total_sale')->where("order_id IN (".$orders.")")->get('order_contents')->row()->total_sale;
         endif;
-        $punch_in_time = $this->db->select('IFNULL(DATE_FORMAT(TIME(created_at), "%r"), "Not checked in") as punch_in_time')->where('employee_id = ' . $employee_id.' and checking_status = 1 and DATE(created_at) = CURDATE()')->get('ams')->row()->punch_in_time;
-        $time_spent = $this->db->select('TIME_FORMAT(TIMEDIFF(TIME(NOW()), TIME(created_at)) , "%Hh %im") as time_spent')->where('employee_id = ' . $employee_id.' and checking_status = 1 and DATE(created_at) = CURDATE()')->get('ams')->row()->time_spent;
+        $punch_in_time = $this->db->select('count(DATE_FORMAT(TIME(created_at), "%r")) as record_found, IFNULL(DATE_FORMAT(TIME(created_at), "%r"), "Not checked in") as punch_in_time')->where('employee_id = ' . $employee_id.' and checking_status = 1 and DATE(created_at) = CURDATE()')->get('ams')->row()->punch_in_time;
+        $time_spent = $this->db->select('count(TIME_FORMAT(TIMEDIFF(TIME(NOW()), TIME(created_at)) , "%Hh %im")) as record_found, IFNULL(TIME_FORMAT(TIMEDIFF(TIME(NOW()), TIME(created_at)) , "%Hh %im"), "No time spent") as time_spent')->where('employee_id = ' . $employee_id.' and checking_status = 1 and DATE(created_at) = CURDATE()')->get('ams')->row()->time_spent;
         $schedule_visits = $this->db->select('count(*) as schedule_visits')->where('employee_id = ' . $employee_id.' and DATE(plan_for_day) = CURDATE()')->get('employee_visit_plan')->row()->schedule_visits;
         $done_visits = $this->db->select('count(*) as done_visits')->where('employee_id = ' . $employee_id.' and DATE(created_at) = CURDATE()')->get('visits_marked')->row()->done_visits;
 

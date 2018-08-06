@@ -12,7 +12,7 @@ class Dashboard extends WebAuth_Controller
 
     public function Home()
     {   
-        return $this->load->view('index');
+        return $this->load->view('index', ["db_backup" => $this->dm->db_backup()]);
     }
 
     public function Reports()

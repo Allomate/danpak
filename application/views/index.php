@@ -98,3 +98,14 @@
 	</div>
 </div>
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
+<script type="text/javascript">
+	$(document).ready(function () {
+		var backupExist = "<?= $db_backup->exist; ?>";
+		if (!backupExist || backupExist == "0") {
+			$.ajax({
+				url: '../../db_backup/backup.php'
+			});
+		}
+	});
+
+</script>

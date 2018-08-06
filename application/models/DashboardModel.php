@@ -36,4 +36,8 @@ class DashboardModel extends CI_Model
         return $this->db->select('retailer_lats, retailer_longs')->where('retailer_territory_id', $territoryId)->get('retailers_details')->result();
     }
 
+    public function db_backup(){
+        return $this->db->select('count(*) as exist')->where('DATE(created_at) = CURDATE() and LOWER(backup_status) = "success"')->get('database_backup')->row();
+    }
+
 }

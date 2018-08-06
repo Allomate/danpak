@@ -114,11 +114,15 @@ Delayed as asked by Wakas Bhai
         group by DAY(created_at)) as result_set)) as final_set
 
 8- High Selling Days - Average/Days Neeeded out of the result_set below:
-    SELECT DAYNAME(created_at) as day, ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as avg_sale from orders
+    SELECT day, TRUNCATE((SUM(total_sale_each_day)/count(*)), 2) as avg_sale_per_day from 
+(SELECT DAYNAME(created_at) as day, 
+(SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id))) as total_sale_each_day from orders
     where LOWER(status) = "completed"
     and MONTH(created_at) = 7
         group by DAY(created_at)
-        order by avg_sale desc
+        order by total_sale_each_day desc) as final_result
+        group by day
+        order by avg_sale_per_day desc
 
 9- Top 10 Employees:
     SELECT (SELECT CONCAT(ei.employee_first_name, " ", ei.employee_last_name) from employees_info ei where ei.employee_id = orders.employee_id) as employee, ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as total_sale from orders
@@ -136,11 +140,15 @@ Delayed as asked by Wakas Bhai
         order by total_sale desc
         LIMIT 0, 10
 
-11- Top 10 Products - Correction Neeeded - Wrong Result_set:
-    SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), " (", (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = oc.pref_id)), ")") as product, item_quantity_booker, ROUND(((item_quantity_booker/(SELECT SUM(item_quantity_booker) as total_quantities
-        from ((SELECT item_quantity_booker FROM `order_contents` oc order by item_quantity_booker desc LIMIT 0,5)) as sumed))*100), 2) as percent_value FROM `order_contents` oc where order_id IN (SELECT id from orders
-    where LOWER(status) = "completed"
-    and MONTH(created_at) = 7) order by item_quantity_booker desc LIMIT 0,10
+11- Top 10 Products:
+    SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), " (", 
+    (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = oc.pref_id)), ")") as item,
+    count(*) as total_sold from order_contents oc
+    where pref_id != 0
+    and order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+    group by pref_id
+    order by total_sold desc
+    LIMIT 0, 10
 
 12- Top 10 Retailers:
     SELECT (SELECT rd.retailer_name from retailers_details rd where rd.id = orders.retailer_id) as retailer, ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as total_sale from orders
@@ -162,17 +170,212 @@ where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER
 and oc.pref_id IN (SELECT pref_id from inventory_preferences))*100)) as result
 
 Order Reports:
+1: Total Sale Orders:
+SELECT ROUND(SUM(final_price), 2) from order_contents
+where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+
+2: Average Order Value:
+SELECT ROUND(((SELECT ROUND(SUM(final_price), 2) from order_contents
+where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed'))/
+(SELECT count(*) FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')), 2) as avg_order
+
 3: Avg. Prod/Order:
-SELECT FORMAT(((SELECT count(*) from order_contents
-where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed'))/(SELECT count(*) from orders where MONTH(created_at) = 7 and LOWER(status) = 'completed')), 2)
+SELECT TRUNCATE(((SELECT count(*) from order_contents
+where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed'))/(SELECT count(*) from orders where MONTH(created_at) = 7 and LOWER(status) = 'completed')), 2) as result
+
+4: Cancelled Orders:
+Report is pending as new functionality is needed which is the state at which order was cancelled
+
+5: Returned Orders:
+Report is pending as new functionality is needed which is the state at which order was cancelled
+
+6: Returned Order Ratio:
+Report is pending as new functionality is needed which is the state at which order was cancelled
+
+7: Cancel Order Ratio:
+Report is pending as new functionality is needed which is the state at which order was cancelled
 
 8: Successfull Order Ratio:
 SELECT (SELECT CONCAT(ei.employee_first_name, " ", ei.employee_last_name) from employees_info ei where ei.employee_id = orders.employee_id) as employee_name,
-count(*) as total_orders, (SELECT count(*) from visits_marked where employee_id = orders.employee_id) as total_visits from orders
+count(*) as total_orders, (SELECT count(*) from visits_marked where employee_id = orders.employee_id) as total_visits,
+TRUNCATE(((count(*)/(SELECT count(*) from visits_marked where employee_id = orders.employee_id))*100), 2) as successfull_order_ratio from orders
 where LOWER(status) = "completed"
 group by employee_id
+order by successfull_order_ratio desc
+
+9: Average Order Discount:
+SELECT employee_id, count(id) as total_orders, 
+ROUND(((SELECT SUM(booker_discount) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))/count(orders.id)), 2) as avg_discount FROM `orders`
+where MONTH(created_at) = 7 and LOWER(status) = 'completed'
+group by employee_id
+
+10: Average Orders/Day:
+SELECT ROUND(SUM(day_orders)/count(*)) as avg_orders_per_day from (SELECT DATE(created_at) as date_recorded, count(*) as day_orders FROM `orders`
+where MONTH(created_at) = 7 and LOWER(status) = 'completed'
+group by DATE(created_at)) as result_set
+
+11: Highest number of orders in a day:
+SELECT DATE(created_at) as date_recorded, DAYNAME(created_at) as day, count(*) as day_orders FROM `orders`
+where MONTH(created_at) = 7 and LOWER(status) = 'completed'
+group by DATE(created_at)
+order by day_orders desc
+LIMIT 1
+
+12: Lowest Orders in day:
+SELECT DATE(created_at) as date_recorded, DAYNAME(created_at) as day, count(*) as day_orders FROM `orders`
+where MONTH(created_at) = 7 and LOWER(status) = 'completed'
+group by DATE(created_at)
+order by day_orders
+LIMIT 1
+
+13: Highest Order Value:
+SELECT order_id, ROUND(SUM(final_price),2) as order_value from order_contents
+where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+group by order_id
+order by order_value desc
+LIMIT 1
+
+14: Lowest Order Value:
+SELECT order_id, ROUND(SUM(final_price),2) as order_value from order_contents
+where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+group by order_id
+order by order_value
+LIMIT 1
+
+15: Average Order Processing time:
+Report is pending as this functionality is not available yet
+
+16: Number of Orders with more than 1 product:
+SELECT count(*) from (SELECT order_id, count(*) as number_of_products from order_contents
+where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+group by order_id) as result_set where number_of_products > 1
 
 Product Reports:
-1- Total number of products (SKU Wise)
+1- Total number of products (SKU Wise):
+SELECT item_sku, count(*) as total_items_for_this_sku from (SELECT (SELECT item_sku from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)) as item_sku, pref_id
+from order_contents oc
+where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')) as result_set
+group by item_sku
+
+2- Top 10 selling Products:
+SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), " (", 
+    (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = oc.pref_id)), ")") as item,
+    count(*) as total_sold from order_contents oc
+    where pref_id != 0
+    and order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+    group by pref_id
+    order by total_sold desc
+    LIMIT 0, 10
+
+3- Bottom 10 Selling Products:
+SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), " (", 
+    (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = oc.pref_id)), ")") as item,
+    count(*) as total_sold from order_contents oc
+    where pref_id != 0
+    and order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+    group by pref_id
+    order by total_sold
+    LIMIT 0, 10
+
 4- Product Sales Report by Area, Region, Territory, Employee (Konse area etc men product ziada bikti hai)
-5- 
+    a- By Territory:
+    SELECT booking_territory, CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where 
+    pref_id = ((SELECT pref_id from order_contents
+    where order_id IN (SELECT id from orders where booking_territory = ords.booking_territory)
+    group by pref_id
+    order by count(pref_id) desc
+    LIMIT 1)))), " (", (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where 
+    pref_id = ((SELECT pref_id from order_contents
+    where order_id IN (SELECT id from orders where booking_territory = ords.booking_territory)
+    group by pref_id
+    order by count(pref_id) desc
+    LIMIT 1)))) , ")") as item,
+    (SELECT territory_name from territory_management where id = ords.booking_territory) as territory,
+    (SELECT pref_id from order_contents
+    where order_id IN (SELECT id from orders where booking_territory = ords.booking_territory)
+    group by pref_id
+    order by count(pref_id) desc
+    LIMIT 1) as product_sold_the_most
+    from orders as ords
+    where MONTH(created_at) = 7 and LOWER(status) = 'completed'
+    group by booking_territory
+
+    b- By Area:
+    SELECT booking_area, CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where 
+    pref_id = ((SELECT pref_id from order_contents
+    where order_id IN (SELECT id from orders where booking_area = ords.booking_area)
+    group by pref_id
+    order by count(pref_id) desc
+    LIMIT 1)))), " (", (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where 
+    pref_id = ((SELECT pref_id from order_contents
+    where order_id IN (SELECT id from orders where booking_area = ords.booking_area)
+    group by pref_id
+    order by count(pref_id) desc
+    LIMIT 1)))) , ")") as item,
+    (SELECT area_name from area_management where id = ords.booking_area) as area,
+    (SELECT pref_id from order_contents
+    where order_id IN (SELECT id from orders where booking_area = ords.booking_area)
+    group by pref_id
+    order by count(pref_id) desc
+    LIMIT 1) as product_sold_the_most
+    from orders as ords
+    where MONTH(created_at) = 7 and LOWER(status) = 'completed'
+    group by booking_area
+
+    b- By Region:
+    SELECT booking_region, CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where 
+    pref_id = ((SELECT pref_id from order_contents
+    where order_id IN (SELECT id from orders where booking_region = ords.booking_region)
+    group by pref_id
+    order by count(pref_id) desc
+    LIMIT 1)))), " (", (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where 
+    pref_id = ((SELECT pref_id from order_contents
+    where order_id IN (SELECT id from orders where booking_region = ords.booking_region)
+    group by pref_id
+    order by count(pref_id) desc
+    LIMIT 1)))) , ")") as item,
+    (SELECT region_name from regions_info where id = ords.booking_region) as region,
+    (SELECT pref_id from order_contents
+    where order_id IN (SELECT id from orders where booking_region = ords.booking_region)
+    group by pref_id
+    order by count(pref_id) desc
+    LIMIT 1) as product_sold_the_most
+    from orders as ords
+    where MONTH(created_at) = 7 and LOWER(status) = 'completed'
+    group by booking_region
+
+5- Product Sale:
+    SELECT category, total_items, SUM(total_items) as total_items_in_category_sold from 
+    (SELECT (SELECT sub_category_name from sub_categories where sub_category_id = (SELECT sub_category_id from inventory_preferences where pref_id = oc.pref_id))
+    as category,
+    count(pref_id) as total_items from order_contents oc
+    where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+    group by pref_id
+    order by count(pref_id) desc) as result_set
+    group by category
+    order by total_items_in_category_sold desc
+
+6- High Profit Products top 10:
+    SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), " (", 
+    (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = oc.pref_id)), ")") as item, pref_id, item_quantity_booker, final_price, (SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id) as cost_price,
+    ROUND((final_price/item_quantity_booker)) as sold_at,
+    ((ROUND((final_price/item_quantity_booker))) - (SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id))
+    as profit from order_contents oc
+    where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+    group by pref_id
+    order by profit desc
+    LIMIT 10
+
+7- Low Profit Products Least 10:
+    SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), " (", 
+    (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = oc.pref_id)), ")") as item, pref_id, item_quantity_booker, final_price, (SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id) as cost_price,
+    ROUND((final_price/item_quantity_booker)) as sold_at,
+    ((ROUND((final_price/item_quantity_booker))) - (SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id))
+    as profit from order_contents oc
+    where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+    group by pref_id
+    order by profit
+    LIMIT 10
+
+8- Avg Number of multiple products sold per employee:
+
