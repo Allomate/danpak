@@ -15,10 +15,10 @@
 			</div>
 			<?php endif; ?>
 			<div class="row heading-bg">
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Distributor Assignment Management</h2>
 				</div>
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<ol class="breadcrumb">
 						<li>
 							<a href="#">

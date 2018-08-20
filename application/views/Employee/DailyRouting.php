@@ -13,41 +13,47 @@
 	<?php require_once APPPATH . '/views/includes/navbar&sidebar.php';?>
 	<div class="page-wrapper">
 		<div class="container-fluid">
-			<div class="row" style="margin-top: 20px">
-				<div class="table-responsive">
-					<table class="table table-hover display  pb-30">
-						<thead>
-							<tr>
-								<th>Date</th>
-								<th>Employee Username</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tfoot>
-							<tr>
-								<th>Date</th>
-								<th>Employee Username</th>
-								<th>Actions</th>
-							</tr>
-						</tfoot>
-						<tbody>
-							<?php foreach ($routing as $route): ?>
-							<tr>
-								<td>
-									<?=$route->route_date;?>
-								</td>
-								<td>
-									<?=$route->employee_username;?>
-								</td>
-								<td>
-									<button class="view-report" id="<?=$route->employee_id;?>">View Activity</button>
-								</td>
-							</tr>
-							<?php endforeach;?>
-						</tbody>
-					</table>
+			<div class="row m-t-20">
+				<div class="col-md-12">
+					<div class="box-white p-20">
+						<h2 class="m-b-0">Daily Routing</h2>
+						<div class="table-responsive">
+							<table class="table table-hover display  pb-30">
+								<thead>
+									<tr>
+										<th>Date</th>
+										<th>Employee Username</th>
+										<th>Actions</th>
+									</tr>
+								</thead>
+								<tfoot>
+									<tr>
+										<th>Date</th>
+										<th>Employee Username</th>
+										<th>Actions</th>
+									</tr>
+								</tfoot>
+								<tbody>
+									<?php foreach ($routing as $route): ?>
+									<tr>
+										<td>
+											<?=$route->route_date;?>
+										</td>
+										<td>
+											<?=$route->employee_username;?>
+										</td>
+										<td>
+											<button class="btn view-report" id="<?=$route->employee_id;?>">View Activity</button>
+										</td>
+									</tr>
+									<?php endforeach;?>
+								</tbody>
+							</table>
+						</div>
+					</div>
 				</div>
 			</div>
+
 			<div class="row">
 				<div id="myModal" class="modal fade" role="dialog">
 					<div class="modal-dialog">
@@ -98,7 +104,6 @@
 					var latRepeated = [];
 					var lngRepeated = [];
 					var repeatCounter = 0;
-					debugger;
 					for (var i = 0; i < response.data.length; i++) {
 						if (jQuery.inArray(response.data[i].route_lats, latRepeated) != -1) {
 							if (lngRepeated[jQuery.inArray(response.data[i].route_lats, latRepeated)] == response.data[i].route_longs) {
@@ -109,22 +114,22 @@
 						latRepeated.push(response.data[i].route_lats);
 						lngRepeated.push(response.data[i].route_longs);
 						if (i == 0) {
-							if(response.attendance != null){
+							if (response.attendance != null) {
 								completeLocations.push([parseFloat(response.attendance.route_lats), parseFloat(response.attendance.route_longs),
 									"", ""
 								]);
-							}else{
-								completeLocations.push(["", "","", ""]);
+							} else {
+								completeLocations.push(["", "", "", ""]);
 							}
-						} else if (i == (response.data.length-1)) {
-							if(response.shift_end != null){
+						} else if (i == (response.data.length - 1)) {
+							if (response.shift_end != null) {
 								completeLocations.push([parseFloat(response.shift_end.route_lats), parseFloat(response.shift_end.route_longs),
 									"", ""
 								]);
-							}else{
-								completeLocations.push(["", "","", ""]);
+							} else {
+								completeLocations.push(["", "", "", ""]);
 							}
-						}else{
+						} else {
 							completeLocations.push([parseFloat(response.data[i].route_lats), parseFloat(response.data[i].route_longs),
 								response.data[i].took_order, response.data[i].retailer_name
 							]);
@@ -180,7 +185,7 @@
 					animation: google.maps.Animation.DROP,
 					title: "Attendance Location"
 				});
-			} else if(i == (stations.length-1)){
+			} else if (i == (stations.length - 1)) {
 				new google.maps.Marker({
 					position: stations[i],
 					map: map,

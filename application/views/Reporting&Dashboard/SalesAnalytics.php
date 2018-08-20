@@ -6,7 +6,7 @@ type="text/css">
 </div>
 <div class="wrapper theme-1-active">
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
-	<div class="page-wrapper">
+	<div class="page-wrapper p-b-20">
 		<div class="container-fluid">
 			<div class="row mt-15">
 				<div class="col-lg-3 col-md-6 col-sm-6 col-xs-6">

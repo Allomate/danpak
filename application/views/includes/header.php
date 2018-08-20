@@ -34,7 +34,7 @@
 	rel="stylesheet" type="text/css" />
 	<link href="<?= base_url('assets/multi/multi.min.css'); ?>" rel="stylesheet" type="text/css" />
 	<link href="<?= base_url('assets/css/style.css?v=1.1.1'); ?>" rel="stylesheet" type="text/css" />
-	<link href="<?= base_url('assets/dist/css/style.css?v=2.2'); ?>" rel="stylesheet" type="text/css" />
+	<link href="<?= base_url('assets/dist/css/style.css?v=2.4'); ?>" rel="stylesheet" type="text/css" />
 	<link href="<?= base_url('assets/dist/css/select2.min.css'); ?>" rel="stylesheet" type="text/css" />
 </head>
 

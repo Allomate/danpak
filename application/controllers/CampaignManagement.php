@@ -6,6 +6,9 @@ class CampaignManagement extends WebAuth_Controller{
 		parent::__construct();
 		$this->load->model('CataloguesModel', 'catm');
 		$this->load->model('CampaignModel', 'cam');
+		$this->load->model('RegionsModel', 'rm');
+		$this->load->model('AreasModel', 'am');
+		$this->load->model('TerritoriesModel', 'tm');
 	}
 
 	public function ListCampaigns(){
@@ -13,13 +16,13 @@ class CampaignManagement extends WebAuth_Controller{
 	}
 
 	public function AddCampaign(){
-		return $this->load->view('Campaign/AddCampaign', [ 'Inventory' => $this->catm->GetAllInventory() ]);
+		return $this->load->view('Campaign/AddCampaign', [ 'Inventory' => $this->catm->GetAllInventory(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ]);
 	}
 
 	public function AddCampaignOps()
 	{
 		$campaignData = $this->input->post();
-
+		
 		if($campaignData["scheme_type"] == "1") : 
 			unset($campaignData['price_discount_of_this_pref_id']);
 			unset($campaignData['discount_on_scheme']);
@@ -84,11 +87,23 @@ class CampaignManagement extends WebAuth_Controller{
 			}
 
 			$campaignData["scheme_image"] = $scheme_image;
+		
+			if($campaignData["bulk_assignment"] == "area"){
+				unset($campaignData["region_id"]);
+				unset($campaignData["territory_id"]);
+			}else if($campaignData["bulk_assignment"] == "region"){
+				unset($campaignData["territory_id"]);
+				unset($campaignData["area_id"]);
+			}else if($campaignData["bulk_assignment"] == "territory"){
+				unset($campaignData["region_id"]);
+				unset($campaignData["area_id"]);
+			}
+			unset($campaignData["bulk_assignment"]);
 
 			if ($this->cam->add_campaign($campaignData)) :
-				$this->session->set_flashdata("campaign_created", "Campaign has been created successfully");
+				$this->session->set_flashdata("campaign_created", "Scheme has been created successfully");
 			else:
-				$this->session->set_flashdata("campaign_creation_failed", "Failed to create the campaign");
+				$this->session->set_flashdata("campaign_creation_failed", "Failed to create the scheme");
 			endif;
 			return redirect('CampaignManagement/ListCampaigns');
 		else:

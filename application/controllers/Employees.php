@@ -17,6 +17,7 @@ class Employees extends WebAuth_Controller {
 
 	public function DailyRouting()
 	{
+		echo "<pre>"; print_r($this->em->getDailyRouteData());die;
 		return $this->load->view('Employee/DailyRouting', ['routing'=>$this->em->getDailyRouteData()]);
 	}
 
@@ -32,6 +33,16 @@ class Employees extends WebAuth_Controller {
 	{
 		$employeesList = $this->em->get_employees_list();
 		$this->load->view('Employee/list_employees', ['employees'=>$this->em->get_employees_list()]);
+	}
+
+	public function EmployeeProfile($employeeId)
+	{
+		// echo "<pre>"; print_r($this->em->getEmployeeStatsCurrOverall($employeeId));die;
+		if(isset($_COOKIE["stat_type"]) && $_COOKIE["stat_type"] == "overall"){
+			$this->load->view('Employee/profile', ["data" => $this->em->getEmployeeStatsCurrOverall($employeeId), "employee" => $this->em->get_single_employee($employeeId) ]);
+		}else{
+			$this->load->view('Employee/profile', ["data" => $this->em->getEmployeeStatsCurrMonth($employeeId), "employee" => $this->em->get_single_employee($employeeId) ]);
+		}
 	}
 
 	public function GetEmployeeProfilePicture(){
@@ -52,6 +63,9 @@ class Employees extends WebAuth_Controller {
 	public function UpdateEmployee($employee_id)
 	{
 		$employeeDetails = $this->em->get_single_employee($employee_id);
+		if(!$employeeDetails){
+			return redirect('Employees/ListEmployees');
+		}
 		$employeesList = $this->em->get_employees_list();
 		$this->load->view('Employee/update_employee', ['employee'=>$employeeDetails, 'employees_list'=>$employeesList, 'territories'=>$this->tm->getAllTerritories()]);
 	}
@@ -61,7 +75,6 @@ class Employees extends WebAuth_Controller {
 		$this->form_validation->set_rules('employee_first_name', 'First Name', 'required|max_length[50]');
 		$this->form_validation->set_rules('employee_last_name', 'Last Name', 'max_length[50]');
 		$this->form_validation->set_rules('employee_cnic', 'Cnic', 'max_length[13]|exact_length[13]|trim');
-		$this->form_validation->set_rules('employee_designation', 'Designation', 'required|max_length[100]');
 		$this->form_validation->set_rules('employee_phone', 'Phone', 'max_length[20]');
 		$this->form_validation->set_rules('employee_address', 'Address', 'required|max_length[100]');
 		$this->form_validation->set_rules('employee_city', 'City', 'required|alpha|max_length[60]');
@@ -127,7 +140,6 @@ class Employees extends WebAuth_Controller {
 		$this->form_validation->set_rules('employee_first_name', 'First Name', 'required|max_length[50]');
 		$this->form_validation->set_rules('employee_last_name', 'Last Name', 'max_length[50]');
 		$this->form_validation->set_rules('employee_cnic', 'Cnic', 'max_length[13]|exact_length[13]|trim');
-		$this->form_validation->set_rules('employee_designation', 'Designation', 'required|max_length[100]');
 		$this->form_validation->set_rules('employee_phone', 'Phone', 'max_length[20]');
 		$this->form_validation->set_rules('employee_address', 'Address', 'required|max_length[100]');
 		$this->form_validation->set_rules('employee_city', 'City', 'required|alpha|max_length[60]');

@@ -7,16 +7,16 @@
 	<div class="page-wrapper">
 		<div class="container-fluid">
 			<div class="row heading-bg">
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Add New Employee</h2>
 				</div>
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<ol class="breadcrumb">
-						<li>
+						<!-- <li>
 							<a href="#">
 								<span>Organization</span>
 							</a>
-						</li>
+						</li> -->
 						<li>
 							<span>Employee Management</span>
 						</li>
@@ -120,8 +120,17 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Designation*</label>
-											<input type="text" name="employee_designation" class="form-control" value="<?= set_value('employee_designation');?>" />
-											<?= form_error('employee_designation', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+											<select class="selectpicker" data-style="form-control btn-default btn-outline" name="employee_designation">
+												<option value="CEO">CEO</option>
+												<option value="Director">Director</option>
+												<option value="GM Sales">GM Sales</option>
+												<option value="NSM">NSM</option>
+												<option value="RSM">RSM</option>
+												<option value="ASM">ASM</option>
+												<option value="TSO">TSO</option>
+												<option value="Order Booker">Order Booker</option>
+												<option value="Office Staff">Office Staff</option>
+											</select>
 										</div>
 									</div>
 									<div class="col-md-6">

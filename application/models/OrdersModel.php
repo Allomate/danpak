@@ -122,11 +122,11 @@ class OrdersModel extends CI_Model{
 		(SELECT GROUP_CONCAT(booker_discount) from order_contents where order_id = orders.id and item_status != 0 and (campaign_id is null or campaign_id = 0)) as booker_discount,
 		(SELECT GROUP_CONCAT(final_price) from order_contents where order_id = orders.id and item_status != 0 and (campaign_id is null or campaign_id = 0)) as subTotal')->where('id', $orderId)->get("orders")->row();
 		$items = array();
-		$prefIds = explode(",", $orderDetails->pref_id);
-		$itemQuantities = explode(",", $orderDetails->item_quantity_booker);
-		$booker_discount = explode(",", $orderDetails->booker_discount);
-		$final_price = explode(",", $orderDetails->subTotal);
-		$order_content_id = explode(",", $orderDetails->order_content_id);
+		$prefIds = array_filter(explode(",", $orderDetails->pref_id));
+		$itemQuantities = array_filter(explode(",", $orderDetails->item_quantity_booker));
+		$booker_discount = array_filter(explode(",", $orderDetails->booker_discount));
+		$final_price = array_filter(explode(",", $orderDetails->subTotal));
+		$order_content_id = array_filter(explode(",", $orderDetails->order_content_id));
 		for ($i=0; $i < sizeof($prefIds); $i++) { 
 			$items[] = array(
 				'item_details' => $this->db->select('pref_id, item_id, (SELECT item_sku from inventory_items where item_id = ip.item_id) as item_sku, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, item_trade_price, unit_id, (SELECT item_image from inventory_items where item_id = ip.item_id) as item_image, item_quantity, item_warehouse_price, item_trade_price, item_retail_price, item_thumbnail, item_description, sub_category_id, (item_trade_price-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = (SELECT retailer_id from orders where id = '.$orderId.')))/100)*(ip.item_trade_price))) as after_discount')->where('pref_id', $prefIds[$i])->get("inventory_preferences ip")->row(),
@@ -142,10 +142,7 @@ class OrdersModel extends CI_Model{
 
 	public function GetRetailersForEmployee($employee_id)
     {
-		if ($this->db->select('GROUP_CONCAT(retailer_id) as retailer_ids')->where('employee_id', $employee_id)->get('retailers_assignment')->row()):
-			$retailerIds = $this->db->select('GROUP_CONCAT(retailer_id) as retailer_ids')->where('employee_id', $employee_id)->get('retailers_assignment')->row()->retailer_ids;
-			return $this->db->select('id as retailer_id, retailer_name, retailer_phone, retailer_email, retailer_address, REPLACE(retailer_image,"./","' . base_url() . '") as retailer_image, retailer_lats, retailer_longs, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as territory_name, retailer_city, retailer_type_id, retailer_territory_id')->where("find_in_set(id, '" . $retailerIds . "')")->get("retailers_details rd")->result();
-		endif;
+		return $this->db->select('id as retailer_id, retailer_name, retailer_phone, retailer_email, retailer_address, REPLACE(retailer_image,"./","' . base_url() . '") as retailer_image, retailer_lats, retailer_longs, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as territory_name, retailer_city, retailer_type_id, retailer_territory_id')->where("id IN (SELECT retailer_id from retailers_assignment where employee_id = ".$employee_id.")")->get("retailers_details rd")->result();
 	}
 	
 	public function GetDistDiscountForItem($pref_id, $distributor_id){
@@ -268,6 +265,12 @@ class OrdersModel extends CI_Model{
 		return $this->db
 		->where("employee_id = ".$employee." and DATE(created_at) = '".$date."' and (status = '".$status."' OR status is NULL OR status = '')")
 		->update('orders', array('status'=>'Processed'));
+	}
+
+	public function CompleteAll($employee, $date, $status){
+		return $this->db
+		->where("employee_id = ".$employee." and DATE(created_at) = '".$date."' and status = '".$status."'")
+		->update('orders', array('status'=>'Completed'));
 	}
 
 	public function ProcessOrder($orderId){

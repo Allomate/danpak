@@ -186,6 +186,7 @@ class RealRetailers extends WebAuth_Controller{
 	}
 
 	public function UpdateRetailersAssignments($employeeId, $assignedDay){
+		// echo "<pre>"; print_r($this->em->get_employees_list());die;
 		// echo "<pre>"; print_r($this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay));die;
 		return $this->load->view('RealRetailers/UpdateRetailersAssignments', [ 'RetailersAssignment' => $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay), 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ] );
 	}

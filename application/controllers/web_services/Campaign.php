@@ -8,10 +8,16 @@ class Campaign extends Web_Services_Controller{
 		parent::__construct();
 		$this->load->model('WebServices', 'ws');
 		global $authentication;
-		if (!$this->AuthenticateWebServiceCall($this->input->post("api_secret_key"))) :
-			return $this->ResponseMessage('Failed', 'Failed Api Authentication');
+		
+		if (!$this->AuthenticateWebServiceCall($this->input->post("api_secret_key"))):
+            return $this->ResponseMessage('Failed', 'Failed Api Authentication');
+        else:
+            if (!$this->AuthenticateSession($this->input->post("session"))):
+                return $this->ResponseMessage('Failed', 'Failed session Authentication');
+            else:
+                $authentication = true;
+            endif;
         endif;
-        $authentication = true;
 	}
 
 	public function AddToCart(){
@@ -30,7 +36,7 @@ class Campaign extends Web_Services_Controller{
 
 	public function GetCampaigns(){
 		if ($GLOBALS['authentication']) :
-			$campaigns = $this->ws->GetCampaigns();
+			$campaigns = $this->ws->GetCampaigns($this->input->post("session"));
 			return $this->ResponseMessage('Success', $campaigns);
 		endif;
 	}

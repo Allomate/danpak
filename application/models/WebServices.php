@@ -201,6 +201,70 @@ class WebServices extends CI_Model
 
     }
 
+    public function GetCatalogueWithoutRetailer($userInfo)
+    {
+        if ($this->db->select('username')->where('session', $userInfo['session'])->get('employee_session')->row()):
+            $username = $this->db->select('username')->where('session', $userInfo['session'])->get('employee_session')->row()->username;
+            if ($this->db->select('employee_id')->where('employee_username', $username)->get('employees_info')->row()):
+                $employee_id = $this->db->select('employee_id')->where('employee_username', $username)->get('employees_info')->row()->employee_id;
+
+                $datePeriods = $this->db->select("catalogue_id, active_from, active_till")->where("employee_id", $employee_id)->get("catalogue_assignment")->result();
+                $catalogue_id = 0;
+                foreach ($datePeriods as $dates) {
+                    $begin = new DateTime($dates->active_from);
+                    $end = clone $begin;
+                    $end->modify($dates->active_till);
+                    $end->setTime(0, 0, 1);
+                    $interval = new DateInterval('P1D');
+                    $daterange = new DatePeriod($begin, $interval, $end);
+                    foreach ($daterange as $date) {
+                        if ($date->format('Y-m-d') == date("Y-m-d")) {
+                            $catalogue_id = $dates->catalogue_id;
+                            break;
+                        }
+                    }
+                }
+
+                if ($catalogue_id):
+                    if (isset($userInfo["category_id"])):
+                        if ($this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()):
+                            $prefIds = $this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()->pref_id;
+                            $preferences = $this->db->select('item_id')->where('find_in_set(pref_id, ("' . $prefIds . '")) and sub_category_id = ' . $userInfo["category_id"])->group_by('item_id')->get('inventory_preferences ip')->result();
+                            $response = array();
+                            foreach ($preferences as $pref) {
+                                $itemDetails = $this->db->select('pref_id, sub_category_id as category_id, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, item_quantity, REPLACE(item_thumbnail,"./","' . base_url() . '") as item_thumbnail, REPLACE(item_image,"./","' . base_url() . '") as item_image, item_trade_price')->where('item_id = ' . $pref->item_id . ' and find_in_set(pref_id, "' . $prefIds . '") and find_in_set(sub_category_id, "' . $userInfo["category_id"] . '")')->get('inventory_preferences ip')->result();
+                                $response[] = array('item_parent_data' => array('item_id' => $pref->item_id, 'item_name' => $this->db->select('item_name')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_name, 'item_sku' => $this->db->select('item_sku')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_sku, 'item_thumbnail' => $this->db->select('REPLACE(max(item_thumbnail),"./","' . base_url() . '") as item_thumbnail')->where('item_id', $pref->item_id)->get('inventory_preferences')->row()->item_thumbnail), 'item_childeren_data' => $itemDetails);
+                            }
+                            return $response;
+                        else:
+                            return false;
+                        endif;
+                    else:
+                        if ($this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()):
+                            $prefIds = $this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()->pref_id;
+                            $preferences = $this->db->select('item_id')->where('find_in_set(pref_id, ("' . $prefIds . '"))')->group_by('item_id')->get('inventory_preferences ip')->result();
+                            $response = array();
+                            foreach ($preferences as $pref) {
+                                $itemDetails = $this->db->select('pref_id, sub_category_id as category_id, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, item_quantity, REPLACE(item_thumbnail,"./","' . base_url() . '") as item_thumbnail, REPLACE(item_image,"./","' . base_url() . '") as item_image, item_trade_price')->where('item_id = ' . $pref->item_id . ' and find_in_set(pref_id, "' . $prefIds . '")')->get('inventory_preferences ip')->result();
+                                $response[] = array('item_parent_data' => array('item_id' => $pref->item_id, 'item_name' => $this->db->select('item_name')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_name, 'item_sku' => $this->db->select('item_sku')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_sku, 'item_thumbnail' => $this->db->select('REPLACE(max(item_thumbnail),"./","' . base_url() . '") as item_thumbnail')->where('item_id', $pref->item_id)->get('inventory_preferences')->row()->item_thumbnail), 'item_childeren_data' => $itemDetails );
+                            }
+                            return $response;
+                        else:
+                            return false;
+                        endif;
+                    endif;
+                else:
+                    return false;
+                endif;
+            else:
+                return false;
+            endif;
+        else:
+            return false;
+        endif;
+
+    }
+
     public function BookOrder($orderDetails)
     {
         if ($this->db->select('username')->where('session', $orderDetails['session'])->get('employee_session')->row()):
@@ -604,8 +668,10 @@ class WebServices extends CI_Model
         return $this->db->select('eligibility_criteria_pref_id as pref_id, '.$campData["item_quantity"].' as item_quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)))) as individual_price, CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) * "'.$campData["item_quantity"].'")) as final_price')->where('campaign_id', $campData["campaign_id"])->get('campaign_management cm')->row();
     }
 
-    public function GetCampaigns(){
-        return $this->db->select('campaign_id, scheme_type, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as product, CONCAT(cm.minimum_quantity_for_eligibility, " ", (SELECT unit_plural_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id))) as minimum_quantity_for_eligibility, CONCAT(cm.minimum_quantity_for_eligibility,"+",cm.quantity_for_free_item) as scheme, campaign_name, REPLACE(scheme_image,"./","' . base_url() . '") as background_image, discount_on_tp_pkr')->where('scheme_active', 1)->get('campaign_management cm')->result();
+    public function GetCampaigns($session){
+        $empDetails = $this->db->select('territory_id, (SELECT area_id from territory_management where id = ei.territory_id) as area_id, (SELECT region_id from area_management where id = (SELECT area_id from territory_management where id = ei.territory_id)) as region_id')->where('employee_username = (SELECT username from employee_session where session = "'.$session.'")')->get('employees_info ei')->row();
+        return $this->db->select('campaign_id, scheme_type, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as product, CONCAT(cm.minimum_quantity_for_eligibility, " ", (SELECT unit_plural_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id))) as minimum_quantity_for_eligibility, CONCAT(cm.minimum_quantity_for_eligibility,"+",cm.quantity_for_free_item) as scheme, campaign_name, REPLACE(scheme_image,"./","' . base_url() . '") as background_image, discount_on_tp_pkr')->where('scheme_active = 1 and (region_id = '.$empDetails->region_id.' OR area_id = '.$empDetails->area_id.' OR territory_id = '.$empDetails->territory_id.')')->get('campaign_management cm')->result();
+
     }
 
 }

@@ -4,23 +4,23 @@
 </div>
 <div class="wrapper theme-1-active">
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
-	<div class="page-wrapper">
+	<div class="page-wrapper p-b-20">
 		<div class="container-fluid">
 			<div class="row p-t-30">
-				<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+				<div class="col-lg-3 col-md-6 col-sm-6 col-xs-6">
 					<div class="panel panel-default card-view pa-0 emp-stats pr-box">
 						<div class="panel-wrapper collapse in">
 							<div class="panel-body pa-0">
 								<div class="sm-data-box">
 									<div class="container-fluid">
 										<div class="row">
-											<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+											<div class="col-sm-7 col-xs-8 text-center pl-0 pr-0 data-wrap-left">
 												<span class="txt-dark block counter">
 													<?= $stats['stat']->total_orders; ?>
 												</span>
 												<span class="weight-500 uppercase-font block">Total Orders</span>
 											</div>
-											<div class="col-xs-6 text-center">
+											<div class="col-sm-5 col-xs-4 text-center pl-0 pr-0">
 												<img src="<?= base_url('assets/images/icon-all-sale.svg'); ?>" alt="brand">
 											</div>
 										</div>
@@ -30,20 +30,20 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 ">
+				<div class="col-lg-3 col-md-6 col-sm-6 col-xs-6">
 					<div class="panel panel-default card-view pa-0 emp-stats blue-box">
 						<div class="panel-wrapper collapse in">
 							<div class="panel-body pa-0">
 								<div class="sm-data-box">
 									<div class="container-fluid">
 										<div class="row">
-											<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+											<div class="col-sm-7 col-xs-8 text-center pl-0 pr-0 data-wrap-left">
 												<span class="txt-dark block counter">
 													<?= $stats['stat']->completed_orders; ?>
 												</span>
 												<span class="weight-500 uppercase-font block font-13">Completed Orders</span>
 											</div>
-											<div class="col-xs-6 text-center  pl-0 pr-0">
+											<div class="col-sm-5 col-xs-4 text-center  pl-0 pr-0">
 												<img src="<?= base_url('assets/images/icon-all-order.svg'); ?>" alt="brand">
 											</div>
 										</div>
@@ -53,20 +53,20 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 ">
+				<div class="col-lg-3 col-md-6 col-sm-6 col-xs-6">
 					<div class="panel panel-default card-view pa-0 emp-stats total-box">
 						<div class="panel-wrapper collapse in">
 							<div class="panel-body pa-0">
 								<div class="sm-data-box">
 									<div class="container-fluid">
 										<div class="row">
-											<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+											<div class="col-sm-7 col-xs-8 text-center pl-0 pr-0 data-wrap-left">
 												<span class="txt-dark block counter">
 													<?= $stats['stat']->retail_visits; ?>
 												</span>
 												<span class="weight-500 uppercase-font block font-13">Retail Visits</span>
 											</div>
-											<div class="col-xs-6 text-center  pl-0 pr-0">
+											<div class="col-sm-5 col-xs-4 text-center  pl-0 pr-0">
 												<img src="<?= base_url('assets/images/icon-order-done.svg'); ?>" alt="brand">
 											</div>
 										</div>
@@ -76,20 +76,20 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 ">
+				<div class="col-lg-3 col-md-6 col-sm-6 col-xs-6">
 					<div class="panel panel-default card-view pa-0 emp-stats lblue-box">
 						<div class="panel-wrapper collapse in">
 							<div class="panel-body pa-0">
 								<div class="sm-data-box">
 									<div class="container-fluid">
 										<div class="row">
-											<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+											<div class="col-sm-7 col-xs-8 text-center pl-0 pr-0 data-wrap-left">
 												<span class="txt-dark block counter">
 													<?= $stats['stat']->cancelled_orders; ?>
 												</span>
 												<span class="weight-500 uppercase-font block font-13">Cancelled Orders</span>
 											</div>
-											<div class="col-xs-6 text-center  pl-0 pr-0">
+											<div class="col-sm-5 col-xs-4 text-center  pl-0 pr-0">
 												<img src="<?= base_url('assets/images/icon-active-devices.svg'); ?>" alt="brand">
 											</div>
 										</div>
@@ -101,7 +101,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-8 col-sm-12 col-xs-12">
+				<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
 					<div class="panel panel-default card-view panel-refresh w-box-sec">
 						<div class="refresh-container">
 							<div class="la-anim-1"></div>
@@ -166,7 +166,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+				
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 					<div class="panel panel-default card-view w-box-sec">
 						<div class="panel-wrapper collapse in">
 							<div class="panel-body sm-data-box-1 pt-0 pb-20">
@@ -207,7 +208,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 					<div class="panel panel-default card-view pa-0 w-box-sec">
 						<div class="panel-wrapper collapse in">
 							<div class="panel-body pa-0">
@@ -232,7 +233,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 					<div class="panel panel-default card-view pa-0 w-box-sec">
 						<div class="panel-wrapper collapse in">
 							<div class="panel-body pa-0">
@@ -323,7 +324,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 					<div class="panel panel-default card-view w-box-sec">
 						<div class="panel-heading">
 							<div class="pull-left">

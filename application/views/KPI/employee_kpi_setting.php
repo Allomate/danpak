@@ -15,20 +15,17 @@
 			</div>
 			<?php endif; ?>
 			<div class="row heading-bg">
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Employee Management</h2>
 				</div>
 				<!-- Breadcrumb -->
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<ol class="breadcrumb">
 						<li>
 							<a href="#">
-								<span>Organization</span>
+								<span>KPI Management</span>
 							</a>
-						</li>
-						<li>
-							<span>Employee Management</span>
-						</li>
+						</li> 
 						<li>
 							<span>Add KPI</span>
 						</li>
@@ -42,7 +39,7 @@
 					<div class="box-white p-20">
 						<div style="border-bottom: solid 2px #d9dde1;">
 							<h2 class="m-b-0" style="display: inline-block; border: 0px !important">Employee Info</h2>
-							<div class="checkbox checkbox-primary checkbox-circle m-b-20" style="display: inline-block; float: right">
+							<div class="checkbox checkbox-primary checkbox-circle m-b-20 eure_set">
 								<input type="checkbox" id="evaluateUsingEmployees" value="Reports">
 								<label for="evaluateUsingEmployees" class="lab-medium" style="font-weight: bolder">Evaluate using reporting employees</label>
 							</div>

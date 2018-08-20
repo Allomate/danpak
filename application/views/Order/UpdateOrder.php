@@ -136,7 +136,7 @@
 			echo form_hidden('item_quantities_expansion', '');
 			echo form_hidden('booker_discounts_expansion', '');
 			echo form_hidden('item_ids_expansion', '');?>
-				<div class="row" id="dynamicInventoryExpansionDiv" style="display: none">
+				<div class="row" id="dynamicInventoryExpansionDiv" style="display: none; padding: 10px">
 				</div>
 				<div class="col-md-12">
 					<div class="box-white p-20">

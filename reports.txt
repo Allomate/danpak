@@ -15,14 +15,14 @@ Delayed as asked by Wakas Bhai
     a- Daily Average Sales (My Formula):
     SELECT ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as avg_sale FROM `orders`
     where MONTH(created_at) = 7
-    and LOWER(status) = "completed"
+    and LOWER(status) = 'completed'
     group by DAY(created_at)
     
     Wakas Bhai formula
     Achieved Sales Amount + (daily average sales (Achieved Sales amount / No of days passed in the month) * number of remaining working days)
     b- i)- Number of remaining Working Days:
     SELECT (DAY(LAST_DAY(created_at)))-DAY(DATE(created_at)) as remaining_days from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
     group by DATE(created_at)
     order by DATE(created_at) desc
@@ -30,7 +30,7 @@ Delayed as asked by Wakas Bhai
 
     ii)- No Of Days Passed in the month:
     SELECT DAY(DATE(created_at)) as passed_days from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
     group by DATE(created_at)
     order by DATE(created_at) desc
@@ -39,10 +39,10 @@ Delayed as asked by Wakas Bhai
     iii)- Achieved Sales Amount:
     SELECT ROUND(SUM(final_price)) as achieved_sales from order_contents
     where order_id IN (SELECT id from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
     and DAY(DATE(created_at)) <= (SELECT DAY(DATE(created_at)) as passed_days from orders
-        where LOWER(status) = "completed"
+        where LOWER(status) = 'completed'
         and MONTH(created_at) = 7
         group by DATE(created_at)
         order by DATE(created_at) desc
@@ -51,73 +51,100 @@ Delayed as asked by Wakas Bhai
     iv)- Final Result:
     SELECT (SELECT ROUND(SUM(final_price)) as achieved_sales from order_contents
     where order_id IN (SELECT id from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
     and DAY(DATE(created_at)) <= (SELECT DAY(DATE(created_at)) as passed_days from orders
-        where LOWER(status) = "completed"
+        where LOWER(status) = 'completed'
         and MONTH(created_at) = 7
         group by DATE(created_at)
         order by DATE(created_at) desc
         LIMIT 1)
     order by DATE(created_at)))+(((SELECT ROUND(SUM(final_price)) as achieved_sales from order_contents
     where order_id IN (SELECT id from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
     and DAY(DATE(created_at)) <= (SELECT DAY(DATE(created_at)) as passed_days from orders
-        where LOWER(status) = "completed"
+        where LOWER(status) = 'completed'
         and MONTH(created_at) = 7
         group by DATE(created_at)
         order by DATE(created_at) desc
         LIMIT 1)
     order by DATE(created_at)))/(SELECT DAY(DATE(created_at)) as passed_days from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
     group by DATE(created_at)
     order by DATE(created_at) desc
     LIMIT 1)) * (SELECT (DAY(LAST_DAY(created_at)))-DAY(DATE(created_at)) as remaining_days from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
     group by DATE(created_at)
     order by DATE(created_at) desc
     LIMIT 1)) as projected_mtd_sales
     
-5- Gross Margin (percentage) - Correction Pending:
-    SELECT ((SELECT SUM(final_price) from order_contents
-    where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed'))/(SELECT SUM(gross_margin) from (SELECT (SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id) as gross_margin from order_contents oc
-    where order_id IN (SELECT id from orders
-    where LOWER(status) = "completed"
-    and MONTH(created_at) = 7)) as gm_query)) as final_result
-    /*SELECT (ROUND((final_price/item_quantity_booker))/(SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id)) as gross_margin from order_contents oc
-    where order_id IN (SELECT id from orders
-    where LOWER(status) = "completed"
-    and MONTH(created_at) = 7)*/
+5- Gross Margin (percentage):
+    SELECT CONCAT(ROUND((SUM(profit)/(SUM(items_booked*cost_price)))*100), '%') as gross_margin from (SELECT ROUND(final_price-(((CASE
+    WHEN item_quantity_updated = 0 THEN item_quantity_booker
+    WHEN item_quantity_updated IS NULL THEN item_quantity_booker
+    ELSE item_quantity_updated
+END))*(SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id)),2) as profit,
+final_price,
+((CASE
+    WHEN item_quantity_updated = 0 THEN item_quantity_booker
+    WHEN item_quantity_updated IS NULL THEN item_quantity_booker
+    ELSE item_quantity_updated
+END)) as items_booked, (SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id) as cost_price, (SELECT item_sku from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)) as sku from order_contents oc
+where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')) as gross_margin
 
 6- Profit - (Verification Needed):
-    SELECT ((SELECT SUM(final_price) from order_contents
-    where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed'))-(SELECT SUM(gross_margin) from (SELECT (SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id) as gross_margin from order_contents oc
-    where order_id IN (SELECT id from orders
-    where LOWER(status) = "completed"
-    and MONTH(created_at) = 7)) as gm_query)) as final_result
+    SELECT ROUND(SUM(profit)) as profit from (SELECT ROUND(final_price-(((CASE
+    WHEN item_quantity_updated = 0 THEN item_quantity_booker
+    WHEN item_quantity_updated IS NULL THEN item_quantity_booker
+    ELSE item_quantity_updated
+END))*(SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id)),2) as profit,
+final_price,
+((CASE
+    WHEN item_quantity_updated = 0 THEN item_quantity_booker
+    WHEN item_quantity_updated IS NULL THEN item_quantity_booker
+    ELSE item_quantity_updated
+END)) as items_booked, (SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id) as cost_price, (SELECT item_sku from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)) as sku from order_contents oc
+where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')) as profit
+
+    /*SELECT id, (SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id) as cost_price, ROUND((final_price/((CASE WHEN item_quantity_updated = 0 THEN item_quantity_booker WHEN item_quantity_updated IS NULL THEN item_quantity_booker ELSE item_quantity_updated END))), 2) as sell_price, (SELECT item_sku from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)) as sku from order_contents oc where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')*/
 
     /*SELECT (ROUND((final_price/item_quantity_booker))-(SELECT item_warehouse_price from inventory_preferences where pref_id = oc.pref_id)) as profit from order_contents oc
     where order_id IN (SELECT id from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7)*/
 
 7- Avg Daily Sale:
+    a- Total:
     SELECT ((SELECT SUM(avg_sale) from (SELECT (SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id))) as avg_sale from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
         group by DAY(created_at)) as result_set)/(SELECT count(*) from (SELECT DATE(created_at) as date, (SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id))) as avg_sale from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
         group by DAY(created_at)) as result_set)) as final_set
+    b- Employee Wise:
+SELECT employee_id,
+(SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id))) as employee_sales,
+count(id) as total_orders,
+ROUND(((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))/count(id)),2) as avg
+from orders
+where MONTH(created_at) = 7 and LOWER(status) = 'completed'
+group by employee_id
+order by avg desc
+    c- Week Wise:
+    SELECT FLOOR((DAYOFMONTH(created_at) - 1) / 7) + 1 as week, DAYNAME(DATE(created_at)) as day, DATE(created_at), ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as daily_sale, count(*) as total_orders,
+ROUND(((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))/count(*))) as avg_daily_order FROM `orders`
+where MONTH(created_at) = 7 and LOWER(status) = 'completed'
+group by DATE(created_at)
 
 8- High Selling Days - Average/Days Neeeded out of the result_set below:
     SELECT day, TRUNCATE((SUM(total_sale_each_day)/count(*)), 2) as avg_sale_per_day from 
 (SELECT DAYNAME(created_at) as day, 
 (SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id))) as total_sale_each_day from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
         group by DAY(created_at)
         order by total_sale_each_day desc) as final_result
@@ -126,33 +153,35 @@ Delayed as asked by Wakas Bhai
 
 9- Top 10 Employees:
     SELECT (SELECT CONCAT(ei.employee_first_name, " ", ei.employee_last_name) from employees_info ei where ei.employee_id = orders.employee_id) as employee, ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as total_sale from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
         group by booking_territory
         order by total_sale desc
         LIMIT 0, 10
 
 10- Top 10 Territories:
-    SELECT (SELECT tm.territory_name from territory_management tm where tm.id = orders.booking_territory) as territory, ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as total_sale from orders
-    where LOWER(status) = "completed"
-    and MONTH(created_at) = 7
-        group by booking_territory
-        order by total_sale desc
-        LIMIT 0, 10
+    SELECT territory, ROUND((SELECT SUM(final_price) from order_contents where order_id IN (SELECT id from orders where booking_territory = result_set.booking_territory and lower(status) = "completed")), 2) as total_sale from (SELECT booking_territory, (SELECT territory_name from territory_management where id = orders.booking_territory) as territory, count(*) as total_orders
+from orders
+where lower(status) = "completed"
+group by booking_territory) as result_set
+order by total_sale desc
 
 11- Top 10 Products:
-    SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), " (", 
-    (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = oc.pref_id)), ")") as item,
-    count(*) as total_sold from order_contents oc
+    SELECT pref_id, item, total_sold, ROUND((total_sold/(SELECT SUM(total_sold) from ((SELECT pref_id, (SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), ' (', (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = oc.pref_id)), ')')) as item, (SELECT SUM((case when item_quantity_updated = 0 then item_quantity_booker when item_quantity_updated is null then item_quantity_booker else item_quantity_updated end)) from order_contents where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed') and pref_id = oc.pref_id) as total_sold from order_contents oc
     where pref_id != 0
     and order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
     group by pref_id
     order by total_sold desc
-    LIMIT 0, 10
+    LIMIT 0, 10)) as result))*100, 2) as total_items from (SELECT pref_id, (SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), ' (', (SELECT unit_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = oc.pref_id)), ')')) as item, (SELECT SUM((case when item_quantity_updated = 0 then item_quantity_booker when item_quantity_updated is null then item_quantity_booker else item_quantity_updated end)) from order_contents where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed') and pref_id = oc.pref_id) as total_sold from order_contents oc
+    where pref_id != 0
+    and order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+    group by pref_id
+    order by total_sold desc
+    LIMIT 0, 10) as res_set
 
 12- Top 10 Retailers:
     SELECT (SELECT rd.retailer_name from retailers_details rd where rd.id = orders.retailer_id) as retailer, ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as total_sale from orders
-    where LOWER(status) = "completed"
+    where LOWER(status) = 'completed'
     and MONTH(created_at) = 7
         group by retailer_id
         order by total_sale desc
@@ -196,10 +225,16 @@ Report is pending as new functionality is needed which is the state at which ord
 Report is pending as new functionality is needed which is the state at which order was cancelled
 
 8: Successfull Order Ratio:
+Without Employee:
+SELECT (((SELECT count(*) from orders
+where MONTH(created_at) = 7 and status = "completed")/(SELECT count(*) FROM visits_marked
+where MONTH(created_at) = 7))*100) as result
+
+With Employee:
 SELECT (SELECT CONCAT(ei.employee_first_name, " ", ei.employee_last_name) from employees_info ei where ei.employee_id = orders.employee_id) as employee_name,
 count(*) as total_orders, (SELECT count(*) from visits_marked where employee_id = orders.employee_id) as total_visits,
 TRUNCATE(((count(*)/(SELECT count(*) from visits_marked where employee_id = orders.employee_id))*100), 2) as successfull_order_ratio from orders
-where LOWER(status) = "completed"
+where LOWER(status) = 'completed'
 group by employee_id
 order by successfull_order_ratio desc
 
@@ -345,15 +380,13 @@ SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT ite
     group by booking_region
 
 5- Product Sale:
-    SELECT category, total_items, SUM(total_items) as total_items_in_category_sold from 
-    (SELECT (SELECT sub_category_name from sub_categories where sub_category_id = (SELECT sub_category_id from inventory_preferences where pref_id = oc.pref_id))
-    as category,
-    count(pref_id) as total_items from order_contents oc
-    where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
-    group by pref_id
-    order by count(pref_id) desc) as result_set
-    group by category
-    order by total_items_in_category_sold desc
+    SELECT category, SUM(quantity) as total from (SELECT id, pref_id, (SELECT sub_category_name from sub_categories where sub_category_id = (SELECT sub_category_id from inventory_preferences where pref_id = oc.pref_id)) as category,
+        SUM((case when item_quantity_updated = 0 then item_quantity_booker when item_quantity_updated is null then item_quantity_booker else item_quantity_updated end)) as quantity FROM `order_contents` oc
+        where order_id IN (SELECT id FROM `orders` where MONTH(created_at) = 7 and LOWER(status) = 'completed')
+        and pref_id != 0
+        group by pref_id) as result_set
+        group by category
+        order by SUM(quantity) desc
 
 6- High Profit Products top 10:
     SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = oc.pref_id)), " (", 
@@ -379,3 +412,216 @@ SELECT CONCAT((SELECT item_name from inventory_items where item_id = (SELECT ite
 
 8- Avg Number of multiple products sold per employee:
 
+Employee Reports:
+
+1- Total Revenue:
+SELECT ROUND(SUM(final_price)) as total_revenue from order_contents where order_id IN
+(SELECT id FROM `orders`
+where status = "completed" and MONTH(created_at) = 7 and employee_id = 76)
+
+2- Avg Monthly Sale:
+SELECT ROUND(SUM(total_sale)/count(*)) as avg_monthly_sale from (SELECT ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as total_sale
+FROM `orders`
+where status = "completed"
+and employee_id = 76
+group by MONTH(created_at)) as avg_monthly_sale
+
+3- Avg Weekly Sale:
+SELECT ROUND(SUM(new_total_sale)/count(*)) as avg_per_week_sale from (SELECT week, SUM(total_sale) as new_total_sale from (SELECT WEEK(created_at) week,
+ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as total_sale
+from orders
+where status = "completed"
+and MONTH(created_at) = 7
+and employee_id = 76
+group by DATE(created_at)) as result
+group by week) as result
+
+4- Avg Daily Sale:
+SELECT ROUND(SUM(total_sale)/count(*)) as avg_daily_sale from (SELECT DATE(created_at), ROUND((SELECT SUM(final_price) from order_contents where find_in_set(order_id, GROUP_CONCAT(orders.id)))) as total_sale
+from orders
+where status = "completed"
+and MONTH(created_at) = 7
+and employee_id = 76
+group by DATE(created_at)) as avg_daily_sale
+
+5- Avg Order Value:
+SELECT ROUND((SUM(total_sale)/count(*))) as avg_order_value from (SELECT id, ROUND((SELECT SUM(final_price) from order_contents where order_id = orders.id)) as total_sale
+from orders
+where status = "completed"
+and MONTH(created_at) = 7
+and employee_id = 76) as avg_order_value
+
+6- Productive Sales Ratio:
+SELECT ROUND(count(*)/(SELECT count(*) from visits_marked where employee_id = 69)*100, 2)
+as productive_sales_ratio from orders
+where LOWER(status) = 'completed'
+and employee_id = 69
+
+7- Return Ratio:
+SELECT ROUND(((count(*)/(SELECT count(*) from visits_marked where employee_id = orders.employee_id))*100), 2) as return_ratio from orders
+where LOWER(status) = 'cancelled'
+and MONTH(created_at) = 7
+and employee_id = 76
+
+8- Avg Product per sale:
+SELECT ROUND(SUM((SELECT count(*) from order_contents where order_id = orders.id))/count(*)) as avg_products_per_order from orders
+where LOWER(status) = 'completed'
+and MONTH(created_at) = 7
+and employee_id = 76
+
+9- Avg Target Achievement:
+When targets will be assigned. We will see then
+
+10- Total Retail Outlets:
+SELECT count(*) as total_retail_outlets from visits_marked where employee_id = 76
+and MONTH(created_at) = 7
+
+11- Avg Monthly Productive Shops:
+a- For Ratio (300 Ordered/350 Assigned) for each month i.e. (July: 300/350, Aug: 160/350):
+SELECT this_month, (SUM(retailers_ordered)/retailers_assigned) as avg_productive_shops from (SELECT MONTH(created_at) as this_month,
+(SELECT count(*) from visits_marked where took_order = 1 and employee_id = 76 and MONTH(created_at) = MONTH(ords.created_at) and find_in_set(retailer_id, (SELECT GROUP_CONCAT(retailer_id) from retailers_assignment where employee_id = 76))) as retailers_ordered,
+(SELECT count(*) from retailers_assignment where employee_id = 76) as retailers_assigned from orders ords
+where retailer_id IN (SELECT retailer_id from retailers_assignment
+where employee_id = 76) and employee_id = 76
+group by MONTH(created_at)) as result_set
+group by this_month
+
+b- For Average (SUM(300/350 && 160/350)/totalMonths = Avg/Month):
+/*SELECT ROUND(SUM(avg_productive_shops)/count(*), 2) as avg_prod_shops_per_month from (SELECT (SUM(retailers_ordered)/retailers_assigned) as avg_productive_shops from (SELECT MONTH(created_at) as this_month,
+(SELECT count(*) from visits_marked where took_order = 1 and employee_id = 76 and MONTH(created_at) = MONTH(ords.created_at) and find_in_set(retailer_id, (SELECT GROUP_CONCAT(retailer_id) from retailers_assignment where employee_id = 76))) as retailers_ordered,
+(SELECT count(*) from retailers_assignment where employee_id = 76) as retailers_assigned from orders ords
+where retailer_id IN (SELECT retailer_id from retailers_assignment
+where employee_id = 76) and employee_id = 76
+group by MONTH(created_at)) as result_set
+group by this_month) as res_set*/
+
+SELECT ROUND(SUM(retailers_ordered)/count(*), 2) as avg_prod_shops_per_month from (SELECT MONTH(created_at) as this_month,
+(SELECT count(*) from visits_marked where took_order = 1 and employee_id = ".$employeeId." and MONTH(created_at) = MONTH(ords.created_at) and
+find_in_set(retailer_id, (SELECT GROUP_CONCAT(retailer_id) from retailers_assignment where employee_id = ".$employeeId."))) as retailers_ordered,
+(SELECT count(*) from retailers_assignment where employee_id = ".$employeeId.") as retailers_assigned from orders ords
+where retailer_id IN (SELECT retailer_id from retailers_assignment
+where employee_id = ".$employeeId.") and employee_id = ".$employeeId."
+group by MONTH(created_at)) as result_set
+group by this_month
+
+12- Avg Weekly Productive Shops:
+SELECT SUM(retailers_ordered)/count(*) as avg_productive_shops_per_week from (SELECT week(created_at) as this_week,
+(SELECT count(*) from visits_marked where took_order = 1 and employee_id = ".$employeeId." and week(created_at) = week(ords.created_at) and
+find_in_set(retailer_id, (SELECT GROUP_CONCAT(retailer_id) from retailers_assignment where employee_id = ".$employeeId." and MONTH(created_at) = ".date('m')."))) as retailers_ordered,
+(SELECT count(*) from retailers_assignment where employee_id = ".$employeeId." and MONTH(created_at) = ".date('m').") as retailers_assigned from orders ords
+where retailer_id IN (SELECT retailer_id from retailers_assignment
+where employee_id = ".$employeeId." and MONTH(created_at) = ".date('m').") and employee_id = ".$employeeId." and MONTH(created_at) = ".date('m')."
+group by week(created_at)) as result
+
+13- Avg Daily Productive Shops:
+SELECT SUM(retailers_ordered)/count(*) as avg_productive_shops_per_day from (SELECT day(created_at) as this_day,
+(SELECT count(*) from visits_marked where took_order = 1 and employee_id = ".$employeeId." and day(created_at) = day(ords.created_at) and
+find_in_set(retailer_id, (SELECT GROUP_CONCAT(retailer_id) from retailers_assignment where employee_id = ".$employeeId." and MONTH(created_at) = ".date('m')."))) as retailers_ordered,
+(SELECT count(*) from retailers_assignment where employee_id = ".$employeeId." and MONTH(created_at) = ".date('m').") as retailers_assigned from orders ords
+where retailer_id IN (SELECT retailer_id from retailers_assignment
+where employee_id = ".$employeeId." and MONTH(created_at) = ".date('m').") and employee_id = ".$employeeId." and MONTH(created_at) = ".date('m')."
+group by day(created_at)) as result
+
+14- Productive Ratio
+SELECT ROUND((total_ordered/total_assigned)*100, 2) as productive_ratio from (SELECT count(*) as total_ordered, (SELECT count(*) from retailers_assignment where employee_id = 76) as total_assigned from orders
+where employee_id = 76
+and retailer_id IN (SELECT retailer_id from retailers_assignment where employee_id = 76)
+and LOWER(status) = "completed") as res_set
+
+15- Avg Monthly Retail Visits
+SELECT ROUND(SUM(total_visits)/count(*), 2) as avg_monthly_visits from (SELECT MONTH(created_at) as this_month, count(*) as total_visits from visits_marked
+where employee_id = 76
+group by MONTH(created_at)) as res_set
+
+16- Avg Weekly Retail Visits
+SELECT ROUND(SUM(total_visits)/count(*), 2) as avg_weekly_visits from (SELECT week(created_at) as this_week, count(*) as total_visits from visits_marked
+where employee_id = 76
+and MONTH(created_at) = 7
+group by week(created_at)) as res_set
+
+17- Avg Daily Retail Visits
+SELECT ROUND(SUM(total_visits)/count(*), 2) as avg_daily_visits from (SELECT DATE(created_at) as this_day, count(*) as total_visits from visits_marked
+where employee_id = 76
+and MONTH(created_at) = 7
+group by DATE(created_at)) as res_set
+
+18- Expansion Ratio:
+SELECT ROUND((added_new/assigned)*100, 2) as expansion_ratio from (SELECT count(*) added_new, (SELECT count(*) from retailers_assignment where employee_id = 69) as assigned 
+FROM `retailers_details` where added_by = 69
+and MONTH(created_at) = 8) as res_set
+
+19- Avg Monthly Orders:
+SELECT ROUND(SUM(total_orders)/count(*),2) as avg_order_monthly
+from (SELECT MONTH(created_at) as this_month, count(*) as total_orders from orders
+where employee_id = 76
+group by MONTH(created_at)) as res_set
+
+20- Avg Weekly Order:
+SELECT ROUND(SUM(total_orders)/count(*),2) as avg_order_weekly
+from (SELECT week(created_at) as this_week, count(*) as total_orders from orders
+where employee_id = 76
+and MONTH(created_at) = 7
+group by week(created_at)) as res_set
+
+21- Avg Daily Orders:
+SELECT ROUND(SUM(total_orders)/count(*),2) as avg_order_daily
+from (SELECT date(created_at) as this_day, count(*) as total_orders from orders
+where employee_id = 76
+and MONTH(created_at) = 7
+group by date(created_at)) as res_set
+
+22- Avg Discount Per Order:
+SELECT ROUND(SUM(discount_given)/count(*),2) as avg_discount_per_order
+from (SELECT order_id, SUM(booker_discount) as discount_given from order_contents
+where order_id IN (SELECT id from orders where employee_id = 76)
+group by order_id) as result_set
+
+23- Total Orders Booked:
+SELECT count(*) as total_orders_booked from orders where employee_id = 76
+and MONTH(created_at) = 7
+
+1- Productive Retail Count:
+SELECT ROUND(((SELECT count(*) from visits_marked where took_order = 1)/count(*))*100, 2) as productive_retail_outlets from retailers_details
+
+2- Avg Revenue/Shop:
+SELECT ROUND(SUM(total_revenue)/count(*), 2) as avg_revenue from (SELECT ROUND((SELECT SUM(final_price) from order_contents where order_id IN (SELECT id from orders where retailer_id = ords.retailer_id)), 2) as total_revenue from orders ords
+group by retailer_id) as res_set
+
+3- Re-Orders Ratio:
+SELECT ROUND(((SELECT count(*) from (SELECT (SELECT count(*) from orders where retailer_id = vm.retailer_id) as total_orders from visits_marked vm
+where took_order = 1) as result_set
+where total_orders > 1)/count(*))*100, 2) as re_orders from (SELECT (SELECT count(*) from orders where retailer_id = vm.retailer_id) as total_orders, retailer_id from visits_marked vm
+where took_order = 1) as res_set
+
+4- Top 10 Territory:
+SELECT territory, ROUND((SELECT SUM(final_price) from order_contents where order_id IN (SELECT id from orders where booking_territory = result_set.booking_territory)), 2) as revenue from (SELECT booking_territory, (SELECT territory_name from territory_management where id = orders.booking_territory) as territory, count(*) as total_orders
+from orders
+group by booking_territory) as result_set
+order by revenue desc
+
+5- Retailer Outlets Graph:
+SELECT booking_territory, territory, total_retailers_added, (SELECT count(*) from orders where retailer_id IN (SELECT id from retailers_details rd where rd.retailer_territory_id = res_set.booking_territory)) as ordering_retailers
+from (SELECT booking_territory,
+(SELECT count(*) from retailers_details rd where rd.retailer_territory_id = orders.booking_territory) as total_retailers_added,
+(SELECT territory_name from territory_management where id = orders.booking_territory) as territory
+from orders
+group by booking_territory) as res_set
+
+6- ARPU:
+
+SELECT
+
+(SELECT count(*) from (SELECT retailer_id, total_orders, total_revenue, ROUND(total_revenue/total_orders, 2) as avg_revenue from (SELECT retailer_id, count(*) as total_orders, ROUND((SELECT SUM(final_price) from order_contents where order_id IN (SELECT id from orders where retailer_id = ords.retailer_id)), 2) as total_revenue from orders ords
+group by retailer_id) as res_set) as final_set where avg_revenue >= 0 and avg_revenue <= 300) as 0_and_300,
+
+(SELECT count(*) from (SELECT retailer_id, total_orders, total_revenue, ROUND(total_revenue/total_orders, 2) as avg_revenue from (SELECT retailer_id, count(*) as total_orders, ROUND((SELECT SUM(final_price) from order_contents where order_id IN (SELECT id from orders where retailer_id = ords.retailer_id)), 2) as total_revenue from orders ords
+group by retailer_id) as res_set) as final_set where avg_revenue >= 301 and avg_revenue <= 500) as 300_and_500,
+
+(SELECT count(*) from (SELECT retailer_id, total_orders, total_revenue, ROUND(total_revenue/total_orders, 2) as avg_revenue from (SELECT retailer_id, count(*) as total_orders, ROUND((SELECT SUM(final_price) from order_contents where order_id IN (SELECT id from orders where retailer_id = ords.retailer_id)), 2) as total_revenue from orders ords
+group by retailer_id) as res_set) as final_set where avg_revenue >= 501 and avg_revenue <= 1000) as 500_and_1000,
+
+(SELECT count(*) from (SELECT retailer_id, total_orders, total_revenue, ROUND(total_revenue/total_orders, 2) as avg_revenue from (SELECT retailer_id, count(*) as total_orders, ROUND((SELECT SUM(final_price) from order_contents where order_id IN (SELECT id from orders where retailer_id = ords.retailer_id)), 2) as total_revenue from orders ords   
+group by retailer_id) as res_set) as final_set where avg_revenue >= 1001) as 1000_and_more
+
+Average Sale Per Employee:
+SELECT ROUND(SUM(total_orders)/count(*)) avg_productive_retailers_per_employee from (SELECT employee_id, (SELECT count(DISTINCT retailer_id) from orders where retailer_id IN (SELECT retailer_id from retailers_assignment where employee_id = ei.employee_id)) as total_orders, (SELECT count(*) from retailers_assignment where employee_id = ei.employee_id) as retailers_assigned from employees_info ei) as result_set

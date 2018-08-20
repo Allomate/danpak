@@ -10,15 +10,28 @@ $(document).ready(function() {
     });
 
     $('#addCampaignBtn').click(function() {
-        debugger;
+
+        var checkboxValidator = false;
+        $('input[type="checkbox"]').each(function() {
+            if ($(this).attr('checked')) {
+                checkboxValidator = true;
+                return;
+            }
+        });
+
+        if (!checkboxValidator) {
+            swal('Missing Information', 'Please provide Area, Region or Territory to proceed', 'warning');
+            return;
+        }
+
         if ($('#scheme_type').val() == "1") {
             if (!$('#scheme_image').val()) {
-                alert('Please provide scheme image also');
+                swal('Missing Information', 'Please provide scheme image also', 'warning');
                 return;
             }
         } else {
             if (!$('#scheme_image_disc_tp').val()) {
-                alert('Please provide scheme image also');
+                swal('Missing Information', 'Please provide scheme image also', 'warning');
                 return;
             }
         }
@@ -113,6 +126,39 @@ $(document).ready(function() {
                 $('input[name="scheme_amount"]').val(Math.round(result));
             }
         });
+    });
+
+    $('#region').click(function() {
+        if ($(this).attr('checked')) {
+            $(this).attr('checked', false);
+            return;
+        }
+        $('#territory').attr('checked', false);
+        $('#area').attr('checked', false);
+        $(this).attr('checked', true);
+        $('input[name="bulk_assignment"]').val("region");
+    });
+
+    $('#area').click(function() {
+        if ($(this).attr('checked')) {
+            $(this).attr('checked', false);
+            return;
+        }
+        $('#territory').attr('checked', false);
+        $('#region').attr('checked', false);
+        $(this).attr('checked', true);
+        $('input[name="bulk_assignment"]').val("area");
+    });
+
+    $('#territory').click(function() {
+        if ($(this).attr('checked')) {
+            $(this).attr('checked', false);
+            return;
+        }
+        $('#region').attr('checked', false);
+        $('#area').attr('checked', false);
+        $(this).attr('checked', true);
+        $('input[name="bulk_assignment"]').val("territory");
     });
 
     const numberWithCommas = (x) => {

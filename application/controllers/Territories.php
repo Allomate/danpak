@@ -11,7 +11,7 @@ class Territories extends WebAuth_Controller{
 	}
 
 	public function ListTerritories(){
-		return $this->load->view('Territory/ListTerritory', [ 'Territories' => $this->tm->getAllTerritories() ]);
+		return $this->load->view('Territory/ListTerritory', [ 'Territories' => $this->tm->getAllTerritoriesForListings() ]);
 	}
 
 	public function AddTerritory(){
@@ -61,7 +61,7 @@ class Territories extends WebAuth_Controller{
 		else:
 			$this->session->set_flashdata('territory_delete_failed', 'Unable to delete the territory');
 		endif;
-		return $this->load->view('Territory/ListTerritory', [ 'Territories' => $this->tm->getAllTerritories() ]);
+		return $this->load->view('Territory/ListTerritory', [ 'Territories' => $this->tm->getAllTerritoriesForListings() ]);
 	}
 
 	public function ReturnMerchantsInTerritory(){

@@ -7,10 +7,10 @@
 	<div class="page-wrapper">
 		<div class="container-fluid">
 			<div class="row heading-bg">
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Categories Management</h2>
 				</div>
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<ol class="breadcrumb">
 						<li><a href="#"><span>Organization</span></a></li>
 						<li><span>Main Categories Management</span></li>

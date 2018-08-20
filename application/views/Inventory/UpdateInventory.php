@@ -13,10 +13,10 @@
 	<div class="page-wrapper">
 		<div class="container-fluid">
 			<div class="row heading-bg">
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Update Product</h2>
 				</div>
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<ol class="breadcrumb">
 						<li><span>Inventory Management</span></li>
 						<li class="active"><span>Update Inventory</span></li>

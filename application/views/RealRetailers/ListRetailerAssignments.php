@@ -119,10 +119,10 @@
 			</div>
 			<?php endif; ?>
 			<div class="row heading-bg">
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Retailers Management</h2>
 				</div>
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<ol class="breadcrumb">
 
 						<li>
@@ -141,7 +141,7 @@
 					<div class="box-white p-20">
 						<a href="<?= base_url('RealRetailers/AddMoreAssignments');?>" class="btn add-emp">
 							<i class="fa fa-plus"> </i> New Assignments</a>
-						<h2 class="m-b-0">Retailers Assignment List </h2>
+						<h2 class="m-b-0 less_600">Retailers Assignment List </h2>
 						<div class="table-wrap">
 							<div class="table-responsive">
 								<table class="table table-hover display  pb-30">
@@ -206,7 +206,7 @@
 	</div>
 	<div class="row">
 		<div id="myModal" class="modal fade" role="dialog">
-			<div class="modal-dialog" style="width: 1000px;">
+			<div class="modal-dialog" style="width:80%">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>

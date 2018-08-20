@@ -24,10 +24,10 @@
 			</div>
 			<?php endif; ?>
 			<div class="row heading-bg">
-				<div class="col-lg-6 col-md-6">
-					<h2 class="m-heading">Campaign Management</h2>
+				<div class="col-lg-6 col-md-6 col-sm-6">
+					<h2 class="m-heading">Scheme Management</h2>
 				</div>
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<ol class="breadcrumb">
 
 						<li>
@@ -36,7 +36,7 @@
 							</a>
 						</li>
 						<li>
-							<span>Campaign Management</span>
+							<span>Scheme Management</span>
 						</li>
 					</ol>
 				</div>
@@ -46,22 +46,22 @@
 					<?= form_hidden('urlForCampaignDetails', base_url('CampaignManagement/GetCampaignDetailsForAjax')); ?>
 						<div class="box-white p-20">
 							<a href="<?= base_url('CampaignManagement/AddCampaign');?>" class="btn add-emp">
-								<i class="fa fa-plus"> </i> Create Campaign</a>
-							<h2 class="m-b-0">Campaigns List </h2>
+								<i class="fa fa-plus"> </i> Create Scheme</a>
+							<h2 class="m-b-0 less_600">Schemes List </h2>
 							<div class="table-wrap">
 								<div class="table-responsive">
 									<table class="table table-hover display  pb-30">
 										<thead>
 											<tr>
-												<th>Campaign Name</th>
-												<th>Campaign Type</th>
+												<th>Scheme Name</th>
+												<th>Scheme Type</th>
 												<th>Actions</th>
 											</tr>
 										</thead>
 										<tfoot>
 											<tr>
-												<th>Campaign Name</th>
-												<th>Campaign Type</th>
+												<th>Scheme Name</th>
+												<th>Scheme Type</th>
 												<th>Actions</th>
 											</tr>
 										</tfoot>
@@ -99,7 +99,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Campaign Details</h4>
+					<h4 class="modal-title">Scheme Details</h4>
 				</div>
 				<div class="modal-body">
 					<div id="schemeOfferDetailsModalBody">

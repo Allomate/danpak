@@ -77,10 +77,10 @@
 				</div>
 			<?php endif; ?>
 			<div class="row heading-bg">
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Categories Management</h2>
 				</div>
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<ol class="breadcrumb">
 
 						<li><a href="#"><span>Organization</span></a></li>
@@ -91,7 +91,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="box-white p-20"><a href="<?= base_url('Categories/AddMainCategory');?>" class="btn add-emp"><i class="fa fa-plus"> </i> Add Main Category</a>
-						<h2 class="m-b-0">Main Categories List </h2>
+						<h2 class="m-b-0 less_600">Main Categories List </h2>
 						<div class="table-wrap">
 							<div class="table-responsive">
 								<table  class="table table-hover display  pb-30" >

@@ -307,7 +307,7 @@
 				<a href="<?= base_url('CampaignManagement/ListCampaigns');?>">
 					<div class="pull-left">
 						<i class="zmdi zmdi-chart-donut"></i>
-						<span class="right-nav-text">Campaign Management</span>
+						<span class="right-nav-text">Scheme Management</span>
 					</div>
 					<div class="clearfix"></div>
 				</a>

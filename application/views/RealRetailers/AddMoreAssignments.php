@@ -15,10 +15,10 @@
 			</div>
 			<?php endif; ?>
 			<div class="row heading-bg">
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Retailer Assignment Management</h2>
 				</div>
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<ol class="breadcrumb">
 						<li>
 							<a href="#">
@@ -138,7 +138,7 @@
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
-											<label class="control-label mb-10">Retailers Added</label>
+											<h2 class="m-t-20">Retailers Added</h2>
 											<ul style="list-style: none; padding: 0px" id="addedAssignmentsList">
 											</ul>
 										</div>

@@ -55,20 +55,17 @@
 			</div>
 			<?php endif; ?>
 			<div class="row heading-bg">
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Employee Management</h2>
 				</div>
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<ol class="breadcrumb">
 						<li>
 							<a href="#">
-								<span>Organization</span>
+								<span>KPI Management</span>
 							</a>
 						</li>
-						<li>
-							<span>Employee Management</span>
-						</li>
-						<li>
+					    <li>
 							<span>Employee List</span>
 						</li>
 					</ol>

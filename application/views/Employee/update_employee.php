@@ -7,16 +7,16 @@
 	<div class="page-wrapper">
 		<div class="container-fluid">
 			<div class="row heading-bg">
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Update Employee</h2>
 				</div>
-				<div class="col-lg-6 col-md-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<ol class="breadcrumb">
-						<li>
+						<!--<li>
 							<a href="#">
 								<span>Organization</span>
 							</a>
-						</li>
+						</li>-->
 						<li>
 							<span>Employee Management</span>
 						</li>
@@ -120,8 +120,18 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Designation*</label>
-											<input type="text" name="employee_designation" class="form-control" value="<?= $employee->employee_designation;?>" />
-											<?= form_error('employee_designation', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+											<?php
+											$options["CEO"] = "CEO";
+											$options["Director"] = "Director";
+											$options["GM Sales"] = "GM Sales";
+											$options["NSM"] = "NSM";
+											$options["RSM"] = "RSM";
+											$options["ASM"] = "ASM";
+											$options["TSO"] = "TSO";
+											$options["Order Booker"] = "Order Booker";
+											$options["Office Staff"] = "Office Staff";
+											$atts = array( 'class' => 'selectpicker', 'data-style' => 'form-control btn-default btn-outline' );
+											echo form_dropdown('employee_designation', $options, $employee->employee_designation, $atts); ?>
 										</div>
 									</div>
 									<div class="col-md-6">
@@ -137,12 +147,12 @@
 										<div class="form-group">
 											<label class="control-label mb-10">Reporting To</label>
 											<?php
-											$options["0"] = "No reporting";
+											$optionsReporting["0"] = "No reporting";
 											foreach ($employees_list as $employee_detail) : 
-												$options[$employee_detail->employee_id] = $employee_detail->employee_username;
+												$optionsReporting[$employee_detail->employee_id] = $employee_detail->employee_username;
 											endforeach; 
 											$atts = array( 'class' => 'selectpicker', 'data-style' => 'form-control btn-default btn-outline' );
-											echo form_dropdown('reporting_to', $options, $employee->reporting_to, $atts); ?>
+											echo form_dropdown('reporting_to', $optionsReporting, $employee->reporting_to, $atts); ?>
 										</div>
 									</div>
 									<div class="col-md-6">
@@ -186,7 +196,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="box-white m-t-30">
+					<div class="box-white m-t-30 m-b-30">
 						<h2>Access Rights</h2>
 						<div class="form-wrap">
 							<h5>Is this employee an Admin?</h5>

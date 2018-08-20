@@ -105,7 +105,7 @@ $(document).ready(function() {
                     }
                     $('#totalCartDiv').css('width', '');
                     $('#totalCartDiv').fadeIn();
-                    $('#totalCartDiv table tbody').append('<tr><td>' + $('input[name="custom_order_data"]').val() + '</td><td>' + $('select[name="employee_id"] option:selected').text() + '</td><td>' + $('select[name="item_id"] option:selected').text() + '</td><td>' + $('select[name="pref_id"] option:selected').text() + '</td><td>' + $('select[name="distributor_id"] option:selected').text() + '</td><td>' + $('input[name="quantity"]').val() + '</td><td>' + itemDiscount + '%</td><td>' + response.distributor_discount + '%</td></td><td>' + actualBill + '</td><td><a id="removeFromCart"><i class="fa fa-close"></i></a><input id="prefIdHidden" value="' + $('select[name="pref_id"]').val() + '" hidden/></a><input id="retIdHidden" value="' + $('select[name="distributor_id"]').val() + '" hidden/></td></tr>');
+                    $('#totalCartDiv table tbody').append('<tr><td>' + $('input[name="custom_order_data"]').val() + '</td><td>' + $('select[name="employee_id"] option:selected').text() + '</td><td>' + $('select[name="item_id"] option:selected').text() + '</td><td>' + $('select[name="pref_id"] option:selected').text() + '</td><td>' + $('select[name="distributor_id"] option:selected').text() + '</td><td>' + $('input[name="quantity"]').val() + '</td><td>' + itemDiscount + '%</td><td>' + response.distributor_discount + '%</td></td><td>' + Math.round(actualBill) + '</td><td><a id="removeFromCart"><i class="fa fa-close"></i></a><input id="prefIdHidden" value="' + $('select[name="pref_id"]').val() + '" hidden/></a><input id="retIdHidden" value="' + $('select[name="distributor_id"]').val() + '" hidden/></td></tr>');
                 }
             });
         });
@@ -219,7 +219,9 @@ $(document).ready(function() {
             $('#dynamicInventoryExpansionDiv').fadeIn();
         }
 
-        $('#dynamicInventoryExpansionDiv').append('<div class="form-group"><article style="display: inline-block; width: 120px; margin-right: 10px"><header style="border: 1px solid black; border-top-right-radius: 2em; border-top-left-radius: 0.5em"><span style="    font-weight: bold; height: auto; min-height: 100px; display: block; margin: 0 auto; text-align: center; padding-top: 30%; vertical-align: middle;">' + name + '</span></header><content><span class="deleteOrderExpansionInventory" id="' + item_id + '">DELETE</span></content></article></div>');
+        $('#dynamicInventoryExpansionDiv').append('<div class="col-md-2" style="padding: 0px;"><div class="form-group" style="padding: 20px!important"><span style="font-weight: bold; display: block; background: #fff; padding: 10px; margin-bottom: 10px;">' + name + '</span><span class="deleteOrderExpansionInventory" style="width: 100%" id="' + item_id + '">DELETE</span></div></div>');
+
+        // $('#dynamicInventoryExpansionDiv').append('<div class="form-group"><article style="display: inline-block; width: 120px; margin-right: 10px"><header style="border: 1px solid black; border-top-right-radius: 2em; border-top-left-radius: 0.5em"><span style="    font-weight: bold; height: auto; min-height: 100px; display: block; margin: 0 auto; text-align: center; padding-top: 30%; vertical-align: middle;">' + name + '</span></header><content><span class="deleteOrderExpansionInventory" id="' + item_id + '">DELETE</span></content></article></div>');
         if ($('input[name="item_ids_expansion"]').val()) {
             $('input[name="item_quantities_expansion"]').val($('input[name="item_quantities_expansion"]').val() + "," + quantity)
             $('input[name="booker_discounts_expansion"]').val($('input[name="booker_discounts_expansion"]').val() + "," + bookerDiscount)

@@ -41,7 +41,7 @@ class Orders extends WebAuth_Controller{
 	}
 
 	public function ManualOrders(){
-		// echo "<pre>"; print_r($this->om->getAllRetsDetsList());die;
+		// echo "<pre>"; print_r($this->om->get_inventory_sku_wise());die;
 		return $this->load->view('Order/ManualOrderCreation', [ 'employees' => $this->em->get_employees_list(), 'inventorySku' => $this->im->get_inventory_sku_wise() ]);
 	}
 
@@ -142,9 +142,18 @@ class Orders extends WebAuth_Controller{
 
 	public function ProcessAll($employee_id, $date, $status){
 		if ($this->om->ProcessAll($employee_id, $date, $status)) :
-			$this->session->set_flashData('order_processed', 'All orders has been processed successfully');
+			$this->session->set_flashData('order_processed', 'All orders have been processed successfully');
 		else:
 			$this->session->set_flashData('order_process_failed', 'Unable to process the orders at the moment');
+		endif;
+		return redirect('Orders/ListOrders/'.$status);
+	}
+
+	public function CompleteAll($employee_id, $date, $status){
+		if ($this->om->CompleteAll($employee_id, $date, $status)) :
+			$this->session->set_flashData('order_completed', 'All orders have been completed successfully');
+		else:
+			$this->session->set_flashData('order_complete_failed', 'Unable to complete the orders at the moment');
 		endif;
 		return redirect('Orders/ListOrders/'.$status);
 	}
