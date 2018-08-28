@@ -3,7 +3,7 @@
 class RetailersModel extends CI_Model{
 	
 	public function GetRetailers(){
-		return $this->db->select('id, retailer_name, retailer_address, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as territory_name, (SELECT retailer_type_name from retailer_types where id = rd.retailer_type_id) as retailer_type')->where('find_in_set(rd.retailer_type_id, (SELECT GROUP_CONCAT(id) from retailer_types where retailer_or_distributor = "dist"))')->order_by("retailer_name", "")->get("retailers_details rd")->result();
+		return $this->db->select('id, retailer_name, retailer_email, retailer_address, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as territory_name, (SELECT retailer_type_name from retailer_types where id = rd.retailer_type_id) as retailer_type')->where('find_in_set(rd.retailer_type_id, (SELECT GROUP_CONCAT(id) from retailer_types where retailer_or_distributor = "dist"))')->order_by("retailer_name", "")->get("retailers_details rd")->result();
 	}
 	
 	public function GetRetailerTypes(){
@@ -31,6 +31,14 @@ class RetailersModel extends CI_Model{
 	}
 
 	public function UpdateRetailerInformation($retailer_id, $retailerInfo){
+		$oldPassword = $this->db->select('distributor_password')->where('id', $retailer_id)->get('retailers_details')->row()->distributor_password;
+		if($oldPassword == $retailerInfo["distributor_password"]){
+			unset($retailerInfo["distributor_password"]);
+			unset($retailerInfo["new_password"]);
+		}else{
+			$retailerInfo["distributor_password"] = $retailerInfo["new_password"];
+			unset($retailerInfo["new_password"]);
+		}
 		return $this->db
 		->where('id',$retailer_id)	
 		->update('retailers_details', $retailerInfo);

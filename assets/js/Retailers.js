@@ -26,6 +26,93 @@ $(document).ready(function() {
         $('.dataTables_wrapper').fadeIn();
     }, 300);
 
+    if ($('select[name="asmOrRsm"]').length) {
+        $.ajax({
+            type: "POST",
+            data: { manager_id: $('select[name="asmOrRsm"]').val() },
+            url: "/Retailers/GetReportingTsoAndOb",
+            success: function(response) {
+                var response = JSON.parse(response);
+                $('select[name="orderBooker"]').empty();
+                if (!response.ob.length) {
+                    $('select[name="orderBooker"]').append('<option value="0" disabled selected>No Order booker</option>');
+                } else {
+                    for (var i = 0; i < response.ob.length; i++) {
+                        $('select[name="orderBooker"]').append('<option value="' + response.ob[i].employee_id + '">' + response.ob[i].employee_username + '</option>');
+                    }
+                }
+
+                $('select[name="tso"]').empty();
+                if (!response.ob.length) {
+                    $('select[name="tso"]').append('<option value="0" disabled selected>No TSO</option>');
+                } else {
+                    for (var i = 0; i < response.tso.length; i++) {
+                        $('select[name="tso"]').append('<option value="' + response.tso[i].employee_id + '">' + response.tso[i].employee_username + '</option>');
+                    }
+                }
+            }
+        });
+
+        $('select[name="asmOrRsm"]').change(function() {
+            $.ajax({
+                type: "POST",
+                data: { manager_id: $('select[name="asmOrRsm"]').val() },
+                url: "/Retailers/GetReportingTsoAndOb",
+                success: function(response) {
+                    var response = JSON.parse(response);
+                    $('select[name="orderBooker"]').empty();
+                    if (!response.ob.length) {
+                        $('select[name="orderBooker"]').append('<option value="0" disabled selected>No Order booker</option>');
+                    } else {
+                        for (var i = 0; i < response.ob.length; i++) {
+                            $('select[name="orderBooker"]').append('<option value="' + response.ob[i].employee_id + '">' + response.ob[i].employee_username + '</option>');
+                        }
+                    }
+
+                    $('select[name="tso"]').empty();
+                    if (!response.ob.length) {
+                        $('select[name="tso"]').append('<option value="0" disabled selected>No TSO</option>');
+                    } else {
+                        for (var i = 0; i < response.tso.length; i++) {
+                            $('select[name="tso"]').append('<option value="' + response.tso[i].employee_id + '">' + response.tso[i].employee_username + '</option>');
+                        }
+                    }
+                }
+            });
+        });
+
+        var addedEmployees = [];
+
+        $('#addTso').click(function() {
+            if ($('select[name="tso"] :selected').val() === "0") {
+                alert("No TSO found");
+                return;
+            }
+
+            if (jQuery.inArray($('select[name="tso"]').val(), addedEmployees) !== -1) {
+                alert('Already added');
+                return;
+            }
+            addedEmployees.push($('select[name="tso"]').val());
+            $('#addedEmployees').append('<li style="display: inline-block; width: 300px !important;"><span style="box-shadow: 0 2px 8px 0 #e5d6d6; padding: 10px; width: 75%; margin-bottom: 10px; display: inline-block;">' + $('select[name="tso"] :selected').text() + '</span> <span id="' + $('select[name="tso"] :selected').val() + ' (T.S.O)" class="removeAddedEmployee" style="width: 20%; height: 42px; display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: red;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">x</span> </li>');
+        });
+
+        $('#addOb').click(function() {
+            if ($('select[name="orderBooker"] :selected').val() === "0") {
+                alert("No OB found");
+                return;
+            }
+
+            if (jQuery.inArray($('select[name="orderBooker"]').val(), addedEmployees) !== -1) {
+                alert('Already added');
+                return;
+            }
+            addedEmployees.push($('select[name="orderBooker"]').val());
+            $('#addedEmployees').append('<li style="display: inline-block; width: 300px !important;"><span style="box-shadow: 0 2px 8px 0 #e5d6d6; padding: 10px; width: 75%; margin-bottom: 10px; display: inline-block;">' + $('select[name="orderBooker"] :selected').text() + '</span> <span id="' + $('select[name="orderBooker"] :selected').val() + ' (O.B)" class="removeAddedEmployee" style="width: 20%; height: 42px; display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: red;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">x</span> </li>');
+        });
+
+    }
+
     $('#addRetailersAssignmentsButton').click(function() {
         if (!$('#territoryRadio').is(':checked')) {
             if (!retailersAddedForAssignment.length) {

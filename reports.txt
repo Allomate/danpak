@@ -625,3 +625,8 @@ group by retailer_id) as res_set) as final_set where avg_revenue >= 1001) as 100
 
 Average Sale Per Employee:
 SELECT ROUND(SUM(total_orders)/count(*)) avg_productive_retailers_per_employee from (SELECT employee_id, (SELECT count(DISTINCT retailer_id) from orders where retailer_id IN (SELECT retailer_id from retailers_assignment where employee_id = ei.employee_id)) as total_orders, (SELECT count(*) from retailers_assignment where employee_id = ei.employee_id) as retailers_assigned from employees_info ei) as result_set
+
+SELECT TIME_FORMAT(SEC_TO_TIME(SUM(diff)/count(*)),'%Hh %im') as avg_hrs from (SELECT TIME_TO_SEC(TIMEDIFF(IFNULL((SELECT TIME(ADDTIME(created_at, "10:00:00")) from ams where checking_status = 0 and DATE(created_at) = DATE(attend.created_at) and employee_id = attend.employee_id), "18:00:00"), (SELECT TIME(ADDTIME(created_at, "10:00:00")) from ams where checking_status = 1 and DATE(created_at) = DATE(attend.created_at) and employee_id = attend.employee_id))) as diff
+from ams as attend
+where employee_id = 75
+group by date(created_at)) as sub_set

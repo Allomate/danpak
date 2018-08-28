@@ -24,7 +24,7 @@ class Employee extends CI_Controller
 
     public function GetEmployees()
     {
-        echo json_encode($this->em->get_employees_list());
+        echo json_encode($this->em->get_employees_list_for_dashboard());
     }
 
     public function GetEmployeesDaysList()

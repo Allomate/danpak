@@ -54,10 +54,28 @@
 												</div>
 												<?= form_error('password', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 											</div>
-											<a class="block mb-10 font-15" href="#">Forgot password?</a>
-											<div class="form-group">
-												<button type="submit" class="btn btn-info  btn-login">Login</button>
+
+											<div class="radio radio-info m-b-15">
+												<div class="row">
+													<div class="col-md-6">
+														<div class="form-group">
+															<input type="radio" name="login_type" class="loginType" id="danpak" value="danpak" checked="checked">
+															<label for="danpak" class="rad-large">Danpak</label>
+														</div>
+													</div>
+													<div class="col-md-6">
+														<div class="form-group">
+															<input type="radio" name="login_type" class="loginType" id="distributor" value="dist">
+															<label for="distributor" class="rad-large">Distributor</label>
+														</div>
+													</div>
+												</div>
 											</div>
+
+											<div class="form-group">
+												<button type="submit" class="btn btn-info btn-login">Login</button>
+											</div>
+
 											</form>
 										</div>
 									</div>

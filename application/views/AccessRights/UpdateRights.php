@@ -33,14 +33,24 @@
                         echo form_open('AccRights/UpdateAccRightsOps/'.$this->uri->segment(3), $attributes); ?>
 						<input type="text" name="permisData" id="permisData" hidden>
 						<div class="row">
-							<div class="col-md-12">
+							<div class="col-md-6">
 								<div class="form-group">
 									<label class="p-b-10" for="employee">Select employee</label>
-									<?php foreach ($Employees as $employee) : 
+									<?php $options = array('null' => 'Select Employee'); foreach ($Employees as $employee) : 
 											$options[$employee->employee_id] = $employee->employee_username;
 										endforeach; 
 										$atts = array( 'class' => 'form-control' );
-										echo form_dropdown('employee_id', $options, $RightsData->admin_id, $atts); ?>
+										echo form_dropdown('admin_id', $options, $RightsData->admin_id, $atts); ?>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="p-b-10" for="employee">Select Distributor</label>
+									<?php $optionsDist = array('null' => 'Select Distributor'); foreach ($Distributors as $distributor) : 
+											$optionsDist[$distributor->id] = $distributor->retailer_email;
+										endforeach; 
+										$atts = array( 'class' => 'form-control' );
+										echo form_dropdown('distributor_id', $optionsDist, $RightsData->distributor_id, $atts); ?>
 								</div>
 							</div>
 						</div>
@@ -48,7 +58,6 @@
 						<div class="row">
 							<div class="col-md-12">
 								<h2 class="p-t-20" for="rights">Access Rights</h2>
-							
 								<div class="row">
 									<div class="col-md-3 col-sm-6">
 										<div class="form-group">

@@ -105,10 +105,10 @@
 										<?php foreach ($Rights as $right) : ?>
 										<tr>
 											<td>
-												<?= $right->username; ?>
+												<?= $right->username ? $right->username : $right->distributor_name; ?>
 											</td>
 											<td>
-												<a href="<?= base_url('AccRights/UpdateRights/'.$right->id); ?>">
+												<a href="<?= base_url('AccRights/UpdateRights/'.$right->id.'/'.$right->user_type); ?>">
 													<i class="fa fa-pencil"></i>
 												</a>
 												<a class="deleteConfirmation" href="<?= base_url('AccRights/DeleteAccessRight/'.$right->id); ?>">

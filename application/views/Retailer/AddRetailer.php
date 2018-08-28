@@ -25,7 +25,23 @@
 						echo form_open('Retailers/AddRetailerOps', $attributes); ?>
 						<div class="form-wrap">
 							<div class="form-body">
-								<div class="row"> 
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="control-label mb-10">Distributor Username*</label>
+											<input type="text" name="retailer_email" class="form-control" value="<?= set_value('retailer_email'); ?>">
+											<?= form_error('retailer_email', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="control-label mb-10">Distributor Password*</label>
+											<input type="password" name="distributor_password" class="form-control" value="<?= set_value('distributor_password'); ?>">
+											<?= form_error('distributor_password', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+										</div>
+									</div>
+								</div>
+								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributor Name*</label>
@@ -35,32 +51,39 @@
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">
-											<label class="control-label mb-10">Distributor Territory*</label>
-											<select class="selectpicker" name="retailer_territory_id" data-style="form-control btn-default btn-outline">
-												<?php foreach( $Territories as $territory ) : ?>
-													<option value="<?= $territory->id; ?>"><?= $territory->territory_name; ?></option>
-												<?php endforeach; ?>
-											</select>
-										</div>
-									</div>	
-								</div>
-								<div class="row"> 
-									<div class="col-md-6">
-										<div class="form-group">
 											<label class="control-label mb-10">Distributor Phone</label>
 											<input type="text" name="retailer_phone" class="form-control" value="<?= set_value('retailer_phone'); ?>">
 											<?= form_error('retailer_phone', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 										</div>
 									</div>
+								</div>
+								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
-											<label class="control-label mb-10">Distributor Email</label>
-											<input type="text" name="retailer_email" class="form-control" value="<?= set_value('retailer_email'); ?>">
-											<?= form_error('retailer_email', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+											<label class="control-label mb-10">Distributor Type*</label>
+											<select class="selectpicker" name="retailer_type_id" data-style="form-control btn-default btn-outline">
+												<?php foreach( $RetailerTypes as $type ) : ?>
+												<option value="<?= $type->id; ?>">
+													<?= $type->retailer_type_name; ?>
+												</option>
+												<?php endforeach; ?>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="control-label mb-10">Distributor Territory*</label>
+											<select class="selectpicker" name="retailer_territory_id" data-style="form-control btn-default btn-outline">
+												<?php foreach( $Territories as $territory ) : ?>
+												<option value="<?= $territory->id; ?>">
+													<?= $territory->territory_name; ?>
+												</option>
+												<?php endforeach; ?>
+											</select>
 										</div>
 									</div>
 								</div>
-								<div class="row"> 
+								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributor Latitude</label>
@@ -76,7 +99,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="row"> 
+								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributor City*</label>
@@ -84,18 +107,72 @@
 											<?= form_error('retailer_city', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 										</div>
 									</div>
-									<div class="col-md-6">
+								</div>
+								<hr>
+								<center>
+									<h3>T.S.O & O.B Assignments</h3>
+								</center>
+								<div class="row">
+									<div class="col-md-3">
 										<div class="form-group">
-											<label class="control-label mb-10">Distributor Type*</label>
-											<select class="selectpicker" name="retailer_type_id" data-style="form-control btn-default btn-outline">
-												<?php foreach( $RetailerTypes as $type ) : ?>
-													<option value="<?= $type->id; ?>"><?= $type->retailer_type_name; ?></option>
+											<label class="control-label mb-10">Select ASM/RSM</label>
+											<select class="form-control" name="asmOrRsm" data-style="form-control btn-default btn-outline">
+												<?php foreach( $RsmAsm as $rsm ) : ?>
+												<option value="<?= $rsm->employee_id; ?>">
+													<?= $rsm->employee_username; ?>
+												</option>
 												<?php endforeach; ?>
 											</select>
 										</div>
-									</div>	
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label class="control-label mb-10">Select T.S.O</label>
+											<div style="width: 100%">
+												<select style="width: 75%; display: inline-block" class="form-control" name="tso" data-style="form-control btn-default btn-outline">
+													<option value="0">Select T.S.O</option>
+													<?php foreach( $RsmAsm as $rsm ) : ?>
+													<option value="<?= $rsm->employee_id; ?>">
+														<?= $rsm->employee_username; ?>
+													</option>
+													<?php endforeach; ?>
+												</select>
+												<span id="addTso" style="cursor: pointer; width: 20%;display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: #001e35;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">+</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label class="control-label mb-10">Select O.B</label>
+											<div style="width: 100%">
+												<select style="width: 75%; display: inline-block" class="form-control" name="orderBooker" data-style="form-control btn-default btn-outline">
+													<option value="0">Select O.B</option>
+													<?php foreach( $RsmAsm as $rsm ) : ?>
+													<option value="<?= $rsm->employee_id; ?>">
+														<?= $rsm->employee_username; ?>
+													</option>
+													<?php endforeach; ?>
+												</select>
+												<span id="addOb" style="cursor: pointer; width: 20%;display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: #001e35;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">+</span>
+											</div>
+										</div>
+									</div>
 								</div>
-								<div class="row"> 
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group">
+											<label class="control-label mb-10">Added O.B(s) & T.S.O(s)</label>
+											<ul id="addedEmployees">
+												<!-- <li style="display: inline-block; width: 300px !important;">
+													<span style="box-shadow: 0 2px 8px 0 #e5d6d6; padding: 10px; width: 75%; margin-bottom: 10px; display: inline-block;">Sajawaln</span>
+													<span id="6" class="removeAddedEmployee" style="width: 20%; height: 42px; display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: red;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">x</span>
+												</li> -->
+											</ul>
+										</div>
+									</div>
+								</div>
+								<hr>
+								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributor Address*</label>
@@ -106,16 +183,16 @@
 								</div>
 							</div>
 						</div>
-					</form>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row button-section">
-			<a type="button" href="<?= base_url('Retailers/ListRetailers'); ?>" id="backFromRetailersButton" class="btn btn-cancel">Cancel</a>
-			<a type="button" id="addRetailerButton" class="btn btn-save">Save</a>						
+			<div class="row button-section">
+				<a type="button" href="<?= base_url('Retailers/ListRetailers'); ?>" id="backFromRetailersButton" class="btn btn-cancel">Cancel</a>
+				<a type="button" id="addRetailerButton" class="btn btn-save">Save</a>
+			</div>
 		</div>
 	</div>
-</div>
 </div>
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
 <script type="text/javascript" src="<?= base_url('assets/js/Retailers.js').'?v='.time(); ?>"></script>

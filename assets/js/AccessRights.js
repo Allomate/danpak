@@ -1,6 +1,17 @@
 $(document).ready(function() {
 
     $('#addAccessRightsButton').click(function() {
+
+        if ($('select[name="admin_id"]').val() == "null" && $('select[name="distributor_id"]').val() == "null") {
+            alert('Please select employee or distributor');
+            return;
+        }
+
+        if ($('select[name="admin_id"]').val() != "null" && $('select[name="distributor_id"]').val() != "null") {
+            alert('Please select employee or distributor but not both');
+            return;
+        }
+
         $(this).attr('disabled', 'disabled');
         $('#backFromNewAccRightsButton').attr('disabled', 'disabled');
 
@@ -37,6 +48,17 @@ $(document).ready(function() {
     });
 
     $('#updateAccessRightsButton').click(function() {
+
+        if ($('select[name="admin_id"]').val() == "null" && $('select[name="distributor_id"]').val() == "null") {
+            alert('Please select employee or distributor');
+            return;
+        }
+
+        if ($('select[name="admin_id"]').val() != "null" && $('select[name="distributor_id"]').val() != "null") {
+            alert('Please select employee or distributor but not both');
+            return;
+        }
+
         $(this).attr('disabled', 'disabled');
         $('#backFromNewAccRightsButton').attr('disabled', 'disabled');
 

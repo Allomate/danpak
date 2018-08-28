@@ -28,6 +28,7 @@ class Orders extends WebAuth_Controller{
 	}
 
 	public function UpdateOrder($orderId){
+		// echo "<pre>"; print_r($this->om->getSingleOrder($orderId));die;
 		return $this->load->view('Order/UpdateOrder', [ 'Order' => $this->om->getSingleOrder($orderId), 'Inventory' => $this->im->get_inventory_for_this_order($orderId) ]);
 	}
 

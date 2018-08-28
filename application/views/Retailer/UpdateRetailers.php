@@ -34,9 +34,46 @@
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
+											<label class="control-label mb-10">Distributor Username*</label>
+											<input type="text" name="retailer_email" class="form-control" value="<?= $Retailer->retailer_email; ?>">
+											<?= form_error('retailer_email', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="control-label mb-10">Distributor Password*</label>
+											<input type="password" name="distributor_password" class="form-control" value="<?= $Retailer->distributor_password; ?>">
+											<?= form_error('distributor_password', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
 											<label class="control-label mb-10">Distributor Name*</label>
 											<input type="text" name="retailer_name" class="form-control" value="<?= $Retailer->retailer_name; ?>">
 											<?= form_error('retailer_name', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="control-label mb-10">Distributor Phone</label>
+											<input type="text" name="retailer_phone" class="form-control" value="<?= $Retailer->retailer_phone; ?>">
+											<?= form_error('retailer_phone', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="control-label mb-10">Distributor Type*</label>
+											<select class="selectpicker" name="retailer_type_id" data-style="form-control btn-default btn-outline">
+												<?php foreach( $RetailerTypes as $type ) : ?>
+												<option value="<?= $type->id; ?>">
+													<?= $type->retailer_type_name; ?>
+												</option>
+												<?php endforeach; ?>
+											</select>
 										</div>
 									</div>
 									<div class="col-md-6">
@@ -48,22 +85,6 @@
 												endforeach; 
 												$atts = array( 'class' => 'form-control' );
 												echo form_dropdown('retailer_territory_id', $options, $Retailer->retailer_territory_id, $atts); ?>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-6">
-										<div class="form-group">
-											<label class="control-label mb-10">Distributor Phone</label>
-											<input type="text" name="retailer_phone" class="form-control" value="<?= $Retailer->retailer_phone; ?>">
-											<?= form_error('retailer_phone', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label class="control-label mb-10">Distributor Email</label>
-											<input type="text" name="retailer_email" class="form-control" value="<?= $Retailer->retailer_email; ?>">
-											<?= form_error('retailer_email', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 										</div>
 									</div>
 								</div>
@@ -89,18 +110,6 @@
 											<label class="control-label mb-10">Distributor City*</label>
 											<input type="text" name="retailer_city" class="form-control" value="<?= $Retailer->retailer_city; ?>">
 											<?= form_error('retailer_city', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label class="control-label mb-10">Distributor Type*</label>
-											<select class="selectpicker" name="retailer_type_id" data-style="form-control btn-default btn-outline">
-												<?php foreach( $RetailerTypes as $type ) : ?>
-												<option value="<?= $type->id; ?>">
-													<?= $type->retailer_type_name; ?>
-												</option>
-												<?php endforeach; ?>
-											</select>
 										</div>
 									</div>
 								</div>

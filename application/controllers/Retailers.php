@@ -21,7 +21,11 @@ class Retailers extends WebAuth_Controller{
 	}
 
 	public function AddRetailer(){
-		return $this->load->view('Retailer/AddRetailer', [ 'Territories' => $this->tm->getAllTerritories(), 'RetailerTypes' => $this->rem->GetRetailerTypes() ]);
+		return $this->load->view('Retailer/AddRetailer', [ 'Territories' => $this->tm->getAllTerritories(), 'RetailerTypes' => $this->rem->GetRetailerTypes(), "RsmAsm" => $this->em->getRsmAsm() ]);
+	}
+
+	public function GetReportingTsoAndOb(){
+		echo json_encode($this->em->getReportingTsoAndOb($this->input->post("manager_id")));
 	}
 
 	public function AddRetailerType(){
@@ -58,10 +62,12 @@ class Retailers extends WebAuth_Controller{
 		$this->form_validation->set_rules('retailer_longs', 'Longitude', 'greater_than[-179]|less_than[181]|max_length[100]');
 		$this->form_validation->set_rules('retailer_address', 'Address', 'required|max_length[500]');
 		$this->form_validation->set_rules('retailer_city', 'City', 'required|max_length[100]');
-		$this->form_validation->set_rules('retailer_email', 'Email', 'valid_email|max_length[100]');
+		$this->form_validation->set_rules('retailer_email', 'Username', 'required|max_length[100]');
+		$this->form_validation->set_rules('distributor_password', 'Password', 'required|max_length[100]');
 		$this->form_validation->set_rules('retailer_phone', 'Phone', 'numeric|max_length[100]');
 		if ($this->form_validation->run()) :
 			$retailersData = $this->input->post();
+            $retailersData["distributor_password"] = sha1($retailersData["distributor_password"]);
 			if ($this->rem->StoreRetailerInformation($retailersData)) :
 				$this->session->set_flashdata("retailer_added", "Distributor has been added successfully");
 			else:
@@ -107,10 +113,12 @@ class Retailers extends WebAuth_Controller{
 		$this->form_validation->set_rules('retailer_longs', 'Longitude', 'greater_than[-179]|less_than[181]|max_length[100]');
 		$this->form_validation->set_rules('retailer_address', 'Address', 'required|max_length[500]');
 		$this->form_validation->set_rules('retailer_city', 'City', 'required|max_length[100]');
-		$this->form_validation->set_rules('retailer_email', 'Email', 'valid_email|max_length[100]');
+		$this->form_validation->set_rules('retailer_email', 'Username', 'required|max_length[100]');
+		$this->form_validation->set_rules('distributor_password', 'Password', 'required|max_length[100]');
 		$this->form_validation->set_rules('retailer_phone', 'Phone', 'numeric|max_length[100]');
 		if ($this->form_validation->run()) :
 			$retailersData = $this->input->post();
+			$retailersData["new_password"] = sha1($retailersData["distributor_password"]);
 			if ($this->rem->UpdateRetailerInformation($retailerId, $retailersData)) :
 				$this->session->set_flashdata("retailer_updated", "Distributor has been updated successfully");
 			else:

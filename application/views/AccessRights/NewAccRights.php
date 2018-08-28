@@ -31,14 +31,27 @@
                         echo form_open('AccRights/AddAccRightsOps', $attributes); ?>
 						<input type="text" name="permisData" id="permisData" hidden>
 						<div class="row">
-							<div class="col-md-12">
-						 
+							<div class="col-md-6">
 								<div class="form-group">
 									<label class="p-b-10" for="employee">Select employee</label>
 									<select class="form-control" name="admin_id" data-style="form-control btn-default btn-outline">
+										<option value="null">Select Employee</option>
 										<?php foreach($Employees as $employee) :?>
 										<option value="<?= $employee->employee_id; ?>">
 											<?= $employee->employee_username?>
+										</option>
+										<?php endforeach; ?>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="p-b-10" for="employee">Select Distributor</label>
+									<select class="form-control" name="distributor_id" data-style="form-control btn-default btn-outline">
+										<option value="null">Select Distributor</option>
+										<?php foreach($Distributors as $distributor) :?>
+										<option value="<?= $distributor->id; ?>">
+											<?= $distributor->retailer_email; ?>
 										</option>
 										<?php endforeach; ?>
 									</select>
@@ -49,7 +62,7 @@
 						<div class="row">
 							<div class="col-md-12">
 								<h2 class="p-t-20" for="rights">Access Rights</h2>
-								 
+
 								<div class="row">
 									<div class="col-md-3 col-sm-6">
 										<div class="form-group">

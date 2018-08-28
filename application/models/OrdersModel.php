@@ -124,9 +124,10 @@ class OrdersModel extends CI_Model{
 		$items = array();
 		$prefIds = array_filter(explode(",", $orderDetails->pref_id));
 		$itemQuantities = array_filter(explode(",", $orderDetails->item_quantity_booker));
-		$booker_discount = array_filter(explode(",", $orderDetails->booker_discount));
+		$booker_discount = explode(",", $orderDetails->booker_discount);
 		$final_price = array_filter(explode(",", $orderDetails->subTotal));
 		$order_content_id = array_filter(explode(",", $orderDetails->order_content_id));
+
 		for ($i=0; $i < sizeof($prefIds); $i++) { 
 			$items[] = array(
 				'item_details' => $this->db->select('pref_id, item_id, (SELECT item_sku from inventory_items where item_id = ip.item_id) as item_sku, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, item_trade_price, unit_id, (SELECT item_image from inventory_items where item_id = ip.item_id) as item_image, item_quantity, item_warehouse_price, item_trade_price, item_retail_price, item_thumbnail, item_description, sub_category_id, (item_trade_price-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = (SELECT retailer_id from orders where id = '.$orderId.')))/100)*(ip.item_trade_price))) as after_discount')->where('pref_id', $prefIds[$i])->get("inventory_preferences ip")->row(),
@@ -136,6 +137,7 @@ class OrdersModel extends CI_Model{
 				'order_content_id' => $order_content_id[$i]
 			);
 		}
+		
 		$orderDetails->items = $items;
 		return $orderDetails;
 	}

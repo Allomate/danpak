@@ -5,28 +5,31 @@ class AccRights extends WebAuth_Controller{
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('AccessRights', 'ar');
+		$this->load->model('RetailersModel', 'rm');
 	}
-
+	
 	public function ListRights(){
 		return $this->load->view('AccessRights/ListRights', [ 'Rights' => $this->ar->getAllRights() ]);
 	}
 
 	public function NewAccRights(){
-		return $this->load->view('AccessRights/NewAccRights', [ 'Employees' => $this->ar->getAdminsList() ]);
+		return $this->load->view('AccessRights/NewAccRights', [ 'Employees' => $this->ar->getAdminsList(), "Distributors" => $this->rm->GetRetailers() ]);
 	}
 
 	public function AddAccRightsOps(){
 		$rights = $this->input->post();
+		// echo "<pre>"; print_r($this->ar->addAccRights($rights));die;
 		if ($this->ar->addAccRights($rights) !== "Exist") :
 			$this->session->set_flashdata("rights_added", "Rights have been given successfully");
 		else:
-			$this->session->set_flashdata("rights_exist", "Rights Already exist for this admin");
+			$this->session->set_flashdata("rights_exist", "Rights Already exist");
 		endif;
 		return redirect('AccRights/ListRights');
 	}
 
-	public function UpdateRights($rightId){
-		return $this->load->view('AccessRights/UpdateRights', [ 'Employees' => $this->ar->getAdminsList(), 'RightsData' => $this->ar->getRightsDataForAdmin($rightId) ]);
+	public function UpdateRights($rightId, $userType){
+		// echo "<pre>"; print_r($this->ar->getRightsDataForAdmin($rightId, $userType));die;
+		return $this->load->view('AccessRights/UpdateRights', [ 'Employees' => $this->ar->getAdminsList(), "Distributors" => $this->rm->GetRetailers(), 'RightsData' => $this->ar->getRightsDataForAdmin($rightId, $userType) ]);
 	}
 
 	public function UpdateAccRightsOps($rightId){
@@ -42,7 +45,8 @@ class AccRights extends WebAuth_Controller{
 	public function GetRightsForAdminAjax(){
 		$data = $this->input->post();
 		$data = $data["id"];
-		echo json_encode($this->ar->getRightsDataForAdmin($data));
+		$userType = $this->session->userdata("user_type");
+		echo json_encode($this->ar->getRightsDataForAdmin($data, $userType));
 	}
 
 	public function GetRightsForLoggedInAdminAjax(){

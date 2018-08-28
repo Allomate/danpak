@@ -19,6 +19,11 @@ class Sales extends CI_Controller
         echo json_encode($this->fe->getSalesData());
     }
 
+    public function SecondarySalesData()
+    {
+        echo json_encode($this->fe->getSecondarySalesData());
+    }
+
     public function ChartsData()
     {
         echo json_encode($this->fe->getChartsData());

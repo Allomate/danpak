@@ -3,6 +3,11 @@
 class EmployeesModel extends CI_Model
 {
 
+    public function get_employees_list_for_dashboard()
+    {
+        return $this->db->select('employee_id, employee_username, employee_first_name, employee_last_name, (SELECT employee_username from employees_info where employee_id = ei.reporting_to) reporting_to, REPLACE(employee_picture, "./", "http://mgmt.danpakfoods.com/") as picture, employee_designation, (SELECT territory_name from territory_management where id = ei.territory_id) as territory')->where('employee_designation IN ("TSO", "Order Booker")')->get("employees_info ei")->result();
+    }
+
     public function get_employees_list()
     {
         // Atif Retailers Assignment ni kar paa rha due to limited access rights
@@ -37,6 +42,14 @@ class EmployeesModel extends CI_Model
             return $this->db->query('INSERT into access_rights(' . $columns . ') values(' . $values . ') ');
         }
         return true;
+    }
+
+    public function getRsmAsm(){
+        return $this->db->select('employee_id, CONCAT(employee_username," (", employee_designation ,")") as employee_username')->where('employee_designation IN ("RSM", "ASM")')->get('employees_info')->result();
+    }
+
+    public function getReportingTsoAndOb($managerId){
+        return array("tso" => $this->db->select('employee_id, employee_username')->where('reporting_to = '.$managerId.' and employee_designation = "TSO"')->get('employees_info')->result(), "ob" => $this->db->select('employee_id, employee_username')->where('reporting_to = '.$managerId.' and employee_designation = "Order Booker"')->get('employees_info')->result());
     }
 
     public function get_single_employee($employee_id)
