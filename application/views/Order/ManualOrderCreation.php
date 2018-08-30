@@ -83,7 +83,7 @@
 														<?php foreach( $inventorySku as $item ) : ?>
 														<option value="<?= $item->item_id; ?>">
 															<?= $item->item_name; ?> (
-																<?= $item->item_sku; ?> )
+															<?= $item->item_sku; ?> )
 														</option>
 														<?php endforeach; ?>
 													</select>
@@ -101,7 +101,11 @@
 								</div>
 								<div class="row">
 									<div class="col-md-6">
+										<?php if($this->session->userdata("user_type") == "danpak"){ ?>
 										<label class="control-label mb-10">Select Distributor/Retailer</label>
+										<?php }else{ ?>
+										<label class="control-label mb-10">Select Retailer</label>
+										<?php } ?>
 										<select class="form-control" name="distributor_id">
 										</select>
 									</div>

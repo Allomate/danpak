@@ -10,6 +10,19 @@ class InventoryModel extends CI_Model{
 		return $this->db->select('item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail')->get("inventory_items it")->result();
 	}
 
+	public function UpdateDistributorStock($prefId, $quantity){
+		$alreadyExist = $this->db->where('pref_id = '.$prefId.' and distributor_id = (SELECT distributor_id from admin_session where session = "'.$this->session->userdata("session").'")')->get('distributor_stock')->row();
+		if($alreadyExist){
+			return $this->db->where('id',$alreadyExist->id)->update('distributor_stock', array('stock' => $quantity));
+		}else{
+			return $this->db->query('INSERT INTO `distributor_stock`(`pref_id`, `stock`, `distributor_id`) VALUES ('.$prefId.', '.$quantity.', (SELECT distributor_id from admin_session where session = "'.$this->session->userdata("session").'"))');
+		}
+	}
+
+	public function getInventoryForDistributorStockManagement(){
+		return $this->db->select('pref_id, (SELECT stock from distributor_stock where distributor_id = (SELECT distributor_id from admin_session where session = "'.$this->session->userdata("session").'") and pref_id = ip.pref_id) as stocked, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, (SELECT item_sku from inventory_items where item_id = ip.item_id) as item_sku, (SELECT item_main_description from inventory_items where item_id = ip.item_id) as item_main_description, REPLACE(item_thumbnail,"./","'.base_url().'") as item_thumbnail')->get("inventory_preferences ip")->result();
+	}
+
 	public function GetMainSkuDetails($item_id){
 		return $this->db->select('item_id, item_sku, item_main_description, item_name, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail, (SELECT sub_category_name from sub_categories where sub_category_id = (SELECT min(sub_category_id) from inventory_preferences where item_id = it.item_id)) as sub_category, (SELECT main_category_name from main_categories where main_category_id = (SELECT main_category_id from sub_categories where sub_category_id = (SELECT min(sub_category_id) from inventory_preferences where item_id = it.item_id))) as main_category, (SELECT min(REPLACE(item_image,"./","'.base_url().'")) as item_image from inventory_preferences where item_id = it.item_id) as item_image')->where('item_id',$item_id)->get("inventory_items it")->row();
 	}

@@ -192,6 +192,10 @@
 													<input type="checkbox" id="ListUnits" name="access_rights" value="ListUnits">
 													<label for="ListUnits" class="lab-medium">View Inventory Units/Variants</label>
 												</div>
+												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="DistributorStockManagement" name="access_rights" value="DistributorStockManagement">
+													<label for="DistributorStockManagement" class="lab-medium">Distributor Stock Management</label>
+												</div>
 											</div>
 										</div>
 									</div>

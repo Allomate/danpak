@@ -67,7 +67,7 @@ class Retailers extends WebAuth_Controller{
 		$this->form_validation->set_rules('retailer_phone', 'Phone', 'numeric|max_length[100]');
 		if ($this->form_validation->run()) :
 			$retailersData = $this->input->post();
-            $retailersData["distributor_password"] = sha1($retailersData["distributor_password"]);
+			$retailersData["distributor_password"] = sha1($retailersData["distributor_password"]);
 			if ($this->rem->StoreRetailerInformation($retailersData)) :
 				$this->session->set_flashdata("retailer_added", "Distributor has been added successfully");
 			else:
@@ -84,7 +84,7 @@ class Retailers extends WebAuth_Controller{
 	}
 
 	public function UpdateRetailer($retailerId){
-		return $this->load->view('Retailer/UpdateRetailers', [ 'Territories' => $this->tm->getAllTerritories(), 'Retailer' => $this->rem->GetSingleRetailer($retailerId), 'RetailerTypes' => $this->rem->GetRetailerTypes() ]);
+		return $this->load->view('Retailer/UpdateRetailers', [ 'Territories' => $this->tm->getAllTerritories(), 'Retailer' => $this->rem->GetSingleRetailer($retailerId), 'EmployeesAssigned' => $this->rem->GetEmployeesAssigned($retailerId), "RsmAsm" => $this->em->getRsmAsm(), 'RetailerTypes' => $this->rem->GetRetailerTypes() ]);
 	}
 
 	public function UpdateRetailerTypeOps($retailerTypeId)
@@ -119,6 +119,7 @@ class Retailers extends WebAuth_Controller{
 		if ($this->form_validation->run()) :
 			$retailersData = $this->input->post();
 			$retailersData["new_password"] = sha1($retailersData["distributor_password"]);
+			// echo "<pre>"; print_r($retailersData);die;
 			if ($this->rem->UpdateRetailerInformation($retailerId, $retailersData)) :
 				$this->session->set_flashdata("retailer_updated", "Distributor has been updated successfully");
 			else:

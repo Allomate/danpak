@@ -22,7 +22,8 @@
 					<div class="box-white m-b-30">
 						<h2>Add Distributor</h2>
 						<?php $attributes = array('id' => 'addRetailerForm');
-						echo form_open('Retailers/AddRetailerOps', $attributes); ?>
+						echo form_open('Retailers/AddRetailerOps', $attributes);
+						echo form_hidden("assignedEmployees", "") ?>
 						<div class="form-wrap">
 							<div class="form-body">
 								<div class="row">

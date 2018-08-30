@@ -15,7 +15,18 @@ class RetailersModel extends CI_Model{
 	}
 
 	public function StoreRetailerInformation($retailerInfo){
-		return $this->db->insert('retailers_details', $retailerInfo);
+		$bulkAssignments = array();
+		$assignedEmps = $retailerInfo["assignedEmployees"];
+		unset($retailerInfo["assignedEmployees"]);
+		unset($retailerInfo["asmOrRsm"]);
+		unset($retailerInfo["tso"]);
+		unset($retailerInfo["orderBooker"]);
+		if($this->db->insert('retailers_details', $retailerInfo)){
+			foreach(json_decode($assignedEmps) as $employee){
+				$bulkAssignments[] = array('employee_id' => $employee, "distributor_id" => $this->db->insert_id());
+			}
+		}
+		return $this->db->insert_batch('distributor_assignment', $bulkAssignments);
 	}
 
 	public function StoreRetailerTypeInformation($retailerInfo){
@@ -24,6 +35,10 @@ class RetailersModel extends CI_Model{
 
 	public function GetSingleRetailer($retailerId){
 		return $this->db->where('id', $retailerId)->get('retailers_details')->row();
+	}
+
+	public function GetEmployeesAssigned($retailerId){
+		return $this->db->select('employee_id, (SELECT employee_username from employees_info where employee_id = da.employee_id) as username, (SELECT employee_designation from employees_info where employee_id = da.employee_id) as designation')->where('distributor_id', $retailerId)->get('distributor_assignment da')->result();
 	}
 
 	public function GetSingleRetailerType($retailerTypeId){
@@ -39,6 +54,23 @@ class RetailersModel extends CI_Model{
 			$retailerInfo["distributor_password"] = $retailerInfo["new_password"];
 			unset($retailerInfo["new_password"]);
 		}
+
+		$this->db->delete('distributor_assignment', array('distributor_id' => $retailer_id));
+		$bulkAssignments = array();
+		$assignedEmps = $retailerInfo["assignedEmployees"];
+		unset($retailerInfo["assignedEmployees"]);
+		unset($retailerInfo["asmOrRsm"]);
+		unset($retailerInfo["tso"]);
+		unset($retailerInfo["orderBooker"]);
+		foreach(json_decode($assignedEmps) as $employee){
+			$bulkAssignments[] = array('employee_id' => $employee, "distributor_id" => $retailer_id);
+		}
+		
+		$bulkAssignsStatus = $this->db->insert_batch('distributor_assignment', $bulkAssignments);
+		if(!$bulkAssignsStatus){
+			return $bulkAssignsStatus;
+		}
+
 		return $this->db
 		->where('id',$retailer_id)	
 		->update('retailers_details', $retailerInfo);
@@ -73,6 +105,7 @@ class RetailersModel extends CI_Model{
 	}
 
 	public function delete_retailer($retailerId){
+		$this->db->delete('distributor_assignment', array('distributor_id' => $retailerId));
 		return $this->db->delete('retailers_details', array('id' => $retailerId)); 
 	}
 

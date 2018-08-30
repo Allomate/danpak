@@ -168,6 +168,9 @@
 				<li>
 					<a href="<?= base_url('Categories/ListSubCategories'); ?>">Sub Categories</a>
 				</li>
+				<li>
+					<a href="<?= base_url('Inventory/DistributorStockManagement'); ?>">Distributor Stock Management</a>
+				</li>
 			</ul>
 		</li>
 		<li>

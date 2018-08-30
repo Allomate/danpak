@@ -10,10 +10,17 @@ class EmployeesModel extends CI_Model
 
     public function get_employees_list()
     {
+
+        if($this->session->userdata("user_type") == "danpak"){
+            return $this->db->select('employee_id, employee_username, employee_first_name, employee_last_name, (SELECT employee_username from employees_info where employee_id = ei.reporting_to) reporting_to, REPLACE(employee_picture, "./", "http://mgmt.danpakfoods.com/") as picture, employee_designation, (SELECT territory_name from territory_management where id = ei.territory_id) as territory')->get("employees_info ei")->result();
+        }
+        $distributor_id = $this->db->select('distributor_id as id')->where('session', $this->session->userdata("session"))->get('admin_session')->row()->id;
+        return $this->db->select('(SELECT employee_username from employees_info where employee_id = da.employee_id) as employee_username, employee_id')->get("distributor_assignment da")->result();
+
         // Atif Retailers Assignment ni kar paa rha due to limited access rights
         // $employee_id = $this->db->select('admin_id')->where('session', $this->session->userdata('session'))->get('admin_session')->row()->admin_id;
         // if($this->db->select('is_admin')->where('employee_id', $employee_id)->get('employees_info')->row()->is_admin !== "0"){
-            return $this->db->select('employee_id, employee_username, employee_first_name, employee_last_name, (SELECT employee_username from employees_info where employee_id = ei.reporting_to) reporting_to, REPLACE(employee_picture, "./", "http://mgmt.danpakfoods.com/") as picture, employee_designation, (SELECT territory_name from territory_management where id = ei.territory_id) as territory')->get("employees_info ei")->result();
+            
         // }else{
             // return $this->db->select('employee_id, employee_username, employee_first_name, employee_last_name, (SELECT employee_username from employees_info where employee_id = ei.reporting_to) reporting_to')->where('reporting_to', $employee_id)->get("employees_info ei")->result();
         // }
@@ -49,7 +56,7 @@ class EmployeesModel extends CI_Model
     }
 
     public function getReportingTsoAndOb($managerId){
-        return array("tso" => $this->db->select('employee_id, employee_username')->where('reporting_to = '.$managerId.' and employee_designation = "TSO"')->get('employees_info')->result(), "ob" => $this->db->select('employee_id, employee_username')->where('reporting_to = '.$managerId.' and employee_designation = "Order Booker"')->get('employees_info')->result());
+        return array("tso" => $this->db->select('employee_id, employee_username, (case when (SELECT count(*) FROM `distributor_assignment` where employee_id = ei.employee_id) > 0 THEN "assigned" else "na" end) as assignment_status')->where('reporting_to = '.$managerId.' and employee_designation = "TSO"')->get('employees_info ei')->result(), "ob" => $this->db->select('employee_id, employee_username, (case when (SELECT count(*) FROM `distributor_assignment` where employee_id = ei.employee_id) > 0 THEN "assigned" else "na" end) as assignment_status')->where('reporting_to = '.$managerId.' and employee_designation = "Order Booker"')->get('employees_info ei')->result());
     }
 
     public function get_single_employee($employee_id)

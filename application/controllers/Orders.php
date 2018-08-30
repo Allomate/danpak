@@ -42,7 +42,6 @@ class Orders extends WebAuth_Controller{
 	}
 
 	public function ManualOrders(){
-		// echo "<pre>"; print_r($this->om->get_inventory_sku_wise());die;
 		return $this->load->view('Order/ManualOrderCreation', [ 'employees' => $this->em->get_employees_list(), 'inventorySku' => $this->im->get_inventory_sku_wise() ]);
 	}
 

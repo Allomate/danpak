@@ -38,16 +38,24 @@ $(document).ready(function() {
                     $('select[name="orderBooker"]').append('<option value="0" disabled selected>No Order booker</option>');
                 } else {
                     for (var i = 0; i < response.ob.length; i++) {
-                        $('select[name="orderBooker"]').append('<option value="' + response.ob[i].employee_id + '">' + response.ob[i].employee_username + '</option>');
+                        if (response.ob[i].assignment_status == "na") {
+                            $('select[name="orderBooker"]').append('<option value="' + response.ob[i].employee_id + '">' + response.ob[i].employee_username + '</option>');
+                        } else {
+                            $('select[name="orderBooker"]').append('<option value="" disabled>' + response.ob[i].employee_username + ' (Assigned)</option>');
+                        }
                     }
                 }
 
                 $('select[name="tso"]').empty();
-                if (!response.ob.length) {
+                if (!response.tso.length) {
                     $('select[name="tso"]').append('<option value="0" disabled selected>No TSO</option>');
                 } else {
                     for (var i = 0; i < response.tso.length; i++) {
-                        $('select[name="tso"]').append('<option value="' + response.tso[i].employee_id + '">' + response.tso[i].employee_username + '</option>');
+                        if (response.tso[i].assignment_status == "na") {
+                            $('select[name="tso"]').append('<option value="' + response.tso[i].employee_id + '">' + response.tso[i].employee_username + '</option>');
+                        } else {
+                            $('select[name="tso"]').append('<option value="" disabled>' + response.tso[i].employee_username + ' (Assigned)</option>');
+                        }
                     }
                 }
             }
@@ -65,16 +73,24 @@ $(document).ready(function() {
                         $('select[name="orderBooker"]').append('<option value="0" disabled selected>No Order booker</option>');
                     } else {
                         for (var i = 0; i < response.ob.length; i++) {
-                            $('select[name="orderBooker"]').append('<option value="' + response.ob[i].employee_id + '">' + response.ob[i].employee_username + '</option>');
+                            if (response.ob[i].assignment_status == "na") {
+                                $('select[name="orderBooker"]').append('<option value="' + response.ob[i].employee_id + '">' + response.ob[i].employee_username + '</option>');
+                            } else {
+                                $('select[name="orderBooker"]').append('<option value="" disabled>' + response.ob[i].employee_username + ' (Assigned)</option>');
+                            }
                         }
                     }
 
                     $('select[name="tso"]').empty();
-                    if (!response.ob.length) {
+                    if (!response.tso.length) {
                         $('select[name="tso"]').append('<option value="0" disabled selected>No TSO</option>');
                     } else {
                         for (var i = 0; i < response.tso.length; i++) {
-                            $('select[name="tso"]').append('<option value="' + response.tso[i].employee_id + '">' + response.tso[i].employee_username + '</option>');
+                            if (response.tso[i].assignment_status == "na") {
+                                $('select[name="tso"]').append('<option value="' + response.tso[i].employee_id + '">' + response.tso[i].employee_username + '</option>');
+                            } else {
+                                $('select[name="tso"]').append('<option value="" disabled>' + response.tso[i].employee_username + ' (Assigned)</option>');
+                            }
                         }
                     }
                 }
@@ -82,6 +98,17 @@ $(document).ready(function() {
         });
 
         var addedEmployees = [];
+        $('#addedEmployees li').each(function() {
+            addedEmployees.push($(this).find('span.removeAddedEmployee').attr('id'));
+        });
+
+        $(document).on('click', '.removeAddedEmployee', function() {
+            var removeItem = $(this).attr('id');
+            addedEmployees = jQuery.grep(addedEmployees, function(value) {
+                return value != removeItem;
+            });
+            $(this).parent().remove();
+        });
 
         $('#addTso').click(function() {
             if ($('select[name="tso"] :selected').val() === "0") {
@@ -94,7 +121,7 @@ $(document).ready(function() {
                 return;
             }
             addedEmployees.push($('select[name="tso"]').val());
-            $('#addedEmployees').append('<li style="display: inline-block; width: 300px !important;"><span style="box-shadow: 0 2px 8px 0 #e5d6d6; padding: 10px; width: 75%; margin-bottom: 10px; display: inline-block;">' + $('select[name="tso"] :selected').text() + '</span> <span id="' + $('select[name="tso"] :selected').val() + ' (T.S.O)" class="removeAddedEmployee" style="width: 20%; height: 42px; display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: red;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">x</span> </li>');
+            $('#addedEmployees').append('<li style="cursor:pointer; display: inline-block; width: 300px !important;"><span style="box-shadow: 0 2px 8px 0 #e5d6d6; padding: 10px; width: 75%; margin-bottom: 10px; display: inline-block;">' + $('select[name="tso"] :selected').text() + ' (T.S.O)</span> <span id="' + $('select[name="tso"] :selected').val() + '" class="removeAddedEmployee" style="width: 20%; height: 42px; display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: red;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">x</span> </li>');
         });
 
         $('#addOb').click(function() {
@@ -108,7 +135,7 @@ $(document).ready(function() {
                 return;
             }
             addedEmployees.push($('select[name="orderBooker"]').val());
-            $('#addedEmployees').append('<li style="display: inline-block; width: 300px !important;"><span style="box-shadow: 0 2px 8px 0 #e5d6d6; padding: 10px; width: 75%; margin-bottom: 10px; display: inline-block;">' + $('select[name="orderBooker"] :selected').text() + '</span> <span id="' + $('select[name="orderBooker"] :selected').val() + ' (O.B)" class="removeAddedEmployee" style="width: 20%; height: 42px; display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: red;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">x</span> </li>');
+            $('#addedEmployees').append('<li style="cursor:pointer; display: inline-block; width: 300px !important;"><span style="box-shadow: 0 2px 8px 0 #e5d6d6; padding: 10px; width: 75%; margin-bottom: 10px; display: inline-block;">' + $('select[name="orderBooker"] :selected').text() + '  (O.B)</span> <span id="' + $('select[name="orderBooker"] :selected').val() + '" class="removeAddedEmployee" style="width: 20%; height: 42px; display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: red;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">x</span> </li>');
         });
 
     }
@@ -185,13 +212,23 @@ $(document).ready(function() {
     });
 
     $('#addRetailerButton').click(function() {
+        if ($('input[name="retailer_email"]').val() == "" || $('input[name="distributor_password"]').val() == "" || $('input[name="retailer_city"]').val() == "" || $('input[name="retailer_address"]').val() == "" || !addedEmployees.length) {
+            alert('Please provide all the information with (*) label and assign employees');
+            return;
+        }
         $(this).attr('disabled', 'disabled');
+        $('input[name="assignedEmployees"]').val(JSON.stringify(addedEmployees));
         $('#backFromRetailersButton').attr('disabled', 'disabled');
         $('#addRetailerForm').submit();
     });
 
     $('#updateRetailerButton').click(function() {
+        if ($('input[name="retailer_email"]').val() == "" || $('input[name="distributor_password"]').val() == "" || $('input[name="retailer_city"]').val() == "" || $('input[name="retailer_address"]').val() == "" || !addedEmployees.length) {
+            alert('Please provide all the information with (*) label and assign employees');
+            return;
+        }
         $(this).attr('disabled', 'disabled');
+        $('input[name="assignedEmployees"]').val(JSON.stringify(addedEmployees));
         $('#backFromRetailersButton').attr('disabled', 'disabled');
         $('#updateRetailerForm').submit();
     });

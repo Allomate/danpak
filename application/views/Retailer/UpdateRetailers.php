@@ -28,7 +28,8 @@
 					<div class="box-white m-b-30">
 						<h2>Add Distributor</h2>
 						<?php $attributes = array('id' => 'updateRetailerForm');
-						echo form_open('Retailers/UpdateRetailerOps/'.$Retailer->id, $attributes); ?>
+						echo form_open('Retailers/UpdateRetailerOps/'.$Retailer->id, $attributes);
+						echo form_hidden("assignedEmployees", "") ?>
 						<div class="form-wrap">
 							<div class="form-body">
 								<div class="row">
@@ -113,6 +114,73 @@
 										</div>
 									</div>
 								</div>
+								<hr>
+								<center>
+									<h3>T.S.O & O.B Assignments</h3>
+								</center>
+								<div class="row">
+									<div class="col-md-3">
+										<div class="form-group">
+											<label class="control-label mb-10">Select ASM/RSM</label>
+											<select class="form-control" name="asmOrRsm" data-style="form-control btn-default btn-outline">
+												<?php foreach( $RsmAsm as $rsm ) : ?>
+												<option value="<?= $rsm->employee_id; ?>">
+													<?= $rsm->employee_username; ?>
+												</option>
+												<?php endforeach; ?>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label class="control-label mb-10">Select T.S.O</label>
+											<div style="width: 100%">
+												<select style="width: 75%; display: inline-block" class="form-control" name="tso" data-style="form-control btn-default btn-outline">
+													<option value="0">Select T.S.O</option>
+													<?php foreach( $RsmAsm as $rsm ) : ?>
+													<option value="<?= $rsm->employee_id; ?>">
+														<?= $rsm->employee_username; ?>
+													</option>
+													<?php endforeach; ?>
+												</select>
+												<span id="addTso" style="cursor: pointer; width: 20%;display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: #001e35;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">+</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label class="control-label mb-10">Select O.B</label>
+											<div style="width: 100%">
+												<select style="width: 75%; display: inline-block" class="form-control" name="orderBooker" data-style="form-control btn-default btn-outline">
+													<option value="0">Select O.B</option>
+													<?php foreach( $RsmAsm as $rsm ) : ?>
+													<option value="<?= $rsm->employee_id; ?>">
+														<?= $rsm->employee_username; ?>
+													</option>
+													<?php endforeach; ?>
+												</select>
+												<span id="addOb" style="cursor: pointer; width: 20%;display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: #001e35;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">+</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group">
+											<label class="control-label mb-10">Added O.B(s) & T.S.O(s)</label>
+											<ul id="addedEmployees">
+												<?php foreach($EmployeesAssigned as $emp ){ ?>
+												<li style="cursor:pointer; display: inline-block; width: 300px !important;">
+													<span style="box-shadow: 0 2px 8px 0 #e5d6d6; padding: 10px; width: 75%; margin-bottom: 10px; display: inline-block;">
+														<?= $emp->username." ".($emp->username == "TSO" ? " (T.S.O)" : " (O.B)"); ?></span>
+													<span id="<?= $emp->employee_id; ?>" class="removeAddedEmployee" style="width: 20%; height: 42px; display: inline-block;padding-top: 8px;padding-bottom: 8px;text-align: center;background: red;color: white;font-weight: bold;box-shadow: 0 2px 8px 0 #e5d6d6;">x</span>
+												</li>
+												<?php } ?>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<hr>
 								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">

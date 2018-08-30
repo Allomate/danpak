@@ -20,6 +20,15 @@ class Inventory extends WebAuth_Controller{
 		return $this->load->view('Inventory/UpdateUnit', [ 'UnitType' => $this->im->get_single_unit_details($unit_id) ]);
 	}
 
+	public function DistributorStockManagement(){
+		// echo "<pre>"; print_r($this->im->getInventoryForDistributorStockManagement());die;
+		return $this->load->view('Inventory/DistributorStockManagement', [ 'Inventory' => $this->im->getInventoryForDistributorStockManagement() ]);
+	}
+
+	public function AddDistributorStock(){
+		echo json_encode($this->im->UpdateDistributorStock($this->input->post("pref_id"), $this->input->post("quantity")));
+	}
+
 	public function AddUnitOps()
 	{
 		$this->form_validation->set_rules('unit_name', 'Packaging Name', 'required|max_length[100]');
