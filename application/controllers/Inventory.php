@@ -29,6 +29,10 @@ class Inventory extends WebAuth_Controller{
 		echo json_encode($this->im->UpdateDistributorStock($this->input->post("pref_id"), $this->input->post("quantity")));
 	}
 
+	public function DeleteDistributorStock(){
+		echo json_encode($this->im->RemoveDistributorStock($this->input->post("pref_id")));
+	}
+
 	public function AddUnitOps()
 	{
 		$this->form_validation->set_rules('unit_name', 'Packaging Name', 'required|max_length[100]');

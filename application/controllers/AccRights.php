@@ -13,6 +13,7 @@ class AccRights extends WebAuth_Controller{
 	}
 
 	public function NewAccRights(){
+		// echo "<pre>"; print_r($this->rm->GetRetailers());die;
 		return $this->load->view('AccessRights/NewAccRights', [ 'Employees' => $this->ar->getAdminsList(), "Distributors" => $this->rm->GetRetailers() ]);
 	}
 

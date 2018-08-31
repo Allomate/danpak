@@ -51,7 +51,7 @@
 										<option value="null">Select Distributor</option>
 										<?php foreach($Distributors as $distributor) :?>
 										<option value="<?= $distributor->id; ?>">
-											<?= $distributor->retailer_email; ?>
+											<?= $distributor->distributor_username; ?>
 										</option>
 										<?php endforeach; ?>
 									</select>

@@ -55,6 +55,10 @@
 				$(".select2-selection").css('border', '0px');
 				$(".select2-selection__rendered").css('line-height', '40px');
 			}, 500);
+			setTimeout(function () {
+				$('.dataTables_length').remove();
+				$('#DataTables_Table_0_filter').remove();
+			}, 2000);
 		}
 	});
 

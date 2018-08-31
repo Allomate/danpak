@@ -15,7 +15,7 @@ class LoginModel extends CI_Model{
 			endif;
 		}else{
 			unset($empData["login_type"]);
-			$data = $this->db->where(array('retailer_email'=>$empData["username"],'distributor_password'=>$empData["password"]))->get("retailers_details")->row();
+			$data = $this->db->where(array('distributor_username'=>$empData["username"],'distributor_password'=>$empData["password"]))->get("retailers_details")->row();
 			if($data) :
 				unset($empData["username"]);
 				unset($empData["password"]);

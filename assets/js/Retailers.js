@@ -1,5 +1,6 @@
 $(document).ready(function() {
     var retailersAddedForAssignment = [];
+    var usernameExist = false;
     var url = window.location.href;
 
     if (url.indexOf("UpdateRetailersAssignments") >= 0) {
@@ -27,71 +28,138 @@ $(document).ready(function() {
     }, 300);
 
     if ($('select[name="asmOrRsm"]').length) {
+
+        $('input[name="distributor_username"]').on('input', function(e) {
+            var newUsername = $(this).val();
+            $.ajax({
+                type: "POST",
+                data: { username: newUsername },
+                url: "/Retailers/CheckExistingUsername",
+                success: function(response) {
+                    if (response != "null") {
+                        $('#usernameError').fadeIn();
+                        usernameExist = true;
+                    } else {
+                        $('#usernameError').hide();
+                        usernameExist = false;
+                    }
+                }
+            });
+        });
+
         $.ajax({
             type: "POST",
             data: { manager_id: $('select[name="asmOrRsm"]').val() },
-            url: "/Retailers/GetReportingTsoAndOb",
+            url: "/Retailers/GetReportingTso",
             success: function(response) {
                 var response = JSON.parse(response);
-                $('select[name="orderBooker"]').empty();
-                if (!response.ob.length) {
-                    $('select[name="orderBooker"]').append('<option value="0" disabled selected>No Order booker</option>');
-                } else {
-                    for (var i = 0; i < response.ob.length; i++) {
-                        if (response.ob[i].assignment_status == "na") {
-                            $('select[name="orderBooker"]').append('<option value="' + response.ob[i].employee_id + '">' + response.ob[i].employee_username + '</option>');
-                        } else {
-                            $('select[name="orderBooker"]').append('<option value="" disabled>' + response.ob[i].employee_username + ' (Assigned)</option>');
-                        }
-                    }
-                }
-
                 $('select[name="tso"]').empty();
-                if (!response.tso.length) {
+                // $('select[name="orderBooker"]').empty();
+                if (!response.length) {
                     $('select[name="tso"]').append('<option value="0" disabled selected>No TSO</option>');
+                    // $('select[name="orderBooker"]').append('<option value="0" disabled selected>No OB</option>');
                 } else {
-                    for (var i = 0; i < response.tso.length; i++) {
-                        if (response.tso[i].assignment_status == "na") {
-                            $('select[name="tso"]').append('<option value="' + response.tso[i].employee_id + '">' + response.tso[i].employee_username + '</option>');
+                    for (var i = 0; i < response.length; i++) {
+                        if (response[i].assignment_status == "na") {
+                            $('select[name="tso"]').append('<option value="' + response[i].employee_id + '">' + response[i].employee_username + '</option>');
                         } else {
-                            $('select[name="tso"]').append('<option value="" disabled>' + response.tso[i].employee_username + ' (Assigned)</option>');
+                            $('select[name="tso"]').append('<option value="" disabled>' + response[i].employee_username + ' (Assigned)</option>');
                         }
                     }
+                    // if ($('select[name="tso"]').val() !== "" && $('select[name="tso"]').val()) {
+                    //     $.ajax({
+                    //         type: "POST",
+                    //         data: { tso_id: $('select[name="tso"]').val() },
+                    //         url: "/Retailers/GetReportingOb",
+                    //         success: function(response) {
+                    //             var response = JSON.parse(response);
+                    //             if (!response.length) {
+                    //                 $('select[name="orderBooker"]').append('<option value="0" disabled selected>No OB</option>');
+                    //             } else {
+                    //                 for (var i = 0; i < response.length; i++) {
+                    //                     if (response[i].assignment_status == "na") {
+                    //                         $('select[name="orderBooker"]').append('<option value="' + response[i].employee_id + '">' + response[i].employee_username + '</option>');
+                    //                     } else {
+                    //                         $('select[name="orderBooker"]').append('<option value="" disabled>' + response[i].employee_username + ' (Assigned)</option>');
+                    //                     }
+                    //                 }
+                    //             }
+                    //         }
+                    //     });
+                    // } else {
+                    //     $('select[name="orderBooker"]').append('<option value="0" disabled selected>No OB</option>');
+                    // }
                 }
             }
+        });
+
+        $('select[name="tso"]').change(function() {
+            $.ajax({
+                type: "POST",
+                data: { tso_id: $('select[name="tso"]').val() },
+                url: "/Retailers/GetReportingOb",
+                success: function(response) {
+                    var response = JSON.parse(response);
+                    $('select[name="orderBooker"]').empty();
+                    if (!response.length) {
+                        $('select[name="orderBooker"]').append('<option value="0" disabled selected>No O.B</option>');
+                    } else {
+                        for (var i = 0; i < response.length; i++) {
+                            if (response[i].assignment_status == "na") {
+                                $('select[name="orderBooker"]').append('<option value="' + response[i].employee_id + '">' + response[i].employee_username + '</option>');
+                            } else {
+                                $('select[name="orderBooker"]').append('<option value="" disabled>' + response[i].employee_username + ' (Assigned)</option>');
+                            }
+                        }
+                    }
+                }
+            });
         });
 
         $('select[name="asmOrRsm"]').change(function() {
             $.ajax({
                 type: "POST",
                 data: { manager_id: $('select[name="asmOrRsm"]').val() },
-                url: "/Retailers/GetReportingTsoAndOb",
+                url: "/Retailers/GetReportingTso",
                 success: function(response) {
                     var response = JSON.parse(response);
-                    $('select[name="orderBooker"]').empty();
-                    if (!response.ob.length) {
-                        $('select[name="orderBooker"]').append('<option value="0" disabled selected>No Order booker</option>');
-                    } else {
-                        for (var i = 0; i < response.ob.length; i++) {
-                            if (response.ob[i].assignment_status == "na") {
-                                $('select[name="orderBooker"]').append('<option value="' + response.ob[i].employee_id + '">' + response.ob[i].employee_username + '</option>');
-                            } else {
-                                $('select[name="orderBooker"]').append('<option value="" disabled>' + response.ob[i].employee_username + ' (Assigned)</option>');
-                            }
-                        }
-                    }
-
+                    debugger;
                     $('select[name="tso"]').empty();
-                    if (!response.tso.length) {
+                    // $('select[name="orderBooker"]').empty();
+                    if (!response.length) {
                         $('select[name="tso"]').append('<option value="0" disabled selected>No TSO</option>');
+                        // $('select[name="orderBooker"]').append('<option value="0" disabled selected>No OB</option>');
                     } else {
-                        for (var i = 0; i < response.tso.length; i++) {
-                            if (response.tso[i].assignment_status == "na") {
-                                $('select[name="tso"]').append('<option value="' + response.tso[i].employee_id + '">' + response.tso[i].employee_username + '</option>');
+                        for (var i = 0; i < response.length; i++) {
+                            if (response[i].assignment_status == "na") {
+                                $('select[name="tso"]').append('<option value="' + response[i].employee_id + '">' + response[i].employee_username + '</option>');
                             } else {
-                                $('select[name="tso"]').append('<option value="" disabled>' + response.tso[i].employee_username + ' (Assigned)</option>');
+                                $('select[name="tso"]').append('<option value="" disabled>' + response[i].employee_username + ' (Assigned)</option>');
                             }
                         }
+                        // if ($('select[name="tso"]').val() !== "" && $('select[name="tso"]').val()) {
+                        //     $.ajax({
+                        //         type: "POST",
+                        //         data: { tso_id: $('select[name="tso"]').val() },
+                        //         url: "/Retailers/GetReportingOb",
+                        //         success: function(response) {
+                        //             var response = JSON.parse(response);
+                        //             if (!response.length) {
+                        //                 $('select[name="orderBooker"]').append('<option value="0" disabled selected>No OB</option>');
+                        //             } else {
+                        //                 for (var i = 0; i < response.length; i++) {
+                        //                     if (response[i].assignment_status == "na") {
+                        //                         $('select[name="orderBooker"]').append('<option value="' + response[i].employee_id + '">' + response[i].employee_username + '</option>');
+                        //                     } else {
+                        //                         $('select[name="orderBooker"]').append('<option value="" disabled>' + response[i].employee_username + ' (Assigned)</option>');
+                        //                     }
+                        //                 }
+                        //             }
+                        //         }
+                        //     });
+                        // } else {
+                        //     $('select[name="orderBooker"]').append('<option value="0" disabled selected>No OB</option>');
+                        // }
                     }
                 }
             });
@@ -116,6 +184,11 @@ $(document).ready(function() {
                 return;
             }
 
+            if (!$('select[name="tso"] :selected').val() || $('select[name="tso"] :selected').val() == "") {
+                alert("All TSO(s) are assigned");
+                return;
+            }
+
             if (jQuery.inArray($('select[name="tso"]').val(), addedEmployees) !== -1) {
                 alert('Already added');
                 return;
@@ -127,6 +200,11 @@ $(document).ready(function() {
         $('#addOb').click(function() {
             if ($('select[name="orderBooker"] :selected').val() === "0") {
                 alert("No OB found");
+                return;
+            }
+
+            if (!$('select[name="orderBooker"] :selected').val() || $('select[name="orderBooker"] :selected').val() == "") {
+                alert("All OB(s) are assigned");
                 return;
             }
 
@@ -212,7 +290,11 @@ $(document).ready(function() {
     });
 
     $('#addRetailerButton').click(function() {
-        if ($('input[name="retailer_email"]').val() == "" || $('input[name="distributor_password"]').val() == "" || $('input[name="retailer_city"]').val() == "" || $('input[name="retailer_address"]').val() == "" || !addedEmployees.length) {
+        if (usernameExist) {
+            alert("Username already exists");
+            return;
+        }
+        if ($('input[name="distributor_username"]').val() == "" || $('input[name="distributor_password"]').val() == "" || $('input[name="retailer_city"]').val() == "" || $('textarea[name="retailer_address"]').val() == "" || !addedEmployees.length) {
             alert('Please provide all the information with (*) label and assign employees');
             return;
         }
@@ -223,7 +305,11 @@ $(document).ready(function() {
     });
 
     $('#updateRetailerButton').click(function() {
-        if ($('input[name="retailer_email"]').val() == "" || $('input[name="distributor_password"]').val() == "" || $('input[name="retailer_city"]').val() == "" || $('input[name="retailer_address"]').val() == "" || !addedEmployees.length) {
+        if (usernameExist) {
+            alert("Username already exists");
+            return;
+        }
+        if ($('input[name="distributor_username"]').val() == "" || $('input[name="distributor_password"]').val() == "" || $('input[name="retailer_city"]').val() == "" || $('textarea[name="retailer_address"]').val() == "" || !addedEmployees.length) {
             alert('Please provide all the information with (*) label and assign employees');
             return;
         }

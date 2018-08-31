@@ -47,7 +47,7 @@
 								<div class="form-group">
 									<label class="p-b-10" for="employee">Select Distributor</label>
 									<?php $optionsDist = array('null' => 'Select Distributor'); foreach ($Distributors as $distributor) : 
-											$optionsDist[$distributor->id] = $distributor->retailer_email;
+											$optionsDist[$distributor->id] = $distributor->distributor_username;
 										endforeach; 
 										$atts = array( 'class' => 'form-control' );
 										echo form_dropdown('distributor_id', $optionsDist, $RightsData->distributor_id, $atts); ?>

@@ -60,6 +60,10 @@ $(document).ready(function() {
                 success: function(response) {
                     var response = JSON.parse(response);
                     $('select[name="distributor_id"]').empty();
+                    if (!response.length) {
+                        $('select[name="distributor_id"]').append('<option>No Retailers/Distributors Assigned</option>');
+                        return;
+                    }
                     for (var i = 0; i < response.length; i++) {
                         $('select[name="distributor_id"]').append('<option value="' + response[i]["retailer_id"] + '">' + response[i]["retailer_name"] + '</option>');
                     }
@@ -74,6 +78,10 @@ $(document).ready(function() {
             success: function(response) {
                 var response = JSON.parse(response);
                 $('select[name="distributor_id"]').empty();
+                if (!response.length) {
+                    $('select[name="distributor_id"]').append('<option value="null">No Retailers/Distributors Assigned</option>');
+                    return;
+                }
                 for (var i = 0; i < response.length; i++) {
                     $('select[name="distributor_id"]').append('<option value="' + response[i]["retailer_id"] + '">' + response[i]["retailer_name"] + '</option>');
                 }
@@ -87,6 +95,12 @@ $(document).ready(function() {
         });
 
         $(document).on('click', '#addToCartBtn', function() {
+
+            if (isNaN($('select[name="distributor_id"] :selected').val())) {
+                alert('No retailer/distributor selected');
+                return;
+            }
+
             if (!$('input[name="custom_order_data"]').val() || !$('input[name="quantity"]').val()) {
                 alert('Please provide date & quantity');
                 return;

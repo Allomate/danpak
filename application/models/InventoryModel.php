@@ -10,6 +10,11 @@ class InventoryModel extends CI_Model{
 		return $this->db->select('item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail')->get("inventory_items it")->result();
 	}
 
+	public function RemoveDistributorStock($prefId){
+		$distributorId = $this->db->select('distributor_id')->where('session', $this->session->userdata("session"))->get('admin_session')->row()->distributor_id;
+		return $this->db->delete('distributor_stock', array('pref_id' => $prefId, "distributor_id" => $distributorId)); 
+	}
+
 	public function UpdateDistributorStock($prefId, $quantity){
 		$alreadyExist = $this->db->where('pref_id = '.$prefId.' and distributor_id = (SELECT distributor_id from admin_session where session = "'.$this->session->userdata("session").'")')->get('distributor_stock')->row();
 		if($alreadyExist){

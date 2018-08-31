@@ -74,6 +74,9 @@
 												<strong>Only a distributor can manage this stock</strong>
 												<?php }else{ ?>
 												<button class="btn view-report addStock">ADD</button>
+												<?php if($inventory->stocked){ ?>
+												<button class="btn view-report removeStock">REMOVE</button>
+												<?php } ?>
 												<?php }?>
 											</td>
 										</tr>
@@ -109,6 +112,30 @@
 			})
 		});
 
+		$(document).on('click', '.removeStock', function (e) {
+			var thisRef = $(this);
+			$(this).attr('disabled', 'disabled');
+			$.ajax({
+				type: "POST",
+				url: "/Inventory/DeleteDistributorStock",
+				data: {
+					pref_id: thisRef.parent().find('.pref_id').val()
+				},
+				success: function (response) {
+					if (response) {
+						thisRef.css('background', 'green');
+						thisRef.text('REMOVED');
+						thisRef.parent().parent().find('td:eq(5)').find('input[type="number"]').val("");
+						setTimeout(function () {
+							thisRef.remove();
+						}, 2000);
+					} else {
+						alert('An error occured');
+					}
+				}
+			});
+		});
+
 		$(document).on('click', '.addStock', function (e) {
 			var thisRef = $(this);
 			if (!thisRef.parent().parent().find('td:eq(5)').find('input[type="number"]').val() || thisRef.parent().parent().find(
@@ -130,6 +157,7 @@
 						thisRef.css('background', 'green');
 						thisRef.text('ADDED');
 						setTimeout(function () {
+							thisRef.parent().append('<button class="btn view-report removeStock">REMOVE</button>');
 							thisRef.css('background', '#001e35');
 							thisRef.text('ADD');
 							thisRef.removeAttr('disabled');

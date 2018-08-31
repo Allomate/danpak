@@ -14,8 +14,14 @@ class EmployeesModel extends CI_Model
         if($this->session->userdata("user_type") == "danpak"){
             return $this->db->select('employee_id, employee_username, employee_first_name, employee_last_name, (SELECT employee_username from employees_info where employee_id = ei.reporting_to) reporting_to, REPLACE(employee_picture, "./", "http://mgmt.danpakfoods.com/") as picture, employee_designation, (SELECT territory_name from territory_management where id = ei.territory_id) as territory')->get("employees_info ei")->result();
         }
-        $distributor_id = $this->db->select('distributor_id as id')->where('session', $this->session->userdata("session"))->get('admin_session')->row()->id;
-        return $this->db->select('(SELECT employee_username from employees_info where employee_id = da.employee_id) as employee_username, employee_id')->get("distributor_assignment da")->result();
+
+        $this->db->query("SET SESSION group_concat_max_len = 1000000");
+        $managers = $this->db->query('SELECT IFNULL(GROUP_CONCAT(employee_id), 0) as managers FROM `distributor_assignment` where distributor_id = (SELECT distributor_id from admin_session where session = "'.$this->session->userdata("session").'")')->row()->managers;
+
+        $this->db->query("SET SESSION group_concat_max_len = 1000000");
+        $reportees = $this->db->query('SELECT IFNULL(GROUP_CONCAT(employee_id), 0) as reportees from employees_info where reporting_to IN (SELECT employee_id FROM `distributor_assignment` where distributor_id = (SELECT distributor_id from admin_session where session = "'.$this->session->userdata("session").'"))')->row()->reportees;
+
+        return $this->db->select('employee_id, employee_username')->where('employee_id IN ('.$reportees.",".$managers.')')->get("employees_info")->result();
 
         // Atif Retailers Assignment ni kar paa rha due to limited access rights
         // $employee_id = $this->db->select('admin_id')->where('session', $this->session->userdata('session'))->get('admin_session')->row()->admin_id;
@@ -55,8 +61,12 @@ class EmployeesModel extends CI_Model
         return $this->db->select('employee_id, CONCAT(employee_username," (", employee_designation ,")") as employee_username')->where('employee_designation IN ("RSM", "ASM")')->get('employees_info')->result();
     }
 
-    public function getReportingTsoAndOb($managerId){
-        return array("tso" => $this->db->select('employee_id, employee_username, (case when (SELECT count(*) FROM `distributor_assignment` where employee_id = ei.employee_id) > 0 THEN "assigned" else "na" end) as assignment_status')->where('reporting_to = '.$managerId.' and employee_designation = "TSO"')->get('employees_info ei')->result(), "ob" => $this->db->select('employee_id, employee_username, (case when (SELECT count(*) FROM `distributor_assignment` where employee_id = ei.employee_id) > 0 THEN "assigned" else "na" end) as assignment_status')->where('reporting_to = '.$managerId.' and employee_designation = "Order Booker"')->get('employees_info ei')->result());
+    public function getReportingTso($managerId){
+        return $this->db->select('employee_id, employee_username, (case when (SELECT count(*) FROM `distributor_assignment` where employee_id = ei.employee_id) > 0 THEN "assigned" else "na" end) as assignment_status')->where('reporting_to = '.$managerId.' and employee_designation = "TSO"')->get('employees_info ei')->result();
+    }
+
+    public function getReportingOb($tsoId){
+        return $this->db->select('employee_id, employee_username, (case when (SELECT count(*) FROM `distributor_assignment` where employee_id = ei.employee_id) > 0 THEN "assigned" else "na" end) as assignment_status')->where('reporting_to = '.$tsoId.' and employee_designation = "Order Booker"')->get('employees_info ei')->result();
     }
 
     public function get_single_employee($employee_id)
