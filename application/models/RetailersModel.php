@@ -110,6 +110,8 @@ class RetailersModel extends CI_Model{
 
 	public function delete_retailer($retailerId){
 		$this->db->delete('distributor_assignment', array('distributor_id' => $retailerId));
+		$this->db->delete('distributor_stock', array('distributor_id' => $retailerId));
+		$this->db->delete('access_rights', array('distributor_id' => $retailerId));
 		return $this->db->delete('retailers_details', array('id' => $retailerId)); 
 	}
 

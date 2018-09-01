@@ -101,12 +101,11 @@ class WebServices extends CI_Model
         unset($retailerInfo['session']);
         $this->db->insert('retailers_details', $retailerInfo);
         
-        $orderVisitMarkedData = array('retailer_id' => $orderDetails["retailer_id"], 'latitude' => $orderDetails["booker_lats"], 'longitude' => $orderDetails["booker_longs"], 'employee_id' => $employee_id, 'took_order' => '1');
-        if($this->db->insert('visits_marked', $orderVisitMarkedData)){
-            return "Success";
-        }
-
         $retailerIdLatest = $this->db->insert_id();
+        
+        $orderVisitMarkedData = array('retailer_id' => $retailerIdLatest, 'latitude' => $retailerInfo["retailer_lats"], 'longitude' => $retailerInfo["retailer_longs"], 'employee_id' => $employee_id, 'took_order' => '0');
+        $this->db->insert('visits_marked', $orderVisitMarkedData);
+        
         return $this->db->insert('retailers_assignment', ['retailer_id' => $retailerIdLatest, 'employee_id' => $employee_id, 'assigned_for_day' => strtolower(date('l'))]);
     }
 

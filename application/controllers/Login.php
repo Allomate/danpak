@@ -31,6 +31,7 @@ class Login extends CI_Controller
             // echo "<pre>"; print_r($empData);die;
             // echo "<pre>"; print_r($this->lm->VerifyLogin($empData));die;
             if ($this->lm->VerifyLogin($empData)):
+                
                 $empLogin = array(
                     'session' => $empData["session"],
                     'user_type' => $empData["login_type"]
@@ -40,7 +41,7 @@ class Login extends CI_Controller
 
                 return redirect('Dashboard/Home');
             else:
-                $this->session->set_flashdata("login_failed", "Invalid credentials. Please try again");
+                $this->session->set_flashdata("login_failed", "Invalid credentials/No rights given");
                 return redirect("Login/");
             endif;
         } else {

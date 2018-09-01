@@ -75,7 +75,7 @@
 												<?php }else{ ?>
 												<button class="btn view-report addStock">ADD</button>
 												<?php if($inventory->stocked){ ?>
-												<button class="btn view-report removeStock">REMOVE</button>
+												<a style="cursor:pointer" class="view-report removeStock" title="Delete"><i class="fa fa-close" style="color: white;font-size: 13px; margin: 0px !important"></i></a>
 												<?php } ?>
 												<?php }?>
 											</td>
@@ -114,26 +114,33 @@
 
 		$(document).on('click', '.removeStock', function (e) {
 			var thisRef = $(this);
-			$(this).attr('disabled', 'disabled');
-			$.ajax({
-				type: "POST",
-				url: "/Inventory/DeleteDistributorStock",
-				data: {
-					pref_id: thisRef.parent().find('.pref_id').val()
-				},
-				success: function (response) {
-					if (response) {
-						thisRef.css('background', 'green');
-						thisRef.text('REMOVED');
-						thisRef.parent().parent().find('td:eq(5)').find('input[type="number"]').val("");
-						setTimeout(function () {
-							thisRef.remove();
-						}, 2000);
-					} else {
-						alert('An error occured');
-					}
+			swal({
+				title: 'Are you sure?',
+				text: "You won't be able to revert this!",
+				type: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+				if (result.value) {
+					$.ajax({
+						type: "POST",
+						url: "/Inventory/DeleteDistributorStock",
+						data: {
+							pref_id: thisRef.parent().find('.pref_id').val()
+						},
+						success: function (response) {
+							if (response) {
+								thisRef.parent().parent().find('td:eq(5)').find('input[type="number"]').val("");
+								thisRef.remove();
+							} else {
+								alert('An error occured');
+							}
+						}
+					});
 				}
-			});
+			})
 		});
 
 		$(document).on('click', '.addStock', function (e) {
@@ -157,7 +164,9 @@
 						thisRef.css('background', 'green');
 						thisRef.text('ADDED');
 						setTimeout(function () {
-							thisRef.parent().append('<button class="btn view-report removeStock">REMOVE</button>');
+							thisRef.parent().append(
+								'<a style="cursor:pointer" class="view-report removeStock" title="Delete"><i class="fa fa-close" style="color: white;font-size: 13px; margin: 0px !important"></i></a>'
+							);
 							thisRef.css('background', '#001e35');
 							thisRef.text('ADD');
 							thisRef.removeAttr('disabled');
