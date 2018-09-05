@@ -22,11 +22,15 @@ class RetailersModel extends CI_Model{
 		unset($retailerInfo["tso"]);
 		unset($retailerInfo["orderBooker"]);
 		if($this->db->insert('retailers_details', $retailerInfo)){
-			foreach(json_decode($assignedEmps) as $employee){
-				$bulkAssignments[] = array('employee_id' => $employee, "distributor_id" => $this->db->insert_id());
+			if(sizeOf(json_decode($assignedEmps)) > 0){
+				foreach(json_decode($assignedEmps) as $employee){
+					$bulkAssignments[] = array('employee_id' => $employee, "distributor_id" => $this->db->insert_id());
+				}
+				return $this->db->insert_batch('distributor_assignment', $bulkAssignments);
 			}
+			return true;
 		}
-		return $this->db->insert_batch('distributor_assignment', $bulkAssignments);
+		return false;
 	}
 
 	public function StoreRetailerTypeInformation($retailerInfo){
@@ -66,13 +70,15 @@ class RetailersModel extends CI_Model{
 		unset($retailerInfo["asmOrRsm"]);
 		unset($retailerInfo["tso"]);
 		unset($retailerInfo["orderBooker"]);
-		foreach(json_decode($assignedEmps) as $employee){
-			$bulkAssignments[] = array('employee_id' => $employee, "distributor_id" => $retailer_id);
-		}
 		
-		$bulkAssignsStatus = $this->db->insert_batch('distributor_assignment', $bulkAssignments);
-		if(!$bulkAssignsStatus){
-			return $bulkAssignsStatus;
+		if(sizeOf(json_decode($assignedEmps)) > 0){
+			foreach(json_decode($assignedEmps) as $employee){
+				$bulkAssignments[] = array('employee_id' => $employee, "distributor_id" => $retailer_id);
+			}
+			$bulkAssignsStatus = $this->db->insert_batch('distributor_assignment', $bulkAssignments);
+			if(!$bulkAssignsStatus){
+				return $bulkAssignsStatus;
+			}
 		}
 
 		return $this->db

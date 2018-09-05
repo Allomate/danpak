@@ -340,32 +340,34 @@
 											<td>
 												<?php if($this->uri->segment(3) !== "EmployeesList") : ?>
 												<?php if (strtolower($order->status) == strtolower("Processed")) : ?>
-												<a href="<?= base_url('Orders/UpdateOrder/'.$order->id); ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit">
+												<a href="<?= base_url('Orders/UpdateOrder/'.$order->id); ?>" data-toggle="tooltip" data-placement="top"
+												title="" data-original-title="Edit">
 													<i class="fa fa-pencil"></i>
 												</a>
-												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="Invoice">
+												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>" data-toggle="tooltip" data-placement="top"
+												title="" data-original-title="Invoice">
 													<i class="fa fa-list-alt"></i>
 												</a>
-												<a href="<?= base_url('Orders/CancelOrder/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$order->id); ?>"
-												data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel">
-													<i class="fa fa-close"></i>
+												<a id="<?= $order->id; ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel">
+													<i class="fa fa-close cancelOrder"></i>
 												</a>
-												<a href="<?= base_url('Orders/CompleteOrder/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$order->id); ?>">
-													<button class="btn view-report">Complete</button>
+												<a id="<?= $order->id; ?>">
+													<button class="btn view-report completeOrder">Complete</button>
 												</a>
 												<?php elseif (!$order->status || $order->status == '') : ?>
-												<a href="<?= base_url('Orders/UpdateOrder/'.$order->id); ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit">
+												<a href="<?= base_url('Orders/UpdateOrder/'.$order->id); ?>" data-toggle="tooltip" data-placement="top"
+												title="" data-original-title="Edit">
 													<i class="fa fa-pencil"></i>
 												</a>
-												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="Invoice">
+												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>" data-toggle="tooltip" data-placement="top"
+												title="" data-original-title="Invoice">
 													<i class="fa fa-list-alt"></i>
 												</a>
-												<a href="<?= base_url('Orders/CancelOrder/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$order->id); ?>"
-												data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel">
-													<i class="fa fa-close"></i>
+												<a id="<?= $order->id; ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cancel">
+													<i class="fa fa-close cancelOrder"></i>
 												</a>
-												<a href="<?= base_url('Orders/ProcessOrder/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->uri->segment(5).'/'.$order->id); ?>">
-													<button class="btn view-report">Process</button>
+												<a id="<?= $order->id; ?>">
+													<button class="btn view-report processOrder">Process</button>
 												</a>
 												<?php else: ?>
 												<a href="<?= base_url('Orders/OrderInvoice/'.$order->id); ?>">
@@ -417,6 +419,52 @@
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
 <script>
 	$(document).ready(function () {
+
+		$(document).on('click', '.cancelOrder', function () {
+			var id = $(this).parent().attr("id");
+			var thisRef = $(this);
+			$.ajax({
+				url: "/Orders/UpdateOrderStatus/" + id + "/cancelled",
+				success: function (response) {
+					if (response === "success") {
+						thisRef.parent().parent().parent().fadeOut();
+					} else {
+						alert("Unable to update order status");
+					}
+				}
+			})
+		});
+
+		$(document).on('click', '.processOrder', function () {
+			var id = $(this).parent().attr("id");
+			var thisRef = $(this);
+			$.ajax({
+				url: "/Orders/UpdateOrderStatus/" + id + "/processed",
+				success: function (response) {
+					if (response === "success") {
+						thisRef.parent().parent().parent().fadeOut();
+					} else {
+						alert("Unable to update order status");
+					}
+				}
+			})
+		});
+
+		$(document).on('click', '.completeOrder', function () {
+			var id = $(this).parent().attr("id");
+			var thisRef = $(this);
+			$.ajax({
+				url: "/Orders/UpdateOrderStatus/" + id + "/completed",
+				success: function (response) {
+					if (response === "success") {
+						thisRef.parent().parent().parent().fadeOut();
+					} else {
+						alert("Unable to update order status");
+					}
+				}
+			})
+		});
+
 		$(document).on('click', '#viewDetail', function () {
 			var lats = $(this).parent().find('#empLats').val();
 			var longs = $(this).parent().find('#empLongs').val();

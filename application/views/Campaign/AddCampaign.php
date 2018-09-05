@@ -107,6 +107,7 @@
 											<select name="scheme_type" id="scheme_type" class="form-control">
 												<option value="1">+1 Scheme</option>
 												<option value="2">Discount on TP</option>
+												<option value="3">Gift Item</option>
 											</select>
 										</div>
 									</div>
@@ -159,7 +160,8 @@
 											<div class="form-group">
 												<label class="control-label mb-10">Quantity given free</label>
 												<input type="number" name="quantity_for_free_item" class="form-control" value="<?= set_value('quantity_for_free_item'); ?>">
-												<small id="validQuantityErr" style="color: red; font-weight: bold; margin-top: 5px; display: none">Please provide valid quantity</small>
+												<small id="validQuantityErr" style="color: red; font-weight: bold; margin-top: 5px; display: none">Please
+													provide valid quantity</small>
 												<?= form_error('quantity_for_free_item', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 											</div>
 										</div>
@@ -168,7 +170,8 @@
 										<div class="col-md-6">
 											<div class="form-group">
 												<label class="control-label mb-10">Scheme Amount</label>
-												<input type="number" name="scheme_amount" class="form-control" value="<?= set_value('scheme_amount'); ?>" readonly>
+												<input type="number" name="scheme_amount" class="form-control" value="<?= set_value('scheme_amount'); ?>"
+												readonly>
 												<?= form_error('scheme_amount', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 											</div>
 										</div>
@@ -177,9 +180,9 @@
 												<label class="control-label mb-10">Scheme Image</label>
 												<input type="file" id="scheme_image" name="scheme_image" class="form-control" accept=".jpg,.bmp,.jpeg,png" />
 												<?= isset($scheme_image_error) ? '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">'.$scheme_image_error.'</small>' : '';?>
-													<small>
-														<?php $max_upload = (int)(ini_get('upload_max_filesize')); $max_post = (int)(ini_get('post_max_size')); $memory_limit = (int)(ini_get('memory_limit')); echo "Maximum file size limit: (" . $upload_mb = min($max_upload, $max_post, $memory_limit)." mb)"; ?>
-													</small>
+												<small>
+													<?php $max_upload = (int)(ini_get('upload_max_filesize')); $max_post = (int)(ini_get('post_max_size')); $memory_limit = (int)(ini_get('memory_limit')); echo "Maximum file size limit: (" . $upload_mb = min($max_upload, $max_post, $memory_limit)." mb)"; ?>
+												</small>
 											</div>
 										</div>
 									</div>
@@ -210,12 +213,47 @@
 										<div class="col-md-6">
 											<div class="form-group">
 												<label class="control-label mb-10">Scheme Image</label>
-												<input type="file" id="scheme_image_disc_tp" name="scheme_image_disc_tp" class="form-control" accept=".jpg,.bmp,.jpeg,png"
-												/>
+												<input type="file" id="scheme_image_disc_tp" name="scheme_image_disc_tp" class="form-control" accept=".jpg,.bmp,.jpeg,png" />
 												<?= isset($scheme_image_error) ? '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">'.$scheme_image_error.'</small>' : '';?>
-													<small>
-														<?php $max_upload = (int)(ini_get('upload_max_filesize')); $max_post = (int)(ini_get('post_max_size')); $memory_limit = (int)(ini_get('memory_limit')); echo "Maximum file size limit: (" . $upload_mb = min($max_upload, $max_post, $memory_limit)." mb)"; ?>
-													</small>
+												<small>
+													<?php $max_upload = (int)(ini_get('upload_max_filesize')); $max_post = (int)(ini_get('post_max_size')); $memory_limit = (int)(ini_get('memory_limit')); echo "Maximum file size limit: (" . $upload_mb = min($max_upload, $max_post, $memory_limit)." mb)"; ?>
+												</small>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="giftItemContent" style="display: none">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label class="control-label mb-10">Gift Item</label>
+												<select class="selectpicker" name="gift_item" data-style="form-control btn-default btn-outline">
+													<?php foreach( $Inventory as $item ) : ?>
+													<option value="<?= $item->pref_id; ?>">
+														<?= $item->item_name; ?>
+													</option>
+													<?php endforeach; ?>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label class="control-label mb-10">Offered Gift Price (PKR)</label>
+												<input type="number" name="offered_gift_price" class="form-control" value="<?= set_value('offered_gift_price'); ?>"
+												min="1">
+												<?= form_error('offered_gift_price', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label class="control-label mb-10">Scheme Image</label>
+												<input type="file" id="scheme_image_gift" name="scheme_image_gift" class="form-control" accept=".jpg,.bmp,.jpeg,png" />
+												<?= isset($scheme_image_error) ? '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">'.$scheme_image_error.'</small>' : '';?>
+												<small>
+													<?php $max_upload = (int)(ini_get('upload_max_filesize')); $max_post = (int)(ini_get('post_max_size')); $memory_limit = (int)(ini_get('memory_limit')); echo "Maximum file size limit: (" . $upload_mb = min($max_upload, $max_post, $memory_limit)." mb)"; ?>
+												</small>
 											</div>
 										</div>
 									</div>
@@ -224,7 +262,8 @@
 						</div>
 						</form>
 						<div class="alert alert-warning" style="background-color: #f1ece4; color: red">
-							<strong>Note: </strong> Please double-check the entries after providing all the information as you won't be able to update
+							<strong>Note: </strong> Please double-check the entries after providing all the information as you won't be able
+							to update
 							this scheme
 						</div>
 					</div>

@@ -44,50 +44,50 @@
 			<div class="row">
 				<div class="col-md-12">
 					<?= form_hidden('urlForCampaignDetails', base_url('CampaignManagement/GetCampaignDetailsForAjax')); ?>
-						<div class="box-white p-20">
-							<a href="<?= base_url('CampaignManagement/AddCampaign');?>" class="btn add-emp">
-								<i class="fa fa-plus"> </i> Create Scheme</a>
-							<h2 class="m-b-0 less_600">Schemes List </h2>
-							<div class="table-wrap">
-								<div class="table-responsive">
-									<table class="table table-hover display  pb-30">
-										<thead>
-											<tr>
-												<th>Scheme Name</th>
-												<th>Scheme Type</th>
-												<th>Actions</th>
-											</tr>
-										</thead>
-										<tfoot>
-											<tr>
-												<th>Scheme Name</th>
-												<th>Scheme Type</th>
-												<th>Actions</th>
-											</tr>
-										</tfoot>
-										<tbody>
-											<?php foreach ($Campaigns as $campaign) : ?>
-											<tr>
-												<td>
-													<?= $campaign->campaign_name; ?>
-												</td>
-												<td>
-													<?= $campaign->scheme_type == "1" ? '+1 Scheme ' : 'Discount on TP' ?>
-												</td>
-												<td>
-													<a class="view-report viewDetail" id="<?= $campaign->campaign_id; ?>" style="cursor: pointer">View Detail</a>
-													&nbsp;
-													<a class="deleteConfirmation" title="Deactivate" href="<?= base_url('CampaignManagement/DeactivateCampaign/'.$campaign->campaign_id); ?>">
-														<i class="fa fa-close"></i>
-													</a>
-												</td>
-											</tr>
-											<?php endforeach; ?>
-										</tbody>
-									</table>
-								</div>
+					<div class="box-white p-20">
+						<a href="<?= base_url('CampaignManagement/AddCampaign');?>" class="btn add-emp">
+							<i class="fa fa-plus"> </i> Create Scheme</a>
+						<h2 class="m-b-0 less_600">Schemes List </h2>
+						<div class="table-wrap">
+							<div class="table-responsive">
+								<table class="table table-hover display  pb-30">
+									<thead>
+										<tr>
+											<th>Scheme Name</th>
+											<th>Scheme Type</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>Scheme Name</th>
+											<th>Scheme Type</th>
+											<th>Actions</th>
+										</tr>
+									</tfoot>
+									<tbody>
+										<?php foreach ($Campaigns as $campaign) : ?>
+										<tr>
+											<td>
+												<?= $campaign->campaign_name; ?>
+											</td>
+											<td>
+												<?= $campaign->scheme_type == "1" ? '+1 Scheme ' : ( $campaign->scheme_type == "2" ? 'Discount on TP' : 'Gift' ) ?>
+											</td>
+											<td>
+												<a class="view-report viewDetail" id="<?= $campaign->campaign_id; ?>" style="cursor: pointer">View Detail</a>
+												&nbsp;
+												<a class="deleteConfirmation" title="Deactivate" href="<?= base_url('CampaignManagement/DeactivateCampaign/'.$campaign->campaign_id); ?>">
+													<i class="fa fa-close"></i>
+												</a>
+											</td>
+										</tr>
+										<?php endforeach; ?>
+									</tbody>
+								</table>
 							</div>
 						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -162,6 +162,33 @@
 							<div class="col-md-6" style="text-align: center">
 								<h3>Savings on Scheme Minimum Eligible Quantity: </h3>
 								<span style="font-weight: bolder" id="savings_on_scheme"></span>
+							</div>
+						</div>
+					</div>
+					<div id="giftCampaignDetailsModalBody">
+						<div class="row">
+							<div class="col-md-6" style="text-align: center">
+								<h3>Minimum Quantity for Eligibility: </h3>
+								<span style="font-weight: bolder" id="minimum_quantity_for_eligibility_gift"></span>
+							</div>
+							<div class="col-md-6" style="text-align: center">
+								<h3>Actual Bill (
+									<span id="actual_bill_quantity_package_gift"></span> ): </h3>
+								<span style="font-weight: bolder" id="actual_bill_gift"></span>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-md-6" style="text-align: center">
+								<h3>Gift price on TP: </h3>
+								<span style="font-weight: bolder" id="gift_price"> </span>
+							</div>
+							<div class="col-md-6" style="text-align: center">
+								<h3>Price of each
+									<span id="each_packaging_price_gift"></span>:
+									<small>(after scheme)</small>
+								</h3>
+								<span style="font-weight: bolder" id="price_of_each_packaging_gift"> </span>
 							</div>
 						</div>
 					</div>

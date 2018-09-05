@@ -120,6 +120,10 @@
 													<label for="DailyRouting" class="lab-medium">View Daily Employee Routes</label>
 												</div>
 												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="CompleteEmployeeRoutingList" name="access_rights" value="CompleteEmployeeRoutingList">
+													<label for="CompleteEmployeeRoutingList" class="lab-medium">Employees List for Routing</label>
+												</div>
+												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
 													<input type="checkbox" id="ListRights" name="access_rights" value="ListRights">
 													<label for="ListRights" class="lab-medium">View Access Rights</label>
 												</div>
@@ -176,6 +180,10 @@
 												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
 													<input type="checkbox" id="UpdateInventorySku" name="access_rights" value="UpdateInventorySku">
 													<label for="UpdateInventorySku" class="lab-medium">Update Inventory</label>
+												</div>
+												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="UpdateCentralizedTradePrice" name="access_rights" value="UpdateCentralizedTradePrice">
+													<label for="UpdateCentralizedTradePrice" class="lab-medium">Centralized Trade Price</label>
 												</div>
 												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
 													<input type="checkbox" id="ProductGallery" name="access_rights" value="ProductGallery">

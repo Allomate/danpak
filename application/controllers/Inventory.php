@@ -16,6 +16,10 @@ class Inventory extends WebAuth_Controller{
 		return $this->load->view('Inventory/AddUnit');
 	}
 	
+	public function UpdateCentralizedTradePrice(){
+		return $this->load->view('Inventory/UpdateTradePrice', [ 'Inventory' => $this->im->getInventoryForBulkTradePriceUpdate() ]);
+	}
+	
 	public function UpdateUnit($unit_id){
 		return $this->load->view('Inventory/UpdateUnit', [ 'UnitType' => $this->im->get_single_unit_details($unit_id) ]);
 	}
@@ -27,6 +31,14 @@ class Inventory extends WebAuth_Controller{
 
 	public function AddDistributorStock(){
 		echo json_encode($this->im->UpdateDistributorStock($this->input->post("pref_id"), $this->input->post("quantity")));
+	}
+
+	public function UpdateTradePriceBulk(){
+		echo json_encode($this->im->UpdateBulkTradePrice($this->input->post("pref_id"), $this->input->post("price")));
+	}
+
+	public function UpdateItemCoreDetails(){
+		echo json_encode($this->im->updateInventoryCore($this->input->post("skuId"), $this->input->post("name"), $this->input->post("sku"), $this->input->post("description")));
 	}
 
 	public function DeleteDistributorStock(){
@@ -216,14 +228,23 @@ class Inventory extends WebAuth_Controller{
 	}
 
 	public function ProductGallery(){
-		return $this->load->view('Inventory/InventoryGallery', [ 'inventoryListSku' => $this->im->get_inventory_sku_wise() ]);
+		// echo "<pre>"; print_r($this->im->get_inventory_sku_wise_for_gallery());die;
+		return $this->load->view('Inventory/InventoryGallery', [ 'inventoryListSku' => $this->im->get_inventory_sku_wise_for_gallery() ]);
+	}
+
+	public function fetchSearched(){
+		echo json_encode($this->im->getSearchedInventory(strtolower($this->input->post("searchedText"))));
+	}
+
+	public function loadMoreGalleryAjax(){
+		echo json_encode($this->im->get_inventory_sku_wise_paginated($this->input->post("scrolling_counter")));
 	}
 
 	public function AddInventory(){
 		return $this->load->view('Inventory/AddInventory', [ 'UnitTypes' => $this->im->GetUnitTypes(), 'PreDefinedItems' => $this->im->GetInventoryItems(), 'MainCategories' => $this->cm->GetMainCategories() ]);
 	}
 
-	public function UpdateInventory($pref_id){
+	public function UpdateInventory($pref_id, $item_id){
 		return $this->load->view('Inventory/UpdateInventory', [ 'UnitTypes' => $this->im->GetUnitTypes(), 'item' => $this->im->get_single_item_details($pref_id), 'MainCategories' => $this->cm->GetMainCategories() ]);
 	}
 
@@ -354,8 +375,7 @@ class Inventory extends WebAuth_Controller{
 		return redirect('Inventory/ListInventory');
 	}
 
-	public function UpdateInventoryOps($pref_id){
-
+	public function UpdateInventoryOps($pref_id, $workingSku){
 		$itemData = $this->input->post();
 
 		$existingImgs = '';
@@ -509,10 +529,10 @@ class Inventory extends WebAuth_Controller{
 				else:
 					if ($response) :
 						$this->session->set_flashdata("inventory_updated", "Inventory has been updated successfully");
-						return redirect('Inventory/ListInventory');
+						return redirect('Inventory/UpdateInventorySku/'.$workingSku);
 					else:
 						$this->session->set_flashdata("inventory_update_failed", "Unable to update the inventory");
-						return redirect('Inventory/ListInventory');
+						return redirect('Inventory/UpdateInventorySku/'.$workingSku);
 					endif;
 				endif;
 			else:

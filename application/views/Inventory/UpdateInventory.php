@@ -1,10 +1,11 @@
 <?php require_once(APPPATH.'/views/includes/header.php'); ?>
 <style type="text/css">
-.deleteImages:hover{
-	opacity: 1.0 !important
-}
+	.deleteImages:hover {
+		opacity: 1.0 !important
+	}
+
 </style>
-<link href="<?= base_url('assets/vendors/bower_components/dropzone/dist/dropzone.css'); ?>" rel="stylesheet" type="text/css"/>
+<link href="<?= base_url('assets/vendors/bower_components/dropzone/dist/dropzone.css'); ?>" rel="stylesheet" type="text/css" />
 <div class="preloader-it">
 	<div class="la-anim-1"></div>
 </div>
@@ -25,7 +26,7 @@
 			</div>
 
 			<?php $attributes = array('id' => 'updateInventoryForm');
-			echo form_open_multipart('Inventory/UpdateInventoryOps/'.$item->pref_id, $attributes);
+			echo form_open_multipart('Inventory/UpdateInventoryOps/'.$item->pref_id.'/'.$this->uri->segment(4), $attributes);
 			echo form_hidden('subCatDataForAjax', base_url('Inventory/FetchSubCategoriesForMainCategoryAjax')); 
 			echo form_hidden('subCatSelected', $item->sub_category_id);
 			echo form_hidden('images_deleted', '');
@@ -101,21 +102,24 @@
 												<div class="col-md-6">
 													<div class="form-group">
 														<label class="control-label mb-10">Cost Price*</label>
-														<input type="text" name="item_warehouse_price" value="<?= $item->item_warehouse_price; ?>" class="form-control" placeholder="Rs:0.00" max="11">
+														<input type="text" name="item_warehouse_price" value="<?= $item->item_warehouse_price; ?>" class="form-control"
+														placeholder="Rs:0.00" max="11">
 														<?= form_error('item_warehouse_price', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 													</div>
 												</div>
 												<div class="col-md-6">
 													<div class="form-group">
 														<label class="control-label mb-10">Trade Price*</label>
-														<input type="text" name="item_trade_price" class="form-control" value="<?= $item->item_trade_price; ?>" placeholder="Rs:0.00" max="11">
+														<input type="text" name="item_trade_price" class="form-control" value="<?= $item->item_trade_price; ?>"
+														placeholder="Rs:0.00" max="11">
 														<?= form_error('item_trade_price', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 													</div>
 												</div>
 												<div class="col-md-6">
 													<div class="form-group">
 														<label class="control-label mb-10">Retail Price*</label>
-														<input type="text" name="item_retail_price" value="<?= $item->item_retail_price; ?>" class="form-control" placeholder="Rs:0.00" max="11">
+														<input type="text" name="item_retail_price" value="<?= $item->item_retail_price; ?>" class="form-control"
+														placeholder="Rs:0.00" max="11">
 														<?= form_error('item_retail_price', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 													</div>
 												</div>
@@ -124,7 +128,8 @@
 												<div class="col-md-6">
 													<div class="form-group">
 														<label class="control-label mb-10">Product Barcode*</label>
-														<input type="text" name="item_barcode" class="form-control" value="<?= $item->item_barcode; ?>" placeholder="" max="20">
+														<input type="text" name="item_barcode" class="form-control" value="<?= $item->item_barcode; ?>"
+														placeholder="" max="20">
 														<?= form_error('item_barcode', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 													</div>
 												</div>
@@ -133,7 +138,7 @@
 														<label class="control-label mb-10">Expiry Date</label>
 														<input type="text" id="firstName" class="form-control" placeholder="">
 													</div>
-												</div> 
+												</div>
 											</div>
 											<div class="row">
 												<div class="col-md-6">
@@ -153,7 +158,7 @@
 														<select class="form-control" id="forFindingInMainCat" name="sub_category_id" data-style="form-control btn-default btn-outline">
 														</select>
 													</div>
-												</div> 
+												</div>
 											</div>
 											<div class="row">
 												<div class="col-md-12">
@@ -162,7 +167,7 @@
 														<input type="text" name="totalInventoryAdded" hidden>
 														<textarea name="item_description" class="form-control" rows="5"><?= $item->item_description; ?></textarea>
 													</div>
-												</div> 
+												</div>
 											</div>
 										</div>
 									</div>
@@ -174,14 +179,15 @@
 				<div class="col-md-4">
 					<div class="box-white m-b-30">
 						<h2>Images</h2>
-						<div class="box-white m-b-30">    	
+						<div class="box-white m-b-30">
 							<div class="form-wrap">
 								<div class="thumb-c">
 									<div class="upload-pic custom-thumb">Add Product thumbnail<br>maximam size 500X500 px</div>
-									<input type="file" id="itemThumbnail" name="item_thumbnail" class="dropify" accept=".png, .jpeg, .jpg, .bmp" data-default-file="<?= $item->item_thumbnail; ?>" />
+									<input type="file" id="itemThumbnail" name="item_thumbnail" class="dropify" accept=".png, .jpeg, .jpg, .bmp"
+									data-default-file="<?= $item->item_thumbnail; ?>" />
 									<?= isset($item_thumbnail_error) ? '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">'.$item_thumbnail_error.'</small>' : '';?>
 								</div>
-							</div> 
+							</div>
 						</div>
 						<div class="panel-wrapper collapse in">
 							<div class="panel-body p-0">
@@ -193,30 +199,30 @@
 								$itemImages = explode(",", $item->item_image); ?>
 								<div class="row">
 									<?php foreach ($itemImages as $image) : ?>
-										<div class="col-md-6" style="padding: 0px">
-											<div style="position: absolute; top: 70%; width: 100%; text-align: center;">
-												<button class="btn btn-sm btn-danger deleteImages" style="opacity: 0.5;" type="button">REMOVE</button>
-											</div>
-											<img src="<?= $image?>" width="100%" height="200px"/>
+									<div class="col-md-6" style="padding: 0px">
+										<div style="position: absolute; top: 70%; width: 100%; text-align: center;">
+											<button class="btn btn-sm btn-danger deleteImages" style="opacity: 0.5;" type="button">REMOVE</button>
 										</div>
+										<img src="<?= $image?>" width="100%" height="200px" />
+									</div>
 									<?php endforeach; ?>
 								</div>
-							<?php endif; ?>
+								<?php endif; ?>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="form-bottom">
-				<div class="button-section align-right">
-					<a href="<?= base_url('Inventory/ListInventory'); ?>" class="btn btn-cancel">Cancel</a>
-					<a id="updateInventoryButton" class="btn btn-save">Save</a>						
+				<div class="form-bottom">
+					<div class="button-section align-right">
+						<a href="<?= base_url('Inventory/UpdateInventorySku/'.$this->uri->segment(4)); ?>" class="btn btn-cancel">Cancel</a>
+						<a id="updateInventoryButton" class="btn btn-save">Save</a>
+					</div>
 				</div>
 			</div>
+			</form>
 		</div>
-	</form>
-</div>
-</div>
-<?php require_once(APPPATH.'/views/includes/footer.php'); ?>
-<script src="<?= base_url('assets/vendors/bower_components/dropzone/dist/dropzone.js');?>"></script>
-<script src="<?= base_url('assets/dist/js/dropzone-data.js')?>"></script>
-<script type="text/javascript" src="<?= base_url('assets/js/UpdateInventory.js').'?v='.time(); ?>"></script>
+	</div>
+	<?php require_once(APPPATH.'/views/includes/footer.php'); ?>
+	<script src="<?= base_url('assets/vendors/bower_components/dropzone/dist/dropzone.js');?>"></script>
+	<script src="<?= base_url('assets/dist/js/dropzone-data.js')?>"></script>
+	<script type="text/javascript" src="<?= base_url('assets/js/UpdateInventory.js').'?v='.time(); ?>"></script>

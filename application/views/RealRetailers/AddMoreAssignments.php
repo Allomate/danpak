@@ -68,50 +68,6 @@
 									</div>
 								</div>
 								<div class="row">
-									<!-- <div class="col-md-6">
-										<div class="radio radio-info m-b-15">
-											<input id="region" name="bunchAssignment" type="radio" value="region">
-											<label for="region" class="lab-large"> Assign Distributors by Region </label>
-										</div>
-										<div id="checkbox-circle001">
-											<div class="row">
-												<div class="col-md-12">
-													<div class="form-group">
-														<label class="control-label mb-10">Region</label>
-														<select class="selectpicker" name="region_id" data-style="form-control btn-default btn-outline">
-															<?php foreach ($Regions as $region) : ?>
-															<option value="<?= $region->id; ?>">
-																<?= $region->region_name; ?>
-															</option>
-															<?php endforeach; ?>
-														</select>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="radio radio-info m-b-15">
-											<input id="area" name="bunchAssignment" type="radio" value="area">
-											<label for="area" class="lab-large"> Assign Distributors by Area </label>
-										</div>
-										<div id="checkbox-circle001">
-											<div class="row">
-												<div class="col-md-12">
-													<div class="form-group">
-														<label class="control-label mb-10">Areas</label>
-														<select class="selectpicker" name="area_id" data-style="form-control btn-default btn-outline">
-															<?php foreach ($Areas as $area) : ?>
-															<option value="<?= $area->id; ?>">
-																<?= $area->area_name; ?>
-															</option>
-															<?php endforeach; ?>
-														</select>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div> -->
 									<div class="col-md-6">
 										<div class="radio radio-info m-b-15">
 											<input id="territoryRadio" name="bunchAssignment" type="radio" value="territory">
@@ -135,15 +91,30 @@
 										</div>
 									</div>
 								</div>
+								<hr>
 								<div class="row">
-									<div class="col-md-6">
-										<div class="form-group">
-											<h2 class="m-t-20">Retailers Added</h2>
-											<ul style="list-style: none; padding: 0px" id="addedAssignmentsList">
-											</ul>
+									<div class="col-md-12" id="viewAssigns" style="text-align: center; cursor: pointer">
+										<span style="font-weight: bold">VIEW ASSIGNMENTS</span>
+									</div>
+									<div id="myModal" class="modal fade" role="dialog">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal">&times;</button>
+													<h4 class="modal-title">Assignments</h4>
+												</div>
+												<div class="modal-body">
+													<ul style="list-style: none; padding: 0px; max-height: 50vh; overflow: auto;" id="addedAssignmentsList">
+													</ul>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
+								<hr>
 								<div class="row">
 									<div class="col-md-12">
 										<div class="table-wrap">

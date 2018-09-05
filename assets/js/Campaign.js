@@ -1,16 +1,23 @@
 $(document).ready(function() {
+
     $('#scheme_type').change(function() {
         if ($(this).val() == "1") {
             $('#discountOnTpContent').hide();
+            $('#giftItemContent').hide();
             $('#schemeContent').fadeIn('fast');
+        } else if ($(this).val() == "2") {
+            $('#schemeContent').hide();
+            $('#giftItemContent').hide();
+            $('#discountOnTpContent').fadeIn('fast');
         } else {
             $('#schemeContent').hide();
-            $('#discountOnTpContent').fadeIn('fast');
+            $('#giftItemContent').fadeIn('fast');
+            $('#discountOnTpContent').hide();
         }
     });
 
     $('#addCampaignBtn').click(function() {
-
+        debugger;
         var checkboxValidator = false;
         $('input[type="checkbox"]').each(function() {
             if ($(this).attr('checked')) {
@@ -29,8 +36,13 @@ $(document).ready(function() {
                 swal('Missing Information', 'Please provide scheme image also', 'warning');
                 return;
             }
-        } else {
+        } else if ($('#scheme_type').val() == "2") {
             if (!$('#scheme_image_disc_tp').val()) {
+                swal('Missing Information', 'Please provide scheme image also', 'warning');
+                return;
+            }
+        } else {
+            if (!$('#scheme_image_gift').val()) {
                 swal('Missing Information', 'Please provide scheme image also', 'warning');
                 return;
             }
@@ -55,10 +67,12 @@ $(document).ready(function() {
                     $('#DataTables_Table_1_filter').hide();
                     $('.dataTables_length').hide();
                     $('#discountOnTpDetailsModalBody').hide();
+                    $('#giftCampaignDetailsModalBody').hide();
                     $('#schemeOfferDetailsModalBody').fadeIn();
                     $('#myModal').modal('show');
-                } else {
+                } else if (response.scheme_type == "2") {
                     $('#schemeOfferDetailsModalBody').hide();
+                    $('#giftCampaignDetailsModalBody').hide();
                     $('#discountOnTpDetailsModalBody').fadeIn();
                     $('#myModal').modal('show');
                     response.data['packaging_price_each_discounted'] = parseInt(response.data["packaging_price_each"]) - (parseInt(response.data['containing_quantity']) * parseInt(response.data['discount_on_tp_pkr']));
@@ -74,6 +88,17 @@ $(document).ready(function() {
                     $('#savings_on_scheme').text('Rs. ' + numberWithCommas(response.data["savings_on_scheme"]));
                     $('#actual_bill_quantity_package').text(response.data["minimum_quantity_for_eligibility"] + " " + response.data["packaging"]);
                     $('#each_packaging_price').text(response.data["unit_short_name"]);
+                } else {
+                    $('#schemeOfferDetailsModalBody').hide();
+                    $('#giftCampaignDetailsModalBody').fadeIn();
+                    $('#discountOnTpDetailsModalBody').hide();
+                    $('#myModal').modal('show');
+                    $('#minimum_quantity_for_eligibility_gift').text(response.data["minimum_quantity_for_eligibility"] + " " + response.data["packaging"]);
+                    $('#actual_bill_gift').text('Rs. ' + numberWithCommas(response.data["packaging_price_total"]));
+                    $('#actual_bill_quantity_package_gift').text(response.data["minimum_quantity_for_eligibility"] + " " + response.data["packaging"]);
+                    $('#gift_price').text('Rs. ' + numberWithCommas(response.data["offered_gift_price"]));
+                    $('#each_packaging_price_gift').text(response.data["unit_short_name"]);
+                    $('#price_of_each_packaging_gift').text('Rs. ' + (response.data["packaging_price_total"] - response.data["offered_gift_price"]) / response.data["minimum_quantity_for_eligibility"]);
                 }
             }
         })

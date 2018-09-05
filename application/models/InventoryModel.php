@@ -7,7 +7,27 @@ class InventoryModel extends CI_Model{
 	}
 
 	public function get_inventory_sku_wise(){
-		return $this->db->select('item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail')->get("inventory_items it")->result();
+		return $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it limit 0, 12')->result();
+	}
+
+	public function get_inventory_sku_wise_for_gallery(){
+		return array("data" => $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it limit 0, 12')->result(), "total_records" => $this->db->query("SELECT IFNULL(count(*), 0) as totalRecords from inventory_items")->row()->totalRecords);
+	}
+
+	public function getSearchedInventory($searchQuery){
+		$results = $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where LOWER(item_sku) LIKE "%'.$searchQuery.'%"')->result();
+		if(!$results){
+			$newResults = $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where LOWER(item_name) LIKE "%'.$searchQuery.'%"')->result();
+			if(!$newResults){
+				return $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where LOWER(item_main_description) LIKE "%'.$searchQuery.'%"')->result();
+			}
+			return $newResults;
+		}
+		return $results;
+	}
+
+	public function get_inventory_sku_wise_paginated($startLimit){
+		return $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it limit '.$startLimit.', 12')->result();
 	}
 
 	public function RemoveDistributorStock($prefId){
@@ -22,6 +42,21 @@ class InventoryModel extends CI_Model{
 		}else{
 			return $this->db->query('INSERT INTO `distributor_stock`(`pref_id`, `stock`, `distributor_id`) VALUES ('.$prefId.', '.$quantity.', (SELECT distributor_id from admin_session where session = "'.$this->session->userdata("session").'"))');
 		}
+	}
+
+	public function UpdateBulkTradePrice($prefId, $price){
+		return $this->db->where('pref_id',$prefId)->update('inventory_preferences', array('item_trade_price' => $price));
+	}
+
+	public function getInventoryForBulkTradePriceUpdate(){
+		return $this->db->select('pref_id, item_barcode, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, (SELECT item_sku from inventory_items where item_id = ip.item_id) as item_sku, item_trade_price')->get("inventory_preferences ip")->result();
+	}
+
+	public function updateInventoryCore($skuId, $name, $sku, $desc){
+		if($this->db->where('item_sku = "'.$sku.'" and item_id != '.$skuId)->get('inventory_items')->row())
+			return "Exist";
+		
+		return $this->db->where('item_id', $skuId)->update('inventory_items', array('item_name' => $name, 'item_sku' => $sku, 'item_main_description' => $desc));
 	}
 
 	public function getInventoryForDistributorStockManagement(){

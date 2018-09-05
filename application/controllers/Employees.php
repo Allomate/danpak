@@ -17,8 +17,21 @@ class Employees extends WebAuth_Controller {
 
 	public function DailyRouting()
 	{
-		echo "<pre>"; print_r($this->em->getDailyRouteData());die;
-		return $this->load->view('Employee/DailyRouting', ['routing'=>$this->em->getDailyRouteData()]);
+		// echo "<pre>"; print_r($this->em->getDailyRouteData());die;
+		$employeesList = $this->em->getDailyRouteData();
+		$loopCounter = 0;
+		foreach($employeesList as $employees){
+			$employeesNewList = explode(",", $employees->employees);
+			$employeesList[$loopCounter]->total_employees = sizeOf(array_unique($employeesNewList));
+			$loopCounter++;
+		}
+		return $this->load->view('Employee/EmployeesListRouting', ['routing'=> $employeesList]);
+	}
+
+	public function CompleteEmployeeRoutingList($routingDate)
+	{
+		// echo "<pre>"; print_r($this->em->getCompleteRoutingData($routingDate));die;
+		return $this->load->view('Employee/DailyRouting', ['routing'=>$this->em->getCompleteRoutingData($routingDate)]);
 	}
 
 	public function GetDailyRouteLatLongsAjax(){

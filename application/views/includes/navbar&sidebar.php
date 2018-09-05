@@ -154,6 +154,9 @@
 					<a href="<?= base_url('Inventory/ListInventory'); ?>">Update Product</a>
 				</li>
 				<li>
+					<a href="<?= base_url('Inventory/UpdateCentralizedTradePrice'); ?>">Centralized Trade Price</a>
+				</li>
+				<li>
 					<a href="<?= base_url('Inventory/ProductGallery'); ?>">Product Gallery</a>
 				</li>
 				<li>

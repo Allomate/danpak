@@ -9,6 +9,14 @@ $(document).ready(function() {
         });
     }
 
+    $('#viewAssigns').click(function() {
+        if (!retailersAddedForAssignment.length) {
+            alert('Please assign retailers');
+            return;
+        }
+        $('#myModal').modal('show');
+    });
+
     var table = $('.table').DataTable();
 
     $('.dataTables_wrapper').hide();
@@ -123,7 +131,6 @@ $(document).ready(function() {
                 url: "/Retailers/GetReportingTso",
                 success: function(response) {
                     var response = JSON.parse(response);
-                    debugger;
                     $('select[name="tso"]').empty();
                     // $('select[name="orderBooker"]').empty();
                     if (!response.length) {
@@ -221,7 +228,7 @@ $(document).ready(function() {
     $('#addRetailersAssignmentsButton').click(function() {
         if (!$('#territoryRadio').is(':checked')) {
             if (!retailersAddedForAssignment.length) {
-                alert('Please add distributors');
+                alert('Please add retailers');
                 return;
             }
         }
@@ -245,7 +252,7 @@ $(document).ready(function() {
     $('#updateRetailersAssignmentsButton').click(function() {
         if (!$('#territoryRadio').is(':checked')) {
             if (!retailersAddedForAssignment.length) {
-                alert('Please add distributors');
+                alert('Please add retailers');
                 return;
             }
         }
@@ -259,7 +266,7 @@ $(document).ready(function() {
         retailersAddedForAssignment = jQuery.grep(retailersAddedForAssignment, function(value) {
             return value != retailerId;
         });
-        $(this).parent().parent().remove();
+        $(this).parent().remove();
         $('#retailersForAssignments').val(retailersAddedForAssignment.join(","));
 
         table.rows().every(function(rowIdx, tableLoop, rowLoop) {
@@ -282,7 +289,8 @@ $(document).ready(function() {
         }
         var thisRef = $(this);
         var retailerName = $.trim($(this).parent().parent().find('td:eq(0)').text());
-        $('#addedAssignmentsList').append('<li style="margin-top: 10px"><div><input type="text" value="' + retailerName + '" class="form-control" style="width: 70%; display: inline; height: 50px" disabled="disabled"><a type="button" class="btn btn-cancel removeAddedAssignment" id="' + retailerId + '">Remove</a></div></li>');
+
+        $('#addedAssignmentsList').append('<li style="padding: 20px 10px; background: #fbf9f9; margin-bottom: 10px"><span style="width: 75%; display: inline-block;">' + retailerName + '</span><a style="width: 20%; display: inline-block; text-align: right; cursor: pointer" class="removeAddedAssignment" id="' + retailerId + '"><i class="fa fa-close"></i></a></li>');
         retailersAddedForAssignment.push(retailerId);
         $('#retailersForAssignments').val(retailersAddedForAssignment.join(","));
         $(this).css('background-color', 'green');
@@ -294,7 +302,7 @@ $(document).ready(function() {
             alert("Username already exists");
             return;
         }
-        if ($('input[name="distributor_username"]').val() == "" || $('input[name="distributor_password"]').val() == "" || $('input[name="retailer_city"]').val() == "" || $('textarea[name="retailer_address"]').val() == "" || !addedEmployees.length) {
+        if ($('input[name="distributor_username"]').val() == "" || $('input[name="distributor_password"]').val() == "" || $('input[name="retailer_city"]').val() == "" || $('textarea[name="retailer_address"]').val() == "") {
             alert('Please provide all the information with (*) label and assign employees');
             return;
         }
@@ -309,7 +317,7 @@ $(document).ready(function() {
             alert("Username already exists");
             return;
         }
-        if ($('input[name="distributor_username"]').val() == "" || $('input[name="distributor_password"]').val() == "" || $('input[name="retailer_city"]').val() == "" || $('textarea[name="retailer_address"]').val() == "" || !addedEmployees.length) {
+        if ($('input[name="distributor_username"]').val() == "" || $('input[name="distributor_password"]').val() == "" || $('input[name="retailer_city"]').val() == "" || $('textarea[name="retailer_address"]').val() == "") {
             alert('Please provide all the information with (*) label and assign employees');
             return;
         }

@@ -174,9 +174,7 @@
 									<div class="col-md-12">
 										<div class="form-group">
 											<label class="control-label mb-10">Distributor Address*</label>
-											<textarea type="text" name="retailer_address" class="form-control" placeholder="Enter Address" rows="5">
-												<?= $Retailer->retailer_address; ?>
-											</textarea>
+											<textarea type="text" name="retailer_address" class="form-control" placeholder="Enter Address" rows="5"><?= $Retailer->retailer_address; ?></textarea>
 											<?= form_error('retailer_address', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 										</div>
 									</div>

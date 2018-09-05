@@ -83,8 +83,13 @@ class EmployeesModel extends CI_Model
 
     public function getDailyRouteData()
     {
-        // return $this->db->select('(SELECT employee_username from employees_info where employee_id = vm.employee_id) as employee_username, (SELECT retailer_name from retailers_details where id = vm.retailer_id) as retailer_name, DATE(created_at) as route_date, employee_id')->group_by('DATE(created_at)')->get('visits_marked vm')->result();
-        return $this->db->select('DATE(created_at), count(employee_id) as total_employees')->group_by('DATE(created_at)')->get('visits_marked vm')->result();
+        $this->db->query("SET SESSION group_concat_max_len = 1000000");
+        return $this->db->select('DATE(created_at) as date, GROUP_CONCAT(employee_id) as employees')->group_by('DATE(created_at)')->get('visits_marked vm')->result();
+    }
+
+    public function getCompleteRoutingData($routeDate)
+    {
+        return $this->db->select('(SELECT employee_username from employees_info where employee_id = vm.employee_id) as employee_username, (SELECT retailer_name from retailers_details where id = vm.retailer_id) as retailer_name, DATE(created_at) as route_date, employee_id')->where('DATE(created_at) = "'.$routeDate.'"')->group_by('employee_id')->get('visits_marked vm')->result();
     }
 
     public function GetLatLongsForDailyRouting($routeData)

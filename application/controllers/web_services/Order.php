@@ -2,7 +2,8 @@
 
 header('Content-Type: application/json');
 
-class Order extends Web_Services_Controller{
+class Order extends Web_Services_Controller
+{
 
 	public function __construct(){
 		parent::__construct();

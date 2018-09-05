@@ -21,14 +21,12 @@
 							<table class="table table-hover display  pb-30">
 								<thead>
 									<tr>
-										<th>Date</th>
 										<th>Employee Username</th>
 										<th>Actions</th>
 									</tr>
 								</thead>
 								<tfoot>
 									<tr>
-										<th>Date</th>
 										<th>Employee Username</th>
 										<th>Actions</th>
 									</tr>
@@ -36,9 +34,6 @@
 								<tbody>
 									<?php foreach ($routing as $route): ?>
 									<tr>
-										<td>
-											<?=$route->route_date;?>
-										</td>
 										<td>
 											<?=$route->employee_username;?>
 										</td>
@@ -75,6 +70,7 @@
 		</div>
 	</div>
 	<input type="text" value="<?=base_url('Employees/GetDailyRouteLatLongsAjax');?>" id="getLatLongs" hidden>
+	<input type="text" value="<?= $this->uri->segment(3) ;?>" id="currDate" hidden>
 </div>
 <?php require_once APPPATH . '/views/includes/footer.php';?>
 <script>
@@ -90,21 +86,33 @@
 			stations = [];
 			directionsService = new google.maps.DirectionsService();
 			var empId = $(this).attr('id');
-			var currDate = $(this).parent().parent().find('td:eq(0)').text();
 			$.ajax({
 				type: 'POST',
 				url: $('#getLatLongs').val(),
 				data: {
 					employee_id: empId,
-					curr_date: currDate
+					curr_date: $('#currDate').val()
 				},
 				success: function (response) {
 					var response = JSON.parse(response);
+					if (!response.data.length) {
+						alert("No data found/LatLong incorrect");
+						return;
+					}
 					var completeLocations = [];
 					var latRepeated = [];
 					var lngRepeated = [];
 					var repeatCounter = 0;
-					for (var i = 0; i < response.data.length; i++) {
+
+					if (response.attendance != null) {
+						completeLocations.push([parseFloat(response.attendance.route_lats), parseFloat(response.attendance.route_longs),
+							"", ""
+						]);
+					} else {
+						completeLocations.push(["", "", "", ""]);
+					}
+
+					for (var i = 0; i < (response.data.length); i++) {
 						if (jQuery.inArray(response.data[i].route_lats, latRepeated) != -1) {
 							if (lngRepeated[jQuery.inArray(response.data[i].route_lats, latRepeated)] == response.data[i].route_longs) {
 								repeatCounter++;
@@ -113,31 +121,23 @@
 						}
 						latRepeated.push(response.data[i].route_lats);
 						lngRepeated.push(response.data[i].route_longs);
+
+						completeLocations.push([parseFloat(response.data[i].route_lats), parseFloat(response.data[i].route_longs),
+							response.data[i].took_order, response.data[i].retailer_name
+						]);
+
 						if (i == 0) {
-							if (response.attendance != null) {
-								completeLocations.push([parseFloat(response.attendance.route_lats), parseFloat(response.attendance.route_longs),
-									"", ""
-								]);
-							} else {
-								completeLocations.push(["", "", "", ""]);
-							}
-						} else if (i == (response.data.length - 1)) {
-							if (response.shift_end != null) {
-								completeLocations.push([parseFloat(response.shift_end.route_lats), parseFloat(response.shift_end.route_longs),
-									"", ""
-								]);
-							} else {
-								completeLocations.push(["", "", "", ""]);
-							}
-						} else {
-							completeLocations.push([parseFloat(response.data[i].route_lats), parseFloat(response.data[i].route_longs),
-								response.data[i].took_order, response.data[i].retailer_name
-							]);
-						}
-						if (i == 1) {
 							centerLat = parseFloat(response.data[i].route_lats);
 							centerLng = parseFloat(response.data[i].route_longs);
 						}
+					}
+
+					if (response.shift_end != null) {
+						completeLocations.push([parseFloat(response.shift_end.route_lats), parseFloat(response.shift_end.route_longs),
+							"", ""
+						]);
+					} else {
+						completeLocations.push(["", "", "", ""]);
 					}
 
 					for (var i = 0; i < completeLocations.length; i++) {
@@ -148,6 +148,7 @@
 							took_order: completeLocations[i][2]
 						});
 					}
+
 					initMap();
 				}
 			});
@@ -158,7 +159,7 @@
 	function initMap() {
 		var service = new google.maps.DirectionsService;
 		var map = new google.maps.Map(document.getElementById('map'), {
-			zoom: 18
+			zoom: 13
 		});
 
 		// Zoom and center map automatically by stations (each station will be in visible map area)
@@ -175,48 +176,52 @@
 			north: Math.min.apply(null, lats),
 			south: Math.max.apply(null, lats),
 		});
+
 		// Show stations on the map as markers
+		if (stations[0].lat && stations[0].lng) {
+			new google.maps.Marker({
+				position: stations[0],
+				map: map,
+				icon: "/assets/images/shift-start-resize.svg",
+				animation: google.maps.Animation.DROP,
+				title: "Shift Start"
+			});
+		}
+
 		for (var i = 0; i < stations.length; i++) {
-			if (i == 0) {
+			if (stations[i].took_order == "1") {
 				new google.maps.Marker({
 					position: stations[i],
 					map: map,
-					icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+					icon: "/assets/images/productive-retailers-resize.svg",
 					animation: google.maps.Animation.DROP,
-					title: "Attendance Location"
-				});
-			} else if (i == (stations.length - 1)) {
-				new google.maps.Marker({
-					position: stations[i],
-					map: map,
-					icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-					animation: google.maps.Animation.DROP,
-					title: "Shift End"
+					title: stations[i].name
 				});
 			} else {
-				if (stations[i].took_order == "1") {
-					new google.maps.Marker({
-						position: stations[i],
-						map: map,
-						icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-						animation: google.maps.Animation.DROP,
-						title: stations[i].name
-					});
-				} else {
-					new google.maps.Marker({
-						position: stations[i],
-						map: map,
-						icon: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png",
-						animation: google.maps.Animation.DROP,
-						title: stations[i].name
-					});
-				}
+				new google.maps.Marker({
+					position: stations[i],
+					map: map,
+					icon: "/assets/images/non-productive-retailers.svg",
+					animation: google.maps.Animation.DROP,
+					title: stations[i].name
+				});
 			}
 		}
 
+		if (stations[(stations.length - 1)].lat && stations[(stations.length - 1)].lng) {
+			new google.maps.Marker({
+				position: stations[(stations.length - 1)],
+				map: map,
+				icon: "/assets/images/shift-end-resize.svg",
+				animation: google.maps.Animation.DROP,
+				title: "Shift End"
+			});
+		}
+
 		// Divide route to several parts because max stations limit is 25 (23 waypoints + 1 origin + 1 destination)
-		for (var i = 0, parts = [], max = 25 - 1; i < stations.length; i = i + max)
+		for (var i = 0, parts = [], max = 25 - 1; i < stations.length; i = i + max) {
 			parts.push(stations.slice(i, i + max + 1));
+		}
 
 		// Service callback to process service results
 		var service_callback = function (response, status) {
@@ -244,12 +249,37 @@
 				});
 			// Service options
 			$('#myModal').modal('show');
-			var service_options = {
-				origin: parts[i][0],
-				destination: parts[i][parts[i].length - 1],
-				waypoints: waypoints,
-				travelMode: 'WALKING'
-			};
+			if (parts[i][parts[i].length - 1].lat && parts[i][parts[i].length - 1].lng && parts[i][0].lat && parts[i][0].lng) {
+				var service_options = {
+					origin: parts[i][0],
+					destination: parts[i][parts[i].length - 1],
+					waypoints: waypoints,
+					travelMode: google.maps.DirectionsTravelMode.DRIVING
+				};
+			} else {
+				if (parts[i][0].lat && parts[i][0].lng) {
+					var service_options = {
+						origin: parts[i][0],
+						destination: parts[i][parts[i].length - 2],
+						waypoints: waypoints,
+						travelMode: google.maps.DirectionsTravelMode.DRIVING
+					};
+				} else if (parts[i][parts[i].length - 1].lat && parts[i][parts[i].length - 1].lng) {
+					var service_options = {
+						origin: parts[i][1],
+						destination: parts[i][parts[i].length - 1],
+						waypoints: waypoints,
+						travelMode: google.maps.DirectionsTravelMode.DRIVING
+					};
+				} else {
+					var service_options = {
+						origin: parts[i][1],
+						destination: parts[i][parts[i].length - 2],
+						waypoints: waypoints,
+						travelMode: google.maps.DirectionsTravelMode.DRIVING
+					};
+				}
+			}
 			// Send request
 			service.route(service_options, service_callback);
 		}

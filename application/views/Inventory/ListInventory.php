@@ -22,22 +22,6 @@
 				</div>
 			</div>
 			<?php endif; ?>
-			<?php if ($feedback = $this->session->flashdata('inventory_updated')) : ?>
-			<div class="row" style="margin-top: 20px;">
-				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
-					<strong>Updated</strong>
-					<?= $feedback; ?>
-				</div>
-			</div>
-			<?php endif; ?>
-			<?php if ($feedback = $this->session->flashdata('inventory_update_failed')) : ?>
-			<div class="row" style="margin-top: 20px;">
-				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
-					<strong>Failed</strong>
-					<?= $feedback; ?>
-				</div>
-			</div>
-			<?php endif; ?>
 			<?php if ($feedback = $this->session->flashdata('inventory_delete_failed')) : ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">

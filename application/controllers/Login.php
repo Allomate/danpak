@@ -16,7 +16,7 @@ class Login extends CI_Controller
     }
 
     public function index()
-    {asd
+    {
         return $this->load->view('login');
     }
 

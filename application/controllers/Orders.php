@@ -132,6 +132,28 @@ class Orders extends WebAuth_Controller{
 		return redirect('Orders/UpdateOrder/'.$orderId);
 	}
 
+	public function UpdateOrderStatus($orderId, $status){
+		if(strtolower($status) == "processed"){
+			if ($this->om->ProcessOrder($orderId)) :
+				echo "success";
+			else:
+				echo "failed";
+			endif;
+		}else if(strtolower($status) == "completed"){
+			if ($this->om->CompleteOrder($orderId)) :
+				echo "success";
+			else:
+				echo "failed";
+			endif;
+		}else if(strtolower($status) == "cancelled"){
+			if ($this->om->CancelOrder($orderId)) :
+				echo "success";
+			else:
+				echo "failed";
+			endif;
+		}
+	}
+
 	public function ProcessOrder($employee_id, $date, $status, $orderId){
 		if ($this->om->ProcessOrder($orderId)) :
 			$this->session->set_flashData('order_processed', 'Order has been processed successfully');

@@ -120,7 +120,8 @@
 											<label for="territoryRadio" class="lab-large"> Assign Distributors by Territory</label>
 											<br>
 											<small>
-												<strong>Caution</strong> Updating the distribors using Territory will remove all the existing assignments of this employee</small>
+												<strong>Caution</strong> Updating the distribors using Territory will remove all the existing assignments
+												of this employee</small>
 										</div>
 										<div id="checkbox-circle001">
 											<div class="row">
@@ -142,21 +143,37 @@
 								</div>
 								<br>
 								<div class="row">
-									<div class="col-md-6">
-										<label class="control-label mb-10">Distributors Added</label>
-										<ul style="list-style: none; padding: 0px" id="addedAssignmentsList">
-											<?php 
-											$retailerIds = array();
-											foreach($RetailersAssignment["details"] as $retailer) : ?>
-											<li style="margin-top: 10px">
-												<div>
-													<input type="text" value="<?= $retailer->retailer_name ?> " class="form-control" style="width: 70%; display: inline; height: 50px"
-													disabled="disabled">
-													<button type="button" class="btn btn-danger removeAddedAssignment" id="<?= $retailer->id; ?>">Remove</button>
+									<div class="col-md-12" id="viewAssigns" style="text-align: center; cursor: pointer">
+										<span style="font-weight: bold">VIEW ASSIGNMENTS</span>
+									</div>
+									<div id="myModal" class="modal fade" role="dialog">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal">&times;</button>
+													<h4 class="modal-title">Assignments</h4>
 												</div>
-											</li>
-											<?php $retailerIds[] = $retailer->id; endforeach; ?>
-										</ul>
+												<div class="modal-body">
+													<ul style="list-style: none; padding: 0px; max-height: 50vh; overflow: auto;" id="addedAssignmentsList">
+														<?php $retailerIds = array();
+														foreach($RetailersAssignment["details"] as $retailer) : ?>
+														<li style="padding: 20px 10px; background: #fbf9f9; margin-bottom: 10px">
+															<span style="width: 75%; display: inline-block;">
+																<?= $retailer->retailer_name ?>
+															</span>
+															<a style="width: 20%; display: inline-block; text-align: right; cursor: pointer" class="removeAddedAssignment"
+															id="<?= $retailer->id; ?>">
+																<i class="fa fa-close"></i>
+															</a>
+														</li>
+														<?php $retailerIds[] = $retailer->id; endforeach; ?>
+													</ul>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
 								<div class="row">
@@ -168,6 +185,8 @@
 														<tr>
 															<th>Distributor Name</th>
 															<th>Distributor Address</th>
+															<th>Distributor Type</th>
+															<th>Distributor Territory</th>
 															<th>Action</th>
 														</tr>
 													</thead>
@@ -179,6 +198,12 @@
 															</td>
 															<td>
 																<?= $retailer->retailer_address; ?>
+															</td>
+															<td>
+																<?= $retailer->retailer_type; ?>
+															</td>
+															<td>
+																<?= $retailer->retailer_territory; ?>
 															</td>
 															<td>
 																<?php if($retailer->assigned) : ?>
