@@ -23,7 +23,7 @@ class Order extends Web_Services_Controller
 	public function BookOrder(){
 		if ($GLOBALS['authentication']) :
 			$orderDetails = $this->input->post();
-			if (isset($orderDetails['retailer_id'], $orderDetails['booker_lats'], $orderDetails['booker_longs'], $orderDetails['pref_id'], $orderDetails['item_quantity_booker'], $orderDetails['booker_discount']) && ($orderDetails['within_radius'] == "0" || $orderDetails['within_radius'] == "1")) :
+			if (isset($orderDetails['retailer_id'], $orderDetails['booker_lats'], $orderDetails['booker_longs']) && ($orderDetails['within_radius'] == "0" || $orderDetails['within_radius'] == "1")) :
 				unset($orderDetails["api_secret_key"]);
 				$response = $this->ws->BookOrder($orderDetails);
 				if ($response == "Success") :

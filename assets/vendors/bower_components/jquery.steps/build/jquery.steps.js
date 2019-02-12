@@ -4,10 +4,15 @@
  * Licensed under MIT http://www.opensource.org/licenses/MIT
  */
 ;
+
+//This array is populated in UpdateCatalogue.php (view)
+var preferencesData;
 (function($, undefined) {
     var currentLayout = "create_catalogue";
     var catalogueAssignmentDataJson = new Object;
     var catalogueDataJson = new Object;
+    var pref_ids = [];
+    var pref_names = [];
     $.fn.extend({
         _aria: function(name, value) {
             return this.attr("aria-" + name, value);
@@ -728,7 +733,7 @@
                     updateCreateCatalogueData();
                     currentLayout = "select_product";
                 } else if (currentLayout == "select_product") {
-                    updateSelectedProductsForCatalogue();
+                    updateSelectedProductsForCatalogue(pref_ids, pref_names);
                     if (!catalogueDataJson.pref_ids) {
                         alert("Please select atleast one product");
                         return;
@@ -1176,7 +1181,8 @@
                 updateCreateCatalogueData();
                 currentLayout = "select_product";
             } else if (position == "2") {
-                updateSelectedProductsForCatalogue();
+
+                updateSelectedProductsForCatalogue(pref_ids, pref_names);
                 if (!catalogueDataJson.pref_ids) {
                     alert("Please select atleast one product");
                     return;
@@ -1224,8 +1230,8 @@
     }
 
     function updateCreateCatalogueData() {
-        var select = document.getElementById('inventory_items');
-        multi(select);
+        // var select = document.getElementById('inventory_items');
+        // multi(select);
         catalogueDataJson.catalogue_name = $('#catalogue_name').val();
         catalogueAssignmentDataJson.active_till = $('#active_till').val();
         catalogueAssignmentDataJson.active_from = $('#active_from').val();
@@ -1235,17 +1241,19 @@
     }
 
     function prePopulateProductsListForUpdateCatalogue() {
-        var prefIdsAdded = $('input[name="productsAddedList"]').val().split(",");
-        $('#productsDiv .selected-wrapper').empty();
-        for (var i = 0; i < prefIdsAdded.length; i++) {
-            $('#productsDiv .non-selected-wrapper a').each(function() {
-                var dataValue = parseInt($(this).attr('data-value'));
-                if (dataValue == prefIdsAdded[i]) {
-                    $(this).addClass('selected');
-                    $('#productsDiv .selected-wrapper').append('<a tabindex="0" class="item selected" role="button" data-value="' + prefIdsAdded[i] + '" multi-index="' + $(this).attr('multi-index') + '">' + $(this).text() + '</a>');
-                }
-            });
-        }
+        var prefIdsTemp = [];
+        var prefNamesTemp = [];
+        $('#prodsListAdded').empty();
+        var result = [];
+        for (var i in preferencesData)
+            result.push(preferencesData[i]);
+        result.forEach(element => {
+            $('#prodsListAdded').append('<a class="list-group-item list-group-item-action itemAdded" id="' + element['pref_id'] + '">' + element['item_name'] + '</a>');
+            prefIdsTemp.push(element['pref_id']);
+            prefNamesTemp.push(element['item_name']);
+        });
+        pref_ids = prefIdsTemp;
+        pref_names = prefNamesTemp;
     }
 
     function prePopulateEmployeesList() {
@@ -1260,7 +1268,12 @@
         });
     }
 
-    function updateSelectedProductsForCatalogue() {
+    function updateSelectedProductsForCatalogue(pref_ids, pref_names) {
+
+        catalogueDataJson.pref_ids = pref_ids.join(",");
+        catalogueDataJson.pref_names = pref_names.join("<>");
+        return;
+
         var pref_ids = [];
         var pref_names = [];
         $('#productsDiv .selected-wrapper a').each(function() {
@@ -1280,9 +1293,40 @@
         });
     }
 
-    function populateListForPrioritySettings() {
+    $(document).on('click', '.itemAdded', function() {
+        var prefId = $(this).attr('id');
+        pref_ids.splice(pref_ids.indexOf(prefId), 1);
+        $(this).remove();
+    });
 
-        var itemNames = catalogueDataJson.pref_names.split(",");
+    $(document).on('click', '.addItemToCatalogue', function() {
+
+        if (jQuery.inArray($(this).parent().parent().find('#unitForCatalogue').val(), pref_ids) !== -1) {
+            return;
+        }
+
+        pref_ids.push($(this).parent().parent().find('#unitForCatalogue').val());
+        pref_names.push($.trim($(this).parent().parent().find('td:eq(2)').text()) + ' (' + $.trim($(this).parent().parent().find('#unitForCatalogue option:selected').text()) + ')');
+
+        $('#prodsListAdded').append('<a class="list-group-item list-group-item-action itemAdded" id="' + $(this).parent().parent().find('#unitForCatalogue').val() + '">' + $.trim($(this).parent().parent().find('td:eq(2)').text()) + ' (' + $.trim($(this).parent().parent().find('#unitForCatalogue option:selected').text()) + ')' + '</a>');
+
+    });
+
+    $(document).on('click', '.removeFromCatalogue', function() {
+        pref_ids.push($(this).parent().parent().find('#unitForCatalogue').val());
+        pref_names.push($.trim($(this).parent().parent().find('td:eq(2)').text()) + ' (' + $.trim($(this).parent().parent().find('#unitForCatalogue option:selected').text()) + ')');
+    });
+
+    $(document).on('click', '#viewAddedProducts', function() {
+        if (!pref_ids.length) {
+            alert('Please add products first');
+            return;
+        }
+        $('#myModal').modal('show');
+    });
+
+    function populateListForPrioritySettings() {
+        var itemNames = catalogueDataJson.pref_names.split("<>");
         var itemIds = catalogueDataJson.pref_ids.split(",");
         $('.priorityListings').empty();
         for (var i = 0; i < itemIds.length; i++) {

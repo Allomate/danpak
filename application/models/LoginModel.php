@@ -7,7 +7,7 @@ class LoginModel extends CI_Model
     {
         if ($empData["login_type"] == "danpak") {
             unset($empData["login_type"]);
-			$data = $this->db->where(array('employee_username' => $empData["username"], 'employee_password' => $empData["password"]))->get("employees_info")->row();
+			$data = $this->db->where(array('employee_username' => $empData["username"], 'employee_password' => $empData["password"], 'status' => 1))->get("employees_info")->row();
 			if ($data):
 				if(!$this->db->where('admin_id', $data->employee_id)->get("access_rights")->row()){
 					return false;

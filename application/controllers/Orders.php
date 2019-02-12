@@ -6,6 +6,7 @@ class Orders extends WebAuth_Controller{
 		parent::__construct();
 		$this->load->model('EmployeesModel', 'em');
 		$this->load->model('OrdersModel', 'om');
+		$this->load->model('CampaignModel', 'cam');
 		$this->load->model('InventoryModel', 'im');
 	}
 
@@ -19,17 +20,32 @@ class Orders extends WebAuth_Controller{
 	}
 
 	public function ListOrdersIndividual($employee, $date, $status){
-		// echo "<pre>"; print_r($this->om->getAllOrders($employee, urldecode($date), strtolower($status)));die;
-		return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrders($employee, urldecode($date), strtolower($status)) ]);
+		return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrders($employee, urldecode($date), strtolower($status)), 'inventory' => $this->im->get_inventory_sku_wise() ]);
 	}
 
 	public function ListOrdersIndividualAgainstRetailer($employee, $date, $retailer_id){
 		return $this->load->view('Order/ListOrders_individual', [ 'Orders' => $this->om->getAllOrdersAgainstRetailer($employee, urldecode($date), $retailer_id) ]);
 	}
 
+	public function GetUnits($itemId, $orderId){
+		echo json_encode($this->im->GetUnitNamesForSkuWithRetDiscount($itemId, $orderId));
+	}
+
+	public function GetPriceForThisVariant($itemId, $unitId, $orderId){
+		echo json_encode($this->im->GetVariantPrice($itemId, $unitId, $orderId));
+	}
+
 	public function UpdateOrder($orderId){
-		// echo "<pre>"; print_r($this->om->getSingleOrder($orderId));die;
+		echo "<pre>"; print_r($this->om->getSingleOrder($orderId)); die;
 		return $this->load->view('Order/UpdateOrder', [ 'Order' => $this->om->getSingleOrder($orderId), 'Inventory' => $this->im->get_inventory_for_this_order($orderId) ]);
+	}
+
+	public function UpdateOrderAjax($orderId){
+		echo json_encode( [ 'Order' => $this->om->getSingleOrder($orderId) ] );
+	}
+
+	public function CommitOrderChanges(){
+		echo json_encode($this->om->UpdateStockOrder($this->input->post('removed'), $this->input->post('existing'), $this->input->post('new')));
 	}
 
 	public function BookingSheet($employee, $date, $status){
@@ -43,7 +59,7 @@ class Orders extends WebAuth_Controller{
 
 	public function ManualOrders(){
 		// echo "<pre>"; print_r($this->em->get_employees_list());die;
-		return $this->load->view('Order/ManualOrderCreation', [ 'employees' => $this->em->get_employees_list(), 'inventorySku' => $this->im->get_inventory_sku_wise() ]);
+		return $this->load->view('Order/ManualOrderCreation', [ 'employees' => $this->em->get_employees_list(), 'inventorySku' => $this->im->get_inventory_sku_wise(), 'campaigns' => $this->cam->getAllCampaigns() ]);
 	}
 
 	public function GetRetailersForEmployeeAjax(){
@@ -58,9 +74,14 @@ class Orders extends WebAuth_Controller{
 		echo json_encode($this->om->GetDistDiscountForItem($this->input->post('pref_id'), $this->input->post('dist_id')));
 	}
 
+	public function GetDistDiscountForCampaign(){
+		echo json_encode($this->om->GetDistDiscountForCampaign($this->input->post('campaign_id'), $this->input->post('quantity'), $this->input->post('discount'), $this->input->post('dist_id')));
+	}
+
 	public function CreateManualOrders(){
 		$data = json_decode($this->input->post("finalResult"));
 		$visitStatus = $this->input->post("visit_status");
+		// echo "<pre>"; print_r($data);die;
 		$pref_id = "";
 		$item_quantity_booker = "";
 		$booker_discount = "";
@@ -68,20 +89,44 @@ class Orders extends WebAuth_Controller{
 		$retailer_id = 0;
 		$order_date = "";
 		foreach($data as $val) :
-			if($pref_id){
-				$pref_id .= ",".$val->pref_id;
-				$item_quantity_booker .= ",".$val->item_quantity_booker;
-				$booker_discount .= ",".$val->booker_discount;
-			}else{
-				$pref_id = $val->pref_id;
-				$item_quantity_booker = ($val->item_quantity_booker ? $val->item_quantity_booker : "0");
-				$booker_discount = ($val->booker_discount ? $val->booker_discount : "0");
+			if(isset($val->pref_id)){
+				if($pref_id){
+					$pref_id .= ",".$val->pref_id;
+					$item_quantity_booker .= ",".$val->item_quantity_booker;
+					$booker_discount .= ",".$val->booker_discount;
+				}else{
+					$pref_id = $val->pref_id;
+					$item_quantity_booker = ($val->item_quantity_booker ? $val->item_quantity_booker : "0");
+					$booker_discount = ($val->booker_discount ? $val->booker_discount : "0");
+				}
 			}
 			$order_date = $val->order_data;
 			$employee_id = $val->employee_id;
 			$retailer_id = $val->retailer_id;
 		endforeach;
-		$orderData = array("pref_id" => $pref_id, "item_quantity_booker" => $item_quantity_booker, "booker_discount" => $booker_discount, "employee_id" => $employee_id, 'order_date' => $order_date, 'retailer_id' => $retailer_id, 'visit_status' => $visitStatus);
+
+		$campaign_id = "";
+		$camp_item_quantity_booker = "";
+		$camp_booker_discount = "";
+		foreach($data as $val) :
+			if(isset($val->campaign_id)){
+				if($campaign_id){
+					$campaign_id .= ",".$val->campaign_id;
+					$camp_item_quantity_booker .= ",".$val->item_quantity_booker;
+					$camp_booker_discount .= ",".$val->booker_discount;
+				}else{
+					$campaign_id = $val->campaign_id;
+					$camp_item_quantity_booker = ($val->item_quantity_booker ? $val->item_quantity_booker : "0");
+					$camp_booker_discount = ($val->booker_discount ? $val->booker_discount : "0");
+				}
+			}
+			$order_date = $val->order_data;
+			$employee_id = $val->employee_id;
+			$retailer_id = $val->retailer_id;
+		endforeach;
+
+		$orderData = array("prefs" => array("pref_id" => $pref_id, "item_quantity_booker" => $item_quantity_booker, "booker_discount" => $booker_discount), "camps" => array("campaign_id" => $campaign_id, "camp_item_quantity_booker" => $camp_item_quantity_booker, "camp_booker_discount" => $camp_booker_discount), "employee_id" => $employee_id, 'order_date' => $order_date, 'retailer_id' => $retailer_id, 'visit_status' => $visitStatus);
+
 		if($this->om->BookOrderManualEntry($orderData) == "Success"){
 			$this->session->set_flashData('order_created', 'Order has been created successfully');
 		}else{

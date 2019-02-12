@@ -1,4 +1,4 @@
-<?php require_once(APPPATH.'/views/includes/header.php'); ?>
+<?php require_once APPPATH . '/views/includes/header.php';?>
 <style type="text/css">
 	#map {
 		height: 400px;
@@ -10,57 +10,57 @@
 	<div class="la-anim-1"></div>
 </div>
 <div class="wrapper theme-1-active">
-	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
+	<?php require_once APPPATH . '/views/includes/navbar&sidebar.php';?>
 	<div class="page-wrapper">
 		<div class="container-fluid">
-			<?php if ($feedback = $this->session->flashdata('territory_added')) : ?>
+			<?php if ($feedback = $this->session->flashdata('territory_added')): ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
 					<strong>Added</strong>
-					<?= $feedback; ?>
+					<?=$feedback;?>
 				</div>
 			</div>
-			<?php endif; ?>
-			<?php if ($feedback = $this->session->flashdata('territory_add_failed')) : ?>
+			<?php endif;?>
+			<?php if ($feedback = $this->session->flashdata('territory_add_failed')): ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
 					<strong>Failed</strong>
-					<?= $feedback; ?>
+					<?=$feedback;?>
 				</div>
 			</div>
-			<?php endif; ?>
-			<?php if ($feedback = $this->session->flashdata('territory_updated')) : ?>
+			<?php endif;?>
+			<?php if ($feedback = $this->session->flashdata('territory_updated')): ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
 					<strong>Updated</strong>
-					<?= $feedback; ?>
+					<?=$feedback;?>
 				</div>
 			</div>
-			<?php endif; ?>
-			<?php if ($feedback = $this->session->flashdata('territory_update_failed')) : ?>
+			<?php endif;?>
+			<?php if ($feedback = $this->session->flashdata('territory_update_failed')): ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
 					<strong>Failed</strong>
-					<?= $feedback; ?>
+					<?=$feedback;?>
 				</div>
 			</div>
-			<?php endif; ?>
-			<?php if ($feedback = $this->session->flashdata('territory_deleted')) : ?>
+			<?php endif;?>
+			<?php if ($feedback = $this->session->flashdata('territory_deleted')): ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
 					<strong>Deleted</strong>
-					<?= $feedback; ?>
+					<?=$feedback;?>
 				</div>
 			</div>
-			<?php endif; ?>
-			<?php if ($feedback = $this->session->flashdata('territory_delete_failed')) : ?>
+			<?php endif;?>
+			<?php if ($feedback = $this->session->flashdata('territory_delete_failed')): ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
 					<strong>Failed</strong>
-					<?= $feedback; ?>
+					<?=$feedback;?>
 				</div>
 			</div>
-			<?php endif; ?>
+			<?php endif;?>
 			<div class="row heading-bg">
 				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Territory Management</h2>
@@ -81,7 +81,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="box-white p-20">
-						<a href="<?= base_url('Territories/AddTerritory');?>" class="btn add-emp">
+						<a href="<?=base_url('Territories/AddTerritory');?>" class="btn add-emp">
 							<i class="fa fa-plus"> </i> New Territory</a>
 						<h2 class="m-b-0 less_600">Territories List </h2>
 						<div class="table-wrap">
@@ -104,29 +104,29 @@
 										</tr>
 									</tfoot>
 									<tbody>
-										<?php foreach ($Territories as $territory) : ?>
+										<?php foreach ($Territories as $territory): ?>
 										<tr>
 											<td>
-												<?= $territory->territory_name; ?>
+												<?=$territory->territory_name;?>
 											</td>
 											<td>
-												<?= $territory->territory_poc; ?>
+												<?=$territory->territory_poc;?>
 											</td>
 											<td>
-												<?= $territory->area_name; ?>
+												<?=$territory->area_name;?>
 											</td>
 											<td>
-												<a href="<?= base_url('Territories/UpdateTerritory/'.$territory->id); ?>">
+												<a href="<?=base_url('Territories/UpdateTerritory/' . $territory->id);?>">
 													<i class="fa fa-pencil"></i>
 												</a>
 												&nbsp;
-												<a class="deleteConfirmation" href="<?= base_url('Territories/DeleteTerritory/'.$territory->id); ?>">
+												<a class="deleteConfirmation" href="<?=base_url('Territories/DeleteTerritory/' . $territory->id);?>">
 													<i class="fa fa-close"></i>
 												</a>
-												<a class="view-report viewDetail" id="<?= $territory->id; ?>" style="cursor: pointer">View Detail</a>
+												<a class="view-report viewDetail" id="<?=$territory->id;?>" style="cursor: pointer">View Detail</a>
 											</td>
 										</tr>
-										<?php endforeach; ?>
+										<?php endforeach;?>
 									</tbody>
 								</table>
 							</div>
@@ -155,8 +155,8 @@
 		</div>
 	</div>
 </div>
-<input type="text" id="urlForAjaxCall" value="<?= base_url('Territories/ReturnMerchantsInTerritory'); ?>" hidden>
-<?php require_once(APPPATH.'/views/includes/footer.php'); ?>
+<input type="text" id="urlForAjaxCall" value="<?=base_url('Territories/ReturnMerchantsInTerritory');?>" hidden>
+<?php require_once APPPATH . '/views/includes/footer.php';?>
 <script type="text/javascript">
 	var retDets = [];
 	$(document).ready(function () {
@@ -219,7 +219,7 @@
 		for (var i = 0; i < retDets.length; i++) {
 			var contentString =
 				'<div class="content" style="background-color: white; padding: 10px; border-radius: 1em; width: 300px"><span style="font-weight: bold">' +
-				retDets[i].name + '</span><p>H#450/F-II, Jinnah St. Tench Bhatta, Rawalpindi</p></div>';
+				retDets[i].name + '</span></div>';
 
 			var infowindow = new google.maps.InfoWindow({
 				content: contentString
@@ -232,20 +232,16 @@
 				animation: google.maps.Animation.DROP
 			});
 
-			marker.addListener('click', function () {
-				infowindow.open(map, marker);
+			marker.infowindow = new google.maps.InfoWindow({
+				content: contentString
 			});
-
-			google.maps.event.addListener(marker, 'click', function (e) {
-				// infowindow.setContent(contentString);
-				infowindow.open(map, this);
+			google.maps.event.addListener(marker, 'click', function () {
+				this.infowindow.open(map, this);
 			}.bind(marker));
 		}
 
 	}
 
 </script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAap-vz0Ju0d3oO8eAhdwFfIvjaautw-eU">
-
-
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBn18w20jx4MkFCQ_UtR1rVbgLFZshuBsw">
 </script>

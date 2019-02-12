@@ -166,7 +166,12 @@
 										</tr>
 									</tfoot>
 									<tbody>
-										<?php $sno = 1; foreach ($RetailersAssignments as $assignment) : ?>
+										<?php $sno = 1; $assignArr = array(); foreach ($RetailersAssignments as $assignment) : 
+											$test = array_search($assignment->employee_id, array_column($assignArr, 'employee'));
+											$test2 = array_search($assignment->assigned_for_day, array_column($assignArr, 'day'));
+											if(array_search($assignment->employee_id, array_column($assignArr, 'employee')) !== false && array_search($assignment->assigned_for_day, array_column($assignArr, 'day')) !== false){
+												continue;
+											} ?>
 										<tr>
 											<td>
 												<?= $sno++; ?>
@@ -175,9 +180,8 @@
 												<?= $assignment->employee; ?>
 											</td>
 											<td>
-												<?= $assignment->total_distributors_assigned; ?>
-													<small class="viewCompleteDistributorsList" id="<?= $assignment->employee_id; ?>" style="font-weight: bold; cursor: pointer;">(VIEW)</small>
-													<input type="text" class="assignedDay" value="<?= $assignment->assigned_for_day; ?>" hidden/> </td>
+												<small class="viewCompleteDistributorsList" id="<?= $assignment->employee_id; ?>" style="font-weight: bold; cursor: pointer;">(VIEW)</small>
+												<input type="text" class="assignedDay" value="<?= $assignment->assigned_for_day; ?>" hidden /> </td>
 											<td>
 												<?= strtoupper($assignment->assigned_for_day); ?>
 											</td>
@@ -194,7 +198,7 @@
 												</a>
 											</td>
 										</tr>
-										<?php endforeach; ?>
+										<?php $assignArr[] = array('employee' => $assignment->employee_id, 'day' => $assignment->assigned_for_day); endforeach; ?>
 									</tbody>
 								</table>
 							</div>
@@ -208,12 +212,7 @@
 		<div id="myModal" class="modal fade" role="dialog">
 			<div class="modal-dialog" style="width:80%">
 				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Retailers</h4>
-					</div>
 					<div class="modal-body">
-
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -1,6 +1,6 @@
 <?php require_once(APPPATH.'/views/includes/header.php'); ?>
 <link href="<?= base_url('assets/vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css'); ?>" rel="stylesheet"
-type="text/css">
+ type="text/css">
 <div class="preloader-it">
 	<div class="la-anim-1"></div>
 </div>
@@ -205,7 +205,8 @@ type="text/css">
 									<span class="pull-right">85%</span>
 								</span>
 								<div class="progress mt-10 mb-25">
-									<div class="progress-bar progress-bar-info" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 85%" role="progressbar">
+									<div class="progress-bar progress-bar-info" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 85%"
+									 role="progressbar">
 										<span class="sr-only">85% Complete (success)</span>
 									</div>
 								</div>
@@ -214,7 +215,7 @@ type="text/css">
 								</span>
 								<div class="progress mt-10 mb-25">
 									<div class="progress-bar progress-bar-success" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 80%"
-									role="progressbar">
+									 role="progressbar">
 										<span class="sr-only">85% Complete (success)</span>
 									</div>
 								</div>
@@ -223,7 +224,7 @@ type="text/css">
 								</span>
 								<div class="progress mt-10 mb-25">
 									<div class="progress-bar progress-bar-danger" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 70%"
-									role="progressbar">
+									 role="progressbar">
 										<span class="sr-only">85% Complete (success)</span>
 									</div>
 								</div>
@@ -232,7 +233,7 @@ type="text/css">
 								</span>
 								<div class="progress mt-10 mb-25">
 									<div class="progress-bar progress-bar-inverse" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 45%"
-									role="progressbar">
+									 role="progressbar">
 										<span class="sr-only">85% Complete (success)</span>
 									</div>
 								</div>
@@ -241,7 +242,7 @@ type="text/css">
 								</span>
 								<div class="progress mt-10 mb-25">
 									<div class="progress-bar progress-bar-success" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%"
-									role="progressbar">
+									 role="progressbar">
 										<span class="sr-only">80% Complete (success)</span>
 									</div>
 								</div>
@@ -249,7 +250,8 @@ type="text/css">
 									<span class="pull-right">85%</span>
 								</span>
 								<div class="progress mt-10 mb-25">
-									<div class="progress-bar progress-bar-info" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 85%" role="progressbar">
+									<div class="progress-bar progress-bar-info" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 85%"
+									 role="progressbar">
 										<span class="sr-only">85% Complete (success)</span>
 									</div>
 								</div>
@@ -258,7 +260,7 @@ type="text/css">
 								</span>
 								<div class="progress mt-10 mb-25">
 									<div class="progress-bar progress-bar-success" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 80%"
-									role="progressbar">
+									 role="progressbar">
 										<span class="sr-only">85% Complete (success)</span>
 									</div>
 								</div>
@@ -267,7 +269,7 @@ type="text/css">
 								</span>
 								<div class="progress mt-10 mb-25">
 									<div class="progress-bar progress-bar-danger" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 70%"
-									role="progressbar">
+									 role="progressbar">
 										<span class="sr-only">85% Complete (success)</span>
 									</div>
 								</div>
@@ -276,7 +278,7 @@ type="text/css">
 								</span>
 								<div class="progress mt-10 mb-25">
 									<div class="progress-bar progress-bar-inverse" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 45%"
-									role="progressbar">
+									 role="progressbar">
 										<span class="sr-only">85% Complete (success)</span>
 									</div>
 								</div>
@@ -285,7 +287,7 @@ type="text/css">
 								</span>
 								<div class="progress mt-10">
 									<div class="progress-bar progress-bar-success" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%"
-									role="progressbar">
+									 role="progressbar">
 										<span class="sr-only">80% Complete (success)</span>
 									</div>
 								</div>
@@ -358,7 +360,8 @@ type="text/css">
 								<div class="progress-anim mt-5">
 									<div class="progress">
 										<div class="progress-bar progress-bar-info
-							wow animated progress-animated" role="progressbar" aria-valuenow="70.13" aria-valuemin="0" aria-valuemax="100"></div>
+							wow animated progress-animated" role="progressbar"
+										 aria-valuenow="70.13" aria-valuemin="0" aria-valuemax="100"></div>
 									</div>
 								</div>
 								<ul class="flex-stat mt-5">

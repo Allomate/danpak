@@ -3,7 +3,7 @@
 class CampaignModel extends CI_Model{
 
 	public function getAllCampaigns(){
-		return $this->db->select('`campaign_id`, `campaign_name`, `eligibility_criteria_pref_id`, `minimum_quantity_for_eligibility`, `item_given_free_pref_id`, `quantity_for_free_item`, `scheme_amount`, `price_discount_of_this_pref_id`, `scheme_type`, `created_at`')->get("campaign_management cm")->result();
+		return $this->db->select('`campaign_id`, `campaign_name`, `eligibility_criteria_pref_id`, `scheme_active`, `minimum_quantity_for_eligibility`, `item_given_free_pref_id`, `quantity_for_free_item`, `scheme_amount`, `price_discount_of_this_pref_id`, `scheme_type`, `created_at`')->get("campaign_management cm")->result();
 	}
 
 	public function add_campaign($campaignData){
@@ -24,8 +24,10 @@ class CampaignModel extends CI_Model{
 					->update('campaign_management', $campaignData);
 	}
 
-	public function delete_campaign($campaignId){
-		return $this->db->delete('campaign_management', array('campaign_id' => $campaignId)); 
+	public function deactivate_campaign($campaignId){
+		return $this->db
+				->where('campaign_id',$campaignId)	
+					->update('campaign_management', array('scheme_active' => 0));
     }
     
     public function getCampaignDetails($campaignId){

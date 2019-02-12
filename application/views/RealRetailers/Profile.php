@@ -58,7 +58,8 @@
 				</div>
 				<div class="col-md-6">
 					<div class="panel panel-default card-view pa-0 w-box-sec">
-						<img class="Store_img img-responsive" src="<?= base_url(str_replace('./', '', $retailer->retailer_image)); ?>" alt="" />
+						<img class="Store_img img-responsive" src="<?= base_url(str_replace('./', '', $retailer->retailer_image)); ?>"
+						 alt="" />
 					</div>
 				</div>
 				<div class="col-md-3">
@@ -283,12 +284,12 @@
 								<?php foreach($data["top_products"] as $products):?>
 								<span class="font-12 head-font txt-dark">
 									<?= $products->product; ?>
-										<span class="pull-right">
-											<?= $products->percent_value; ?>%</span>
+									<span class="pull-right">
+										<?= $products->percent_value; ?>%</span>
 								</span>
 								<div class="progress mt-5 mb-30">
-									<div class="progress-bar progress-bar-info" aria-valuenow="<?= $products->percent_value; ?>" aria-valuemin="0" aria-valuemax="100"
-									style="width: <?= $products->percent_value; ?>%" role="progressbar">
+									<div class="progress-bar progress-bar-info" aria-valuenow="<?= $products->percent_value; ?>" aria-valuemin="0"
+									 aria-valuemax="100" style="width: <?= $products->percent_value; ?>%" role="progressbar">
 										<span class="sr-only">
 											<?= $products->percent_value; ?>% Complete (success)</span>
 									</div>
@@ -389,6 +390,7 @@
 		from {
 			-webkit-transform: scale(0)
 		}
+
 		to {
 			-webkit-transform: scale(1)
 		}
@@ -398,6 +400,7 @@
 		from {
 			transform: scale(0)
 		}
+
 		to {
 			transform: scale(1)
 		}

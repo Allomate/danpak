@@ -4,6 +4,7 @@
 </div>
 <div class="wrapper theme-1-active">
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
+	<!-- Right Sidebar Menu -->
 	<div class="page-wrapper">
 		<div class="container-fluid">
 			<?php if ($feedback = $this->session->flashdata('order_updated')) : ?>
@@ -28,7 +29,6 @@
 				</div>
 				<div class="col-lg-6 col-md-6">
 					<ol class="breadcrumb">
-
 						<li>
 							<a href="#">
 								<span>Organization</span>
@@ -99,9 +99,10 @@
 												<?= $item['item_details']->after_discount; ?>
 											</td>
 											<td>
-												<input type="text" name="item_quantity_booker_existing_stocked" value="<?= $item['item_quantity_booker']; ?>" hidden>
-												<input class="form-control form-control-sm" name="item_quantity_booker_existing" type="number" placeholder="Quantity" min="1"
-												id="iqmasdas" value="<?= $item['item_quantity_booker']; ?>">
+												<input type="text" name="item_quantity_booker_existing_stocked" value="<?= $item['item_quantity_booker']; ?>"
+												 hidden>
+												<input class="form-control form-control-sm" name="item_quantity_booker_existing" type="number" placeholder="Quantity"
+												 min="1" id="iqmasdas" value="<?= $item['item_quantity_booker']; ?>">
 												<input name="item_id_existing" type="number" value="<?= $item['item_details']->pref_id; ?>" hidden>
 											</td>
 											<td>
@@ -128,7 +129,6 @@
 				</div>
 				</form>
 			</div>
-
 			<div class="row" style="margin-top: 20px">
 				<?php 
 			$attributes = array('id' => 'expandOrderForm');
@@ -194,8 +194,8 @@
 												<?= $inventory->item_quantity; ?>
 											</td>
 											<td>
-												<input class="form-control form-control-sm" name="booker_discount" type="number" placeholder="Discount" min="0" max="100"
-												style="width: 100%" value="0">
+												<input class="form-control form-control-sm" name="booker_discount" type="number" placeholder="Discount" min="0"
+												 max="100" style="width: 100%" value="0">
 											</td>
 											<td>
 												<button class="btn btn-sm btn-success addQuantityBtn" type="button" id="<?= $inventory->pref_id;?>">ADD</button>

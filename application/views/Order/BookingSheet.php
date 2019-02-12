@@ -61,24 +61,24 @@
 												<table class="table table-hover dataTable no-footer table-bordered">
 													<thead>
 														<tr>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">SN</th>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Retailer</th>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Address</th>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Phone</th>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Product</th>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Unit</th>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">TP</th>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Scheme</th>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Scheme Amount/Discount</th>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">DIS %</th>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Total</th>
-															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Status</th>
+															<th style="width: 20px; font-size: 7pt; font-family: tahoma; padding: 1px !important;">SN</th>
+															<th style="width: 100px; font-size: 7pt; font-family: tahoma; padding: 1px !important;">Retailer</th>
+															<th style="width: 110px; font-size: 7pt; font-family: tahoma; padding: 1px !important;">Address</th>
+															<th style="width: 90px; font-size: 7pt; font-family: tahoma; padding: 1px !important;">Product</th>
+															<th style="width: 50px; font-size: 7pt; font-family: tahoma; padding: 1px !important;">Unit</th>
+															<th style="width: 40px; font-size: 7pt; font-family: tahoma; padding: 1px !important;">TP</th>
+															<th style="width: 30px; font-size: 7pt; font-family: tahoma; padding: 1px !important;">QTY</th>
+															<th style="width: 40px; font-size: 7pt; font-family: tahoma; padding: 1px !important;">SCH DIS</th>
+															<th style="width: 40px; font-size: 7pt; font-family: tahoma; padding: 1px !important;">DIS%</th>
+															<th style="width: 40px; font-size: 7pt; font-family: tahoma; padding: 1px !important;">Total</th>
+															<th style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">Remarks</th>
 														</tr>
 													</thead>
 													<tbody>
-														<?php $sno = 1; foreach($details["results"] as $orders) : ?>
+														<?php $totalAm = 0; $sno = 1; foreach($details["results"] as $orders) : ?>
 														<tr>
-															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px; text-align: center" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px; text-align: center"
+															 rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
 																<?= $sno; ?>
 															</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
@@ -86,9 +86,6 @@
 															</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
 																<?= $orders["main_order"]->retailer_address; ?>
-															</td>
-															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px" rowspan="<?= sizeOf($orders['order_contents'])+2; ?>">
-																<?= $orders["main_order"]->retailer_phone; ?>
 															</td>
 														</tr>
 														<?php $subTotal = 0; foreach($orders['order_contents'] as $contents): ?>
@@ -103,13 +100,13 @@
 																<?= number_format($contents->trade_price);?>
 															</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
-																<?= $contents->scheme; ?>
+																<?= $contents->quantity; ?>
 															</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= $contents->scheme_amount_or_discount; ?>
 															</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
-																<?= $contents->booker_discount;?>
+																<?= $contents->booker_discount;?>%
 															</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px">
 																<?= number_format($contents->amount);?>
@@ -120,13 +117,21 @@
 														<?php $subTotal += $contents->amount; endforeach; ?>
 														<tr>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder; text-align: center"
-															colspan="5">Total Order Amount</td>
+															 colspan="5">Total Order Amount</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder">
 																<?= number_format($subTotal); ?>
 															</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important; padding: 5px"></td>
 														</tr>
-														<?php $sno++; endforeach; ?>
+														<?php $totalAm += $subTotal; $sno++; endforeach; ?>
+														<tr>
+															<td style="font-size: 9pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder; text-align: center"
+															 colspan="8">Total Amount</td>
+															<td style="text-align: center; font-size: 9pt; font-family: tahoma; padding: 1px !important; padding: 5px; font-weight: bolder"
+															 colspan="2">
+																<?= number_format($totalAm); ?>
+															</td>
+														</tr>
 													</tbody>
 												</table>
 												<br>
@@ -144,7 +149,7 @@
 														</tr>
 													</thead>
 													<tbody>
-														<?php $sno = 0; foreach ($delivChallan["data"] as $data): ?>
+														<?php $totalQuan = 0; $sno = 0; foreach ($delivChallan["data"] as $data): ?>
 														<tr>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important;">
 																<?= ++$sno; ?>
@@ -160,7 +165,16 @@
 															</td>
 															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important;"></td>
 														</tr>
-														<?php endforeach;?>
+														<?php $totalQuan += $data->required_stock; endforeach;?>
+														<tr>
+															<td colspan="3" style="text-align: center; font-weight: bolder; font-size: 9pt; font-family: tahoma; padding: 1px !important;">
+																Total Quantity
+															</td>
+															<td style="font-weight: bolder; font-size: 9pt; font-family: tahoma; padding: 1px !important;">
+																<?=$totalQuan;?>
+															</td>
+															<td style="font-size: 7pt; font-family: tahoma; padding: 1px !important;"></td>
+														</tr>
 													</tbody>
 												</table>
 												<div class="seprator-block"></div>

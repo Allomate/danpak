@@ -16,10 +16,12 @@ class Catalogue extends WebAuth_Controller{
 	}
 
 	public function CreateCatalogue(){
+		// echo "<pre>"; print_r($this->cm->GetAllInventory());die;
 		return $this->load->view('Catalogue/CreateCatalogue', [ 'inventoryList' => $this->cm->GetAllInventory(), 'Employees' => $this->em->get_employees_list(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ]);
 	}
 
 	public function UpdateCatalogue($catalogue_id){
+		echo "<pre>"; print_r($this->cm->GetSingleCatalogue($catalogue_id)); die;
 		return $this->load->view('Catalogue/UpdateCatalogue', [ 'inventoryList' => $this->cm->GetAllInventory(), 'CatalogueDetails' => $this->cm->GetSingleCatalogue($catalogue_id), 'Employees' => $this->em->get_employees_list(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ]);
 	}
 

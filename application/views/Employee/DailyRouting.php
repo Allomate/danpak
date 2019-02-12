@@ -188,12 +188,12 @@
 			});
 		}
 
-		for (var i = 0; i < stations.length; i++) {
+		for (var i = 1; i < (stations.length) - 1; i++) {
 			if (stations[i].took_order == "1") {
 				new google.maps.Marker({
 					position: stations[i],
 					map: map,
-					icon: "/assets/images/productive-retailers-resize.svg",
+					icon: "/assets/images/productive_retailers.svg",
 					animation: google.maps.Animation.DROP,
 					title: stations[i].name
 				});
@@ -201,7 +201,7 @@
 				new google.maps.Marker({
 					position: stations[i],
 					map: map,
-					icon: "/assets/images/non-productive-retailers.svg",
+					icon: "/assets/images/unvisit_retailers.svg",
 					animation: google.maps.Animation.DROP,
 					title: stations[i].name
 				});
@@ -288,4 +288,4 @@
 </script>
 
 <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script> -->
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAap-vz0Ju0d3oO8eAhdwFfIvjaautw-eU&callback=initMap"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBn18w20jx4MkFCQ_UtR1rVbgLFZshuBsw&callback=initMap"></script>

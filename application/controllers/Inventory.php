@@ -29,8 +29,34 @@ class Inventory extends WebAuth_Controller{
 		return $this->load->view('Inventory/DistributorStockManagement', [ 'Inventory' => $this->im->getInventoryForDistributorStockManagement() ]);
 	}
 
+	public function DeactivateInventory($itemId){
+		if ($this->im->deactivate($itemId)) :
+			$this->session->set_flashdata("deactivated", "Item has been deactivated successfully");
+		endif;
+		return redirect('Inventory/ListInventory');
+	}
+
+	public function ActivateInventory($itemId){
+		if ($this->im->activate($itemId)) :
+			$this->session->set_flashdata("activated", "Item has been activated successfully");
+		endif;
+		return redirect('Inventory/ListInventory');
+	}
+
+	public function StockManagement(){
+		return $this->load->view('Inventory/DanpakStockManagement', [ 'Inventory' => $this->im->getInventoryForDanpakStockManagement() ]);
+	}
+
 	public function AddDistributorStock(){
 		echo json_encode($this->im->UpdateDistributorStock($this->input->post("pref_id"), $this->input->post("quantity")));
+	}
+
+	public function UpdateDanpakStockInventory(){
+		echo json_encode($this->im->UpdateDanpakStock($this->input->post("pref_id"), $this->input->post("quantity")));
+	}
+
+	public function RemoveDanpakStockInventory(){
+		echo json_encode($this->im->RemoveDanpakStock($this->input->post("pref_id"), $this->input->post("quantity")));
 	}
 
 	public function UpdateTradePriceBulk(){
@@ -38,7 +64,7 @@ class Inventory extends WebAuth_Controller{
 	}
 
 	public function UpdateItemCoreDetails(){
-		echo json_encode($this->im->updateInventoryCore($this->input->post("skuId"), $this->input->post("name"), $this->input->post("sku"), $this->input->post("description")));
+		echo json_encode($this->im->updateInventoryCore($this->input->post("skuId"), $this->input->post("name"), $this->input->post("sku"), $this->input->post("description"), $this->input->post("brand")));
 	}
 
 	public function DeleteDistributorStock(){
@@ -224,20 +250,24 @@ class Inventory extends WebAuth_Controller{
 	}
 
 	public function ListInventory(){
-		return $this->load->view('Inventory/ListInventory', [ 'inventoryListSku' => $this->im->get_inventory_sku_wise() ]);
+		return $this->load->view('Inventory/ListInventory', [ 'inventoryListSku' => (!isset($_COOKIE["deactivated_products_list"]) ? $this->im->get_inventory_sku_wise() : $this->im->get_inventory_sku_wise_deactivated()) ]);
 	}
 
 	public function ProductGallery(){
 		// echo "<pre>"; print_r($this->im->get_inventory_sku_wise_for_gallery());die;
-		return $this->load->view('Inventory/InventoryGallery', [ 'inventoryListSku' => $this->im->get_inventory_sku_wise_for_gallery() ]);
+		if(isset($_COOKIE['brand_filter'])){
+			return $this->load->view('Inventory/InventoryGallery', [ 'inventoryListSku' => $this->im->get_inventory_sku_wise_for_gallery_with_brand_filter(strtolower($_COOKIE['brand_filter'])), 'brandsList' => $this->im->getBrands() ]);
+		}else{
+			return $this->load->view('Inventory/InventoryGallery', [ 'inventoryListSku' => $this->im->get_inventory_sku_wise_for_gallery(), 'brandsList' => $this->im->getBrands() ]);
+		}
 	}
 
 	public function fetchSearched(){
-		echo json_encode($this->im->getSearchedInventory(strtolower($this->input->post("searchedText"))));
+		echo json_encode($this->im->getSearchedInventory(strtolower($this->input->post("searchedText")), strtolower($this->input->post("brandFilter"))));
 	}
 
 	public function loadMoreGalleryAjax(){
-		echo json_encode($this->im->get_inventory_sku_wise_paginated($this->input->post("scrolling_counter")));
+		echo json_encode($this->im->get_inventory_sku_wise_paginated($this->input->post("scrolling_counter"), strtolower($this->input->post("brand"))));
 	}
 
 	public function AddInventory(){
@@ -270,6 +300,7 @@ class Inventory extends WebAuth_Controller{
 			unset($itemData["pre_defined_item"]);
 			unset($itemData["item_sku"]);
 			unset($itemData["item_name"]);
+			unset($itemData["item_brand"]);
 		}else{
 			$this->form_validation->set_rules(
 				'item_sku', 'Item Sku',
@@ -355,16 +386,15 @@ class Inventory extends WebAuth_Controller{
 			if (!isset($itemData['unit_id_'.$i])) {
 				continue;
 			}
-			$inventoryPreferences[] = array("item_id"=>$mainItemId, "unit_id"=>$itemData['unit_id_'.$i], "item_barcode"=>$itemData['item_barcode_'.$i], "item_quantity"=>$itemData['item_quantity_'.$i], "item_warehouse_price"=>$itemData['item_warehouse_price_'.$i], "item_trade_price"=>$itemData['item_trade_price_'.$i], "item_retail_price"=>$itemData['item_retail_price_'.$i], "sub_category_id"=>$itemData['sub_category_id_0'], "item_description"=>$itemData['item_description_'.$i], "item_thumbnail"=>$itemData['item_thumbnail'], "item_image"=>$itemData['item_image']);
+			$inventoryPreferences[] = array("item_id"=>$mainItemId, "unit_id"=>$itemData['unit_id_'.$i], "item_trade_price"=>$itemData['item_trade_price_'.$i], "sub_category_id"=>$itemData['sub_category_id_0'], "item_thumbnail"=>$itemData['item_thumbnail'], "item_image"=>$itemData['item_image']);
 			if (isset($itemData["child_item_".$i]) && $itemData['child_item_'.$i] != 0 && $itemData['child_item_'.$i] != "0") {
 				$parentChildData[] = array('parent_item_unit_id'=>$itemData['unit_id_'.$i], 'parent_item_main_item_id'=>$mainItemId, 'child_item_unit_id'=>$itemData['child_item_'.$i], 'child_item_quantity'=>$itemData['child_item_quantity_'.$i]);
 			}
 		endfor;
-
 		$status = $this->im->AddInventoryPreferences($inventoryPreferences);
 		if ($status) :
 			$status = $this->im->AddParentChildDataWithAddInventory($parentChildData);
-			if ($status) :
+		if ($status) :
 				$this->session->set_flashdata("inventory_added", "Inventory has been added successfully");
 			else:
 				$this->session->set_flashdata("inventory_add_failed", "Unable to add the sub inventory");
@@ -379,6 +409,7 @@ class Inventory extends WebAuth_Controller{
 		$itemData = $this->input->post();
 
 		$existingImgs = '';
+		$imgsDeleted = false;
 		$existingThumb = $this->input->post('existing_thumbnail');
 		$config['upload_path'] = './assets/uploads/inventory/';
 		$config['allowed_types'] = 'jpg|bmp|png|jpeg';
@@ -411,16 +442,13 @@ class Inventory extends WebAuth_Controller{
 			endfor;
 			$existingImgs = implode(",",$existingImgs);
 			$itemData['item_image'] = $existingImgs;
+			$imgsDeleted = true;
 		endif;
 
 		$this->form_validation->set_rules('item_sku', 'Item Sku', 'required|max_length[20]|trim');
 		$this->form_validation->set_rules('item_name', 'Item Name', 'required|max_length[200]');
 		$this->form_validation->set_rules('unit_id', 'Unit', 'required');
-		$this->form_validation->set_rules('item_quantity', 'Item Quantity', 'required|max_length[50]|greater_than[0]');
-		$this->form_validation->set_rules('item_warehouse_price', 'Item Cost Price', 'required|max_length[11]|greater_than[0]|numeric');
-		$this->form_validation->set_rules('item_retail_price', 'Item Retail Price', 'required|max_length[11]|greater_than[0]|numeric');
 		$this->form_validation->set_rules('item_trade_price', 'Item Trade Price', 'required|max_length[11]|greater_than[0]|numeric');
-		$this->form_validation->set_rules('item_description', 'Item Description', 'max_length[1000]');
 		$this->form_validation->set_rules('sub_category_id', 'Sub Category', 'required');
 
 		if ($this->form_validation->run()) :
@@ -434,7 +462,7 @@ class Inventory extends WebAuth_Controller{
 				if(count(array_filter($_FILES['item_images']['name']))) :
 
 					$imagesUploadError = array();
-					if ($existingImgs == '') {
+					if ($existingImgs == '' && !$imgsDeleted) {
 						$existingImgs = $this->input->post('existing_images');
 					}
 					for ($i = 0; $i < count($_FILES['item_images']['name']); $i++) :
@@ -488,6 +516,8 @@ class Inventory extends WebAuth_Controller{
 					}
 				}
 			}
+
+			// echo "<pre>"; print_r($itemData);die;
 
 			if(isset($_FILES['item_thumbnail']) && $_FILES['item_thumbnail']['name'] != '')
 			{

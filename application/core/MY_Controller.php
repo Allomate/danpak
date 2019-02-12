@@ -41,7 +41,7 @@ class WebAuth_Controller extends CI_Controller{
 
 		$this->load->model('AccessRights', 'ar');
 		$func = $this->uri->segment(2);
-		if($func == "ListOrders"){
+		if($func == "ListOrders" || $func == "ListPrimaryOrders"){
 			$func = $this->uri->segment(3);
 		}
 

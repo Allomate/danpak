@@ -15,6 +15,22 @@
 				</div>
 			</div>
 			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('campaign_deactivated')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Deactivated</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('campaign_deactivation_failed')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Failed</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
 			<?php if ($feedback = $this->session->flashdata('campaign_creation_failed')) : ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
@@ -77,9 +93,11 @@
 											<td>
 												<a class="view-report viewDetail" id="<?= $campaign->campaign_id; ?>" style="cursor: pointer">View Detail</a>
 												&nbsp;
+												<?php if($campaign->scheme_active) { ?>
 												<a class="deleteConfirmation" title="Deactivate" href="<?= base_url('CampaignManagement/DeactivateCampaign/'.$campaign->campaign_id); ?>">
 													<i class="fa fa-close"></i>
 												</a>
+												<?php }?>
 											</td>
 										</tr>
 										<?php endforeach; ?>

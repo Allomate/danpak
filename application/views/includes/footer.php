@@ -13,7 +13,7 @@
 </div>
 
 <script src="<?= base_url('assets/vendors/bower_components/jquery/dist/jquery.min.js');?> "></script>
-<script src="<?= base_url('assets/vendors/bower_components/jquery.steps/build/jquery.steps.js?v=1.0');?> "></script>
+<script src="/assets/vendors/bower_components/jquery.steps/build/jquery.steps.js?v=<?= time(); ?>"></script>
 <script src="<?= base_url('assets/vendors/bower_components/bootstrap/dist/js/bootstrap.min.js');?> "></script>
 <script src="<?= base_url('assets/dist/js/form-wizard-data.js');?> "></script>
 <script src="<?= base_url('assets/vendors/bower_components/dropify/dist/js/dropify.min.js');?> "></script>
@@ -37,7 +37,7 @@
 
 <script src="<?= base_url('assets/dist/js/select2.min.js'); ?>"></script>
 
-<script src="<?= base_url('assets/dist/js/init.js'); ?> "></script>
+<script src="<?= base_url('assets/dist/js/init.js?v=1.1'); ?> "></script>
 <script src="<?= base_url('assets/multi/multi.min.js'); ?> "></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.18.0/sweetalert2.all.min.js"></script>
 <input type="text" value="<?= $this->uri->segment(2); ?>" id="thisUrl" hidden>
@@ -48,8 +48,7 @@
 		if (pathname.indexOf("DashboardHrm") == -1 && pathname.indexOf("Dashboardv1") == -1) {
 			$('.table').DataTable();
 		}
-
-		if ($('#thisUrl').val() == "ManualOrders") {
+		if ($('#thisUrl').val() == "ManualOrders" || $('#thisUrl').val() == "ManualPrimaryOrders") {
 			$("select").select2();
 			setTimeout(function () {
 				$(".select2-selection").css('border', '0px');
@@ -60,10 +59,27 @@
 				$('#DataTables_Table_0_filter').remove();
 			}, 2000);
 		}
+		$(document).on('click', '#salesAgent', function (e) {
+			setCookieTemp('sage', 1, 1);
+		});
+		$(document).on('click', '#employeesList', function (e) {
+			setCookieTemp('sage', 0, 1);
+		});
 	});
 
+	function setCookieTemp(name, value, days) {
+		var expires = "";
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+			expires = "; expires=" + date.toUTCString();
+		}
+		document.cookie = name + "=" + (value || "") + expires + "; path=/";
+	}
+
 </script>
-<script src="<?= base_url('assets/js/sidebar.js?v='.time()); ?>"></script>
+<script async defer src="<?= base_url('assets/js/sidebar.js?v=1.0'); ?>"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script>
 
 </body>
 

@@ -5,7 +5,20 @@
 <div class="wrapper theme-1-active">
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
 	<div class="page-wrapper">
+		<div class="row" style="margin-top: 20px;">
+			<div id="zoneAssignedAlert" class="alert alert-dismissible alert-succes" style=" background: white; color: black; display: none">
+				<strong>Zone Assigned</strong>
+			</div>
+		</div>
 		<div class="container-fluid">
+			<?php if ($feedback = $this->session->flashdata('retailer_assignment_reserved')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Failed</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
 			<?php if ($feedback = $this->session->flashdata('retailer_added')) : ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
@@ -77,6 +90,7 @@
 					<div class="box-white p-20">
 						<a href="<?= base_url('RealRetailers/AddRetailer');?>" class="btn add-emp">
 							<i class="fa fa-plus"> </i> New Retailer</a>
+						<a type="button" href="/RealRetailers/ListRetailers/List/All" class="btn btn-cancel" style="float: right;">Back</a>
 						<h2 class="m-b-0">Retailers List </h2>
 						<div class="table-wrap">
 							<div class="table-responsive">
@@ -86,8 +100,11 @@
 											<th>Name</th>
 											<th>Address</th>
 											<th>Territory</th>
+											<th>Zone</th>
 											<th>Type</th>
-											<th>Created at</th>
+											<!-- <th>ARPU</th> -->
+											<th>Assigned To</th>
+											<th style="width: 80px">Actions</th>
 										</tr>
 									</thead>
 									<tfoot>
@@ -95,8 +112,11 @@
 											<th>Name</th>
 											<th>Address</th>
 											<th>Territory</th>
+											<th>Zone</th>
 											<th>Type</th>
-											<th>Created at</th>
+											<!-- <th>ARPU</th> -->
+											<th>Assigned To</th>
+											<th style="width: 80px">Actions</th>
 										</tr>
 									</tfoot>
 									<tbody>
@@ -112,19 +132,35 @@
 												<?= $retailer->territory_name; ?>
 											</td>
 											<td>
+												<select class="form-control" id="zone_select">
+													<?php foreach($zones as $z): ?>
+													<option value="<?= $z->id ?>" <?=($retailer->zone_id == $z->id) ? "selected" : "" ?> >
+														<?= $z->zone_name; ?>
+													</option>
+													<?php endforeach; ?>
+												</select>
+											</td>
+											<td>
 												<?= $retailer->retailer_type; ?>
+											</td>
+											<!-- <td>
+												 //$retailer->avg_revenue ? $retailer->avg_revenue : 'NA'; 
+											</td> -->
+											<td>
+												<?= $retailer->assigned_to ? $retailer->assigned_to : "Unassigned"; ?>
 											</td>
 											<td>
 												<a href="<?= base_url('RealRetailers/UpdateRetailer/'.$retailer->id); ?>">
 													<i class="fa fa-pencil"></i>
 												</a>
-												&nbsp;
 												<a class="view-report" href="<?=base_url('RealRetailers/RetailerProfile/' . $retailer->id);?>">
 													View Profile
 												</a>
-												&nbsp;
-												<a class="deleteConfirmation" href="<?= base_url('RealRetailers/DeleteRetailer/'.$retailer->id); ?>">
+												<a class="deleteConfirmation" href="<?= base_url('RealRetailers/DeleteRetailer/'.$retailer->id.'/'.$this->uri->segment(4)); ?>">
 													<i class="fa fa-close"></i>
+												</a>
+												<a class="saveZone" id="<?= $retailer->id; ?>">
+													<i class="fa fa-check"></i>
 												</a>
 											</td>
 										</tr>
@@ -142,6 +178,21 @@
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
 <script type="text/javascript">
 	$(document).ready(function () {
+		$(document).on('click', '.saveZone', function () {
+			var thisRef = $(this);
+			$.ajax({
+				type: "GET",
+				url: "/RealRetailers/SaveZone/" + $('#zone_select').val() + '/' + thisRef.attr('id'),
+				success: function (response) {
+					if (response) {
+						$('#zoneAssignedAlert').fadeIn();
+						setTimeout(() => {
+							$('#zoneAssignedAlert').fadeOut();
+						}, 2000);
+					}
+				}
+			});
+		});
 		$(document).on('click', '.deleteConfirmation', function (e) {
 			var thisRef = $(this);
 			e.preventDefault();

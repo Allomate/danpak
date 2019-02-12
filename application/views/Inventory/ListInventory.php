@@ -70,6 +70,22 @@
 				</div>
 			</div>
 			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('deactivated')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Deactivated</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('activated')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
+					<strong>Activated</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
 			<div class="row heading-bg">
 				<div class="col-lg-6 col-md-6 col-sm-6">
 					<h2 class="m-heading">Inventory Management</h2>
@@ -102,6 +118,7 @@
 											<th>S.No</th>
 											<th>Item Sku</th>
 											<th>Item Name</th>
+											<th>Item Brand</th>
 											<th>Actions</th>
 										</tr>
 									</thead>
@@ -110,6 +127,7 @@
 											<th>S.No</th>
 											<th>Item Sku</th>
 											<th>Item Name</th>
+											<th>Item Brand</th>
 											<th>Actions</th>
 										</tr>
 									</tfoot>
@@ -126,10 +144,23 @@
 												<?= $inventory->item_name; ?>
 											</td>
 											<td>
+												<?= $inventory->item_brand; ?>
+											</td>
+											<td>
 												<a href="<?= base_url('Inventory/UpdateInventorySku/'.$inventory->item_id); ?>">
 													<i class="fa fa-pencil"></i>
 												</a>
-												<!-- <a class="deleteConfirmation" href="<?= base_url('Inventory/DeleteInventorySku/'.$inventory->item_id); ?>"><i class="fa fa-close"></i></a> -->
+												<a class="deleteConfirmation" href="<?= base_url('Inventory/DeleteInventorySku/'.$inventory->item_id); ?>"><i
+													 class="fa fa-close"></i></a>
+												<?php if($inventory->is_active){ ?>
+												<button class="btn view-report deactiveConfirmation" href="<?= base_url('Inventory/DeactivateInventory/'.$inventory->item_id); ?>">
+													DEACTIVATE
+												</button>
+												<?php }else{ ?>
+												<button class="btn view-report activeConfirmation" href="<?= base_url('Inventory/ActivateInventory/'.$inventory->item_id); ?>">
+													ACTIVATE
+												</button>
+												<?php } ?>
 											</td>
 										</tr>
 										<?php endforeach; ?>
@@ -157,6 +188,42 @@
 				confirmButtonColor: '#3085d6',
 				cancelButtonColor: '#d33',
 				confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+				if (result.value) {
+					window.location.href = thisRef.attr('href');
+				}
+			})
+		});
+
+		$(document).on('click', '.deactiveConfirmation', function (e) {
+			var thisRef = $(this);
+			e.preventDefault();
+			swal({
+				title: 'Are you sure?',
+				text: "You want to deactivate this product!",
+				type: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, Deactivate it!'
+			}).then((result) => {
+				if (result.value) {
+					window.location.href = thisRef.attr('href');
+				}
+			})
+		});
+
+		$(document).on('click', '.activeConfirmation', function (e) {
+			var thisRef = $(this);
+			e.preventDefault();
+			swal({
+				title: 'Are you sure?',
+				text: "You want to activate this product!",
+				type: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, Activate it!'
 			}).then((result) => {
 				if (result.value) {
 					window.location.href = thisRef.attr('href');

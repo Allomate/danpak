@@ -14,6 +14,22 @@
 				</div>
 			</div>
 			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('employee_activated')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-success" style=" background: white; color: black;">
+					<strong>Activated</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if ($feedback = $this->session->flashdata('employee_deactivated')) : ?>
+			<div class="row" style="margin-top: 20px;">
+				<div class="alert alert-dismissible alert-success" style=" background: white; color: black;">
+					<strong>Deactivated</strong>
+					<?= $feedback; ?>
+				</div>
+			</div>
+			<?php endif; ?>
 			<?php if ($feedback = $this->session->flashdata('update_failed')) : ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
@@ -86,28 +102,53 @@
 								<table class="table table-hover display  pb-30">
 									<thead>
 										<tr>
+											<th>S.no</th>
+											<th>Employee ID:</th>
 											<th>Name</th>
 											<th>Username</th>
+											<th>Designation</th>
+											<th>Area</th>
+											<th>Territory</th>
 											<th>Reporting To</th>
 											<th>Actions</th>
 										</tr>
 									</thead>
 									<tfoot>
 										<tr>
+											<th>S.no</th>
+											<th>Employee ID:</th>
 											<th>Name</th>
 											<th>Username</th>
+											<th>Designation</th>
+											<th>Area</th>
+											<th>Territory</th>
 											<th>Reporting To</th>
 											<th>Actions</th>
 										</tr>
 									</tfoot>
 									<tbody>
-										<?php foreach ($employees as $employee) : ?>
+										<?php $sno = 1; foreach ($employees as $employee) : ?>
 										<tr>
+											<td>
+												<?= $sno++; ?>
+											</td>
+											<td>
+												<?= $employee->employee_id; ?>
+											</td>
 											<td>
 												<?= $employee->employee_first_name . " " . $employee->employee_last_name; ?>
 											</td>
 											<td>
 												<?= $employee->employee_username; ?>
+											</td>
+											<td>
+												<?= $employee->employee_designation; ?>
+											</td>
+											<td>
+												<?= $employee->area; ?>
+											</td>
+											<td>
+												<?= $employee->territory; ?>
 											</td>
 											<td>
 												<?= $employee->reporting_to != "" ? $employee->reporting_to : 'No one'; ?>
@@ -116,14 +157,21 @@
 												<a href="<?= base_url('Employees/UpdateEmployee/'.$employee->employee_id); ?>">
 													<i class="fa fa-pencil"></i>
 												</a>
-												&nbsp;
 												<a class="deleteConfirmation" href="<?= base_url('Employees/DeleteEmployee/'.$employee->employee_id); ?>">
 													<i class="fa fa-close"></i>
 												</a>
-												&nbsp;
 												<a class="view-report" href="<?= base_url('Employees/EmployeeProfile/'.$employee->employee_id); ?>">
 													View Profile
 												</a>
+												<?php if($employee->status){ ?>
+												<a class="view-report" href="<?= base_url('Employees/Deactivate/'.$employee->employee_id); ?>">
+													Deactivate
+												</a>
+												<?php }else{ ?>
+												<a class="view-report" href="<?= base_url('Employees/Activate/'.$employee->employee_id); ?>">
+													Activate
+												</a>
+												<?php } ?>
 											</td>
 										</tr>
 										<?php endforeach; ?>

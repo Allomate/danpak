@@ -8,6 +8,7 @@ class Dashboard extends WebAuth_Controller
         parent::__construct();
         $this->load->model('EmployeeReporting', 'erp');
         $this->load->model('DashboardModel', 'dm');
+        $this->load->model('InventoryModel', 'im');
     }
 
     public function Home()
@@ -17,8 +18,7 @@ class Dashboard extends WebAuth_Controller
 
     public function Reports()
     {
-        // echo "<pre>";print_r($finalReportings);die;
-        return $this->load->view('Reporting&Dashboard/Reports', ['data' => null]);
+        return $this->load->view('Reporting&Dashboard/Reports', ['Inventory' => $this->im->getInventoryForBulkTradePriceUpdate(), 'brandsList' => $this->im->getBrands()]);
     }
 
     public function Dashboardv1()
@@ -35,6 +35,15 @@ class Dashboard extends WebAuth_Controller
     public function DashboardSales()
     {
         return $this->load->view('Reporting&Dashboard/SalesAnalytics');
+    }
+
+    public function GetBrandItems($brand)
+    {
+        if($brand == "0"){
+            echo json_encode($this->im->getInventoryForBulkTradePriceUpdate());
+            die;
+        }
+        echo json_encode($this->im->getBrandItemsForProductReports(strtolower(urldecode($brand))));
     }
 
 }

@@ -25,7 +25,7 @@
 						echo form_open('Territories/AddTerritoryOps', $attributes); ?>
 						<div class="form-wrap">
 							<div class="form-body">
-								<div class="row"> 
+								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Territory Name*</label>
@@ -38,34 +38,48 @@
 											<label class="control-label mb-10">Territory POC</label>
 											<select class="selectpicker" name="territory_poc_id" data-style="form-control btn-default btn-outline">
 												<?php foreach( $employees as $employee ) : ?>
-													<option value="<?= $employee->employee_id; ?>"><?= $employee->employee_username; ?></option>
+												<option value="<?= $employee->employee_id; ?>">
+													<?= $employee->employee_username; ?>
+												</option>
 												<?php endforeach; ?>
 											</select>
 										</div>
-									</div>	
+									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-12">
 										<label class="control-label mb-10">Area*</label>
 										<select class="form-control" name="area_id" id="areaIdDD">
 											<?php foreach( $areas as $area ) : ?>
-												<option value="<?= $area->id; ?>"><?= $area->area_name; ?></option>
+											<option value="<?= $area->id; ?>">
+												<?= $area->area_name; ?>
+											</option>
 											<?php endforeach; ?>
 										</select>
 									</div>
 								</div>
+								<br>
+								<div class="row">
+									<div class="col-md-12">
+										<label class="control-label mb-10">Zones*</label>
+										<input type="text" id="zones" class="form-control">
+										<br>
+										<div class="list-group" id="zoneLists">
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
-					</form>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row button-section">
-			<a type="button" href="<?= base_url('Territories/ListTerritories'); ?>" id="backFromTerritoryButton" class="btn btn-cancel">Cancel</a>
-			<a type="button" id="addTerritoryButton" class="btn btn-save">Save</a>						
+			<div class="row button-section">
+				<a type="button" href="<?= base_url('Territories/ListTerritories'); ?>" id="backFromTerritoryButton" class="btn btn-cancel">Cancel</a>
+				<a type="button" id="addTerritoryButton" class="btn btn-save">Save</a>
+			</div>
 		</div>
 	</div>
-</div>
 </div>
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
 <script type="text/javascript" src="<?= base_url('assets/js/RegionAndArea.js').'?v='.time(); ?>"></script>

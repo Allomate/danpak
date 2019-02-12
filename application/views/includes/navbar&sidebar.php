@@ -13,6 +13,9 @@
 	<div id="mobile_only_nav" class="mobile-only-nav pull-right">
 
 		<ul class="nav navbar-right top-nav pull-right">
+			<li>
+				<a id="open_right_sidebar" href="#"><i class="zmdi zmdi-settings top-nav-icon"></i></a>
+			</li>
 			<li class="dropdown auth-drp">
 				<a href="#" class="dropdown-toggle pr-0" data-toggle="dropdown">
 					<img src="<?= base_url(); ?>" alt="" class="user-auth-img img-circle" />
@@ -20,7 +23,7 @@
 				</a>
 				<ul class="dropdown-menu user-auth-dropdown" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
 					<li>
-						<a href="profile.html">
+						<a href="/Employees/PersonalInfo">
 							<i class="zmdi zmdi-account"></i>
 							<span>Profile</span>
 						</a>
@@ -45,7 +48,7 @@
 	</div>
 </nav>
 <div class="fixed-sidebar-left">
-	<ul class="nav navbar-nav side-nav nicescroll-bar">
+	<ul class="nav navbar-nav side-nav nicescroll-bar" style="display: none">
 		<li>
 		<li>
 			<a href="javascript:void(0);" data-toggle="collapse" data-target="#dashboard_dr">
@@ -99,7 +102,7 @@
 					</i>
 				</li>
 				<li>
-					<a href="<?= base_url('Employees/ListEmployees');?>">Employees</a>
+					<a id="employeesList" href="<?= base_url('Employees/ListEmployees');?>">Employees</a>
 				</li>
 			</ul>
 		</li>
@@ -119,7 +122,7 @@
 					<a href="<?= base_url('Employees/AddEmployee'); ?>">Add New Sales Agent</a>
 				</li>
 				<li>
-					<a href="<?= base_url('Employees/ListEmployees'); ?>">Sales Agent</a>
+					<a id="salesAgent" href="<?= base_url('Employees/ListEmployees'); ?>">Sales Agent</a>
 				</li>
 				<li>
 					<a href="<?= base_url('Employees/Attendance');?>">Attendance Management</a>
@@ -151,7 +154,10 @@
 					<a href="<?= base_url('Inventory/AddInventory'); ?>">Add New Product</a>
 				</li>
 				<li>
-					<a href="<?= base_url('Inventory/ListInventory'); ?>">Update Product</a>
+					<a id="activatedProducts" href="<?= base_url('Inventory/ListInventory'); ?>">Update Product</a>
+				</li>
+				<li>
+					<a id="deactivatedProducts" href="<?= base_url('Inventory/ListInventory'); ?>">De-Activated Products</a>
 				</li>
 				<li>
 					<a href="<?= base_url('Inventory/UpdateCentralizedTradePrice'); ?>">Centralized Trade Price</a>
@@ -173,6 +179,9 @@
 				</li>
 				<li>
 					<a href="<?= base_url('Inventory/DistributorStockManagement'); ?>">Distributor Stock Management</a>
+				</li>
+				<li>
+					<a href="<?= base_url('Inventory/StockManagement'); ?>">Stock Management</a>
 				</li>
 			</ul>
 		</li>
@@ -209,8 +218,12 @@
 			</a>
 			<ul id="ret_dr" class="innerUl collapse collapse-level-1">
 				<li>
-					<a href="<?= base_url('Retailers/ListRetailers'); ?>">Distributors Management</a>
+					<a href="<?= base_url('Retailers/ListRetailers/List/All'); ?>">Distributors Management</a>
+				</li>
+				<li>
 					<a href="<?= base_url('Retailers/ListRetailerTypes'); ?>">Distributor Type Management</a>
+				</li>
+				<li>
 					<a href="<?= base_url('Retailers/ListRetailersAssignments'); ?>">Distributors Assignment</a>
 				</li>
 			</ul>
@@ -228,9 +241,42 @@
 			</a>
 			<ul id="real_ret_dr" class="innerUl collapse collapse-level-1">
 				<li>
-					<a href="<?= base_url('RealRetailers/ListRetailers'); ?>">Retailers Management</a>
+					<a href="<?= base_url('RealRetailers/ListRetailers/List/All'); ?>">Retailers Management</a>
+				</li>
+				<li>
 					<a href="<?= base_url('RealRetailers/ListRetailerTypes'); ?>">Retailer Type Management</a>
+				</li>
+				<li>
 					<a href="<?= base_url('RealRetailers/ListRetailersAssignments'); ?>">Retailers Assignment</a>
+				</li>
+			</ul>
+		</li>
+		<li>
+			<a href="javascript:void(0);" data-toggle="collapse" data-target="#prim_ord_dr">
+				<div class="pull-left">
+					<i class="icon-ord1-icon mr-20"></i>
+					<span class="right-nav-text">Primary Orders</span>
+				</div>
+				<div class="pull-right m-t-5">
+					<i class="zmdi zmdi-caret-down"></i>
+				</div>
+				<div class="clearfix"></div>
+			</a>
+			<ul id="prim_ord_dr" class="innerUl collapse collapse-level-1">
+				<li>
+					<a href="<?= base_url('PrimaryOrders/ManualPrimaryOrders'); ?>">Order Entry</a>
+				</li>
+				<li>
+					<a href="<?= base_url('PrimaryOrders/ListPrimaryOrders/PendingPrimary'); ?>">New Orders</a>
+				</li>
+				<li>
+					<a href="<?= base_url('PrimaryOrders/ListPrimaryOrders/ProcessedPrimary'); ?>">Processed Orders</a>
+				</li>
+				<li>
+					<a href="<?= base_url('PrimaryOrders/ListPrimaryOrders/CompletedPrimary'); ?>">Completed Orders</a>
+				</li>
+				<li>
+					<a href="<?= base_url('PrimaryOrders/ListPrimaryOrders/CancelledPrimary'); ?>">Cancelled Orders</a>
 				</li>
 			</ul>
 		</li>
@@ -238,7 +284,7 @@
 			<a href="javascript:void(0);" data-toggle="collapse" data-target="#ord_dr">
 				<div class="pull-left">
 					<i class="icon-ord1-icon mr-20"></i>
-					<span class="right-nav-text">Orders</span>
+					<span class="right-nav-text">Secondary Orders</span>
 				</div>
 				<div class="pull-right m-t-5">
 					<i class="zmdi zmdi-caret-down"></i>
@@ -250,8 +296,8 @@
 					<a href="<?= base_url('Orders/ManualOrders'); ?>">Order Entry</a>
 				</li>
 				<!-- <li>
-						<a href="<?= base_url('Orders/ListOrders/Latest'); ?>">Today's Orders</a>
-					</li> -->
+							<a href="<?= base_url('Orders/ListOrders/Latest'); ?>">Today's Orders</a>
+						</li> -->
 				<li>
 					<a href="<?= base_url('Orders/ListOrders/Pending'); ?>">New Orders</a>
 				</li>

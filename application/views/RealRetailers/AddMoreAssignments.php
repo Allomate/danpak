@@ -5,7 +5,7 @@
 <div class="wrapper theme-1-active">
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
 	<div class="page-wrapper">
-		<div class="container-fluid">
+		<div class="container">
 			<?php if ($feedback = $this->session->flashdata('missing_information')) : ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
@@ -56,6 +56,7 @@
 										<div class="form-group">
 											<label class="control-label mb-10">Select Day</label>
 											<select class="selectpicker" name="assigned_for_day" data-style="form-control btn-default btn-outline">
+												<option value="everyday">Everyday</option>
 												<option value="monday">Monday</option>
 												<option value="tuesday">Tuesday</option>
 												<option value="wednesday">Wednesday</option>
@@ -69,10 +70,13 @@
 								</div>
 								<div class="row">
 									<div class="col-md-6">
-										<div class="radio radio-info m-b-15">
-											<input id="territoryRadio" name="bunchAssignment" type="radio" value="territory">
-											<label for="territoryRadio" class="lab-large"> Assign Distributors by Territory </label>
+
+										<div class="checkbox checkbox-primary checkbox-circle">
+											<!-- <input id="checkbox-002" type="checkbox"> -->
+											<input id="territoryRadio" name="bunchAssignment" type="checkbox" value="territory">
+											<label for="territoryRadio" class="lab-large"> Assign Retailers by Territory </label>
 										</div>
+
 										<div id="checkbox-circle001">
 											<div class="row">
 												<div class="col-md-12">
@@ -93,69 +97,22 @@
 								</div>
 								<hr>
 								<div class="row">
-									<div class="col-md-12" id="viewAssigns" style="text-align: center; cursor: pointer">
-										<span style="font-weight: bold">VIEW ASSIGNMENTS</span>
+									<div class="col-md-12">
+										<a href="#" id="viewAssigns" class="_viewAssign" data-toggle="modal" data-target="#ViewAssignments">VIEW
+											ASSIGNMENTS</a>
 									</div>
 									<div id="myModal" class="modal fade" role="dialog">
-										<div class="modal-dialog">
+										<div class="modal-dialog" role="document">
 											<div class="modal-content">
 												<div class="modal-header">
-													<button type="button" class="close" data-dismiss="modal">&times;</button>
-													<h4 class="modal-title">Assignments</h4>
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+													<h5 class="modal-title" id="exampleModalLabel1">Assignments</h5>
 												</div>
-												<div class="modal-body">
-													<ul style="list-style: none; padding: 0px; max-height: 50vh; overflow: auto;" id="addedAssignmentsList">
-													</ul>
+												<div class="modal-body" style="overflow: auto; max-height: 450px" id="addedAssignmentsList">
 												</div>
 												<div class="modal-footer">
 													<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<hr>
-								<div class="row">
-									<div class="col-md-12">
-										<div class="table-wrap">
-											<div class="table-responsive">
-												<table class="table table-hover">
-													<thead>
-														<tr>
-															<th>Retailer Name</th>
-															<th>Retailer Address</th>
-															<th>Retailer Type</th>
-															<th>Retailer Territory</th>
-															<th>Action</th>
-														</tr>
-													</thead>
-													<tbody>
-														<?php foreach ($Distributors as $retailer) : ?>
-														<tr>
-															<td>
-																<?= $retailer->retailer_name; ?>
-															</td>
-															<td>
-																<?= $retailer->retailer_address; ?>
-															</td>
-															<td>
-																<?= $retailer->retailer_type; ?>
-															</td>
-															<td>
-																<?= $retailer->retailer_territory; ?>
-															</td>
-															<td>
-																<?php if($retailer->assigned) : ?>
-																<span style="font-weight: bold">Already Assigned</span>
-																<?php else: ?>
-																<input type="number" value="<?= $retailer->id; ?>" hidden>
-																<a type="button" class="btn btn-save addRetailerForAssignment">ADD</a>
-																<?php endif;?>
-															</td>
-														</tr>
-														<?php endforeach; ?>
-													</tbody>
-												</table>
 											</div>
 										</div>
 									</div>
@@ -165,11 +122,20 @@
 						</div>
 						</form>
 					</div>
+					<div class="box-white p-20 m-b-30">
+						<div class="table-wrap">
+							<div class="table-responsive" id="retailersTableDiv">
+							</div>
+							<div id="tableLoader" style="text-align: center">
+								<img style="width: auto; height: 50px;" src="/assets/images/wl-loader-2.gif" alt="">
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="row button-section">
 				<a type="button" href="<?= base_url('RealRetailers/ListRetailersAssignments'); ?>" id="backFromRetailersAssignmentsButton"
-				class="btn btn-cancel">Cancel</a>
+				 class="btn btn-cancel">Cancel</a>
 				<a type="button" id="addRetailersAssignmentsButton" class="btn btn-save">Save</a>
 			</div>
 		</div>

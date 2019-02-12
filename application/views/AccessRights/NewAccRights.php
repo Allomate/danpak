@@ -1,9 +1,9 @@
-<?php require_once(APPPATH.'/views/includes/header.php'); ?>
+<?php require_once APPPATH . '/views/includes/header.php';?>
 <div class="preloader-it">
 	<div class="la-anim-1"></div>
 </div>
 <div class="wrapper theme-1-active">
-	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
+	<?php require_once APPPATH . '/views/includes/navbar&sidebar.php';?>
 	<div class="page-wrapper">
 		<div class="container-fluid">
 			<div class="row heading-bg">
@@ -28,7 +28,7 @@
 					<div class="box-white m-b-30">
 						<h2>Create Access Rights</h2>
 						<?php $attributes = array('id' => 'addAccessRightsForm');
-                        echo form_open('AccRights/AddAccRightsOps', $attributes); ?>
+echo form_open('AccRights/AddAccRightsOps', $attributes);?>
 						<input type="text" name="permisData" id="permisData" hidden>
 						<div class="row">
 							<div class="col-md-6">
@@ -36,11 +36,11 @@
 									<label class="p-b-10" for="employee">Select employee</label>
 									<select class="form-control" name="admin_id" data-style="form-control btn-default btn-outline">
 										<option value="null">Select Employee</option>
-										<?php foreach($Employees as $employee) :?>
-										<option value="<?= $employee->employee_id; ?>">
-											<?= $employee->employee_username?>
+										<?php foreach ($Employees as $employee): ?>
+										<option value="<?=$employee->employee_id;?>">
+											<?=$employee->employee_username?>
 										</option>
-										<?php endforeach; ?>
+										<?php endforeach;?>
 									</select>
 								</div>
 							</div>
@@ -49,11 +49,11 @@
 									<label class="p-b-10" for="employee">Select Distributor</label>
 									<select class="form-control" name="distributor_id" data-style="form-control btn-default btn-outline">
 										<option value="null">Select Distributor</option>
-										<?php foreach($Distributors as $distributor) :?>
-										<option value="<?= $distributor->id; ?>">
-											<?= $distributor->distributor_username; ?>
+										<?php foreach ($Distributors as $distributor): ?>
+										<option value="<?=$distributor->id;?>">
+											<?=$distributor->distributor_username;?>
 										</option>
-										<?php endforeach; ?>
+										<?php endforeach;?>
 									</select>
 								</div>
 							</div>
@@ -138,10 +138,10 @@
 													<input type="checkbox" id="ManualOrders" name="access_rights" value="ManualOrders">
 													<label for="ManualOrders" class="lab-medium">Manual Order Entry</label>
 												</div>
-												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+												<!-- <div class="checkbox checkbox-primary checkbox-circle m-b-10">
 													<input type="checkbox" id="Latest" name="access_rights" value="Latest">
 													<label for="Latest" class="lab-medium">View Today's Orders</label>
-												</div>
+												</div> -->
 												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
 													<input type="checkbox" id="Pending" name="access_rights" value="Pending">
 													<label for="Pending" class="lab-medium">View Pending Orders</label>
@@ -161,6 +161,41 @@
 												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
 													<input type="checkbox" id="EmployeesList" name="access_rights" value="EmployeesList">
 													<label for="EmployeesList" class="lab-medium">View Order Compliance</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-3 col-sm-6">
+										<div class="form-group">
+											<h5>Primary Order Management</h5>
+											<div class="form-group p-b-10 p-t-10">
+												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="ManualPrimaryOrders" name="access_rights" value="ManualPrimaryOrders">
+													<label for="ManualPrimaryOrders" class="lab-medium">Manual Order Entry</label>
+												</div>
+												<!-- <div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="LatestPrimary" name="access_rights" value="LatestPrimary">
+													<label for="LatestPrimary" class="lab-medium">View Today's Orders</label>
+												</div> -->
+												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="PendingPrimary" name="access_rights" value="PendingPrimary">
+													<label for="PendingPrimary" class="lab-medium">View Pending Orders</label>
+												</div>
+												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="ProcessedPrimary" name="access_rights" value="ProcessedPrimary">
+													<label for="ProcessedPrimary" class="lab-medium">View Processed Orders</label>
+												</div>
+												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="CompletedPrimary" name="access_rights" value="CompletedPrimary">
+													<label for="CompletedPrimary" class="lab-medium">View Completed Orders</label>
+												</div>
+												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="CancelledPrimary" name="access_rights" value="CancelledPrimary">
+													<label for="CancelledPrimary" class="lab-medium">View Cancelled Orders</label>
+												</div>
+												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="EmployeesListPrimary" name="access_rights" value="EmployeesListPrimary">
+													<label for="EmployeesListPrimary" class="lab-medium">View Order Compliance</label>
 												</div>
 											</div>
 										</div>
@@ -208,6 +243,10 @@
 												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
 													<input type="checkbox" id="DistributorStockManagement" name="access_rights" value="DistributorStockManagement">
 													<label for="DistributorStockManagement" class="lab-medium">Distributor Stock Management</label>
+												</div>
+												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="StockManagement" name="access_rights" value="StockManagement">
+													<label for="StockManagement" class="lab-medium">Danpak Stock Management</label>
 												</div>
 											</div>
 										</div>
@@ -261,6 +300,10 @@
 												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
 													<input type="checkbox" id="AddEmployee" name="access_rights" value="AddEmployee">
 													<label for="AddEmployee" class="lab-medium">Add Employee</label>
+												</div>
+												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
+													<input type="checkbox" id="EmployeeProfile" name="access_rights" value="EmployeeProfile">
+													<label for="EmployeeProfile" class="lab-medium">View Employee Profile</label>
 												</div>
 												<div class="checkbox checkbox-primary checkbox-circle m-b-10">
 													<input type="checkbox" id="Attendance" name="access_rights" value="Attendance">
@@ -336,11 +379,11 @@
 				</div>
 			</div>
 			<div class="row button-section">
-				<a type="button" href="<?= base_url('AccRights/ListRights'); ?>" id="backFromNewAccRightsButton" class="btn btn-cancel">Cancel</a>
+				<a type="button" href="<?=base_url('AccRights/ListRights');?>" id="backFromNewAccRightsButton" class="btn btn-cancel">Cancel</a>
 				<a type="button" id="addAccessRightsButton" class="btn btn-save">Save</a>
 			</div>
 		</div>
 	</div>
 </div>
-<?php require_once(APPPATH.'/views/includes/footer.php'); ?>
-<script type="text/javascript" src="<?= base_url('assets/js/AccessRights.js').'?v='.time(); ?>"></script>
+<?php require_once APPPATH . '/views/includes/footer.php';?>
+<script type="text/javascript" src="<?=base_url('assets/js/AccessRights.js') . '?v=' . time();?>"></script>

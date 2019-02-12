@@ -1,10 +1,6 @@
 $(document).ready(function() {
 
     $('#addEmployeeButton').click(function() {
-        if (!$('#territoryDD').val() || $('#territoryDD').val() == "0") {
-            alert('Please select a territory first');
-            return;
-        }
         $(this).attr('disabled', 'disabled');
         $('#backFromEmployeeButton').attr('disabled', 'disabled');
         $('#addEmployeeForm').submit();
@@ -15,10 +11,6 @@ $(document).ready(function() {
     });
 
     $('#updateEmployeeButton').click(function() {
-        if (!$('#territoryDD').val() || $('#territoryDD').val() == "0") {
-            alert('Please select a territory first');
-            return;
-        }
         $(this).attr('disabled', 'disabled');
         $('#backFromEmployeeButton').attr('disabled', 'disabled');
         $('#updateEmployeeForm').submit();

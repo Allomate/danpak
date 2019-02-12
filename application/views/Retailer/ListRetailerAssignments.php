@@ -168,8 +168,8 @@
 											</td>
 											<td>
 												<?= $assignment->total_distributors_assigned; ?>
-													<small class="viewCompleteDistributorsList" id="<?= $assignment->employee_id; ?>" style="font-weight: bold; cursor: pointer;">(VIEW)</small>
-													<input type="text" class="assignedDay" value="<?= $assignment->assigned_for_day; ?>" hidden/> </td>
+												<small class="viewCompleteDistributorsList" id="<?= $assignment->employee_id; ?>" style="font-weight: bold; cursor: pointer;">(VIEW)</small>
+												<input type="text" class="assignedDay" value="<?= $assignment->assigned_for_day; ?>" hidden /> </td>
 											<td>
 												<?= strtoupper($assignment->assigned_for_day); ?>
 											</td>

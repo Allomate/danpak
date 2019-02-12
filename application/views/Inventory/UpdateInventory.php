@@ -80,7 +80,7 @@
 											<div class="row">
 												<div class="col-md-6">
 													<div class="form-group">
-														<label class="control-label mb-10">Type*</label>
+														<label class="control-label mb-10">Variant*</label>
 														<?php 
 														foreach ($UnitTypes as $unit) : 
 															$options[$unit->unit_id] = $unit->unit_name;
@@ -92,51 +92,10 @@
 												</div>
 												<div class="col-md-6">
 													<div class="form-group">
-														<label class="control-label mb-10">Product Quantity*</label>
-														<input type="text" name="item_quantity" value="<?= $item->item_quantity; ?>" class="form-control" max="11">
-														<?= form_error('item_quantity', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
-													</div>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
-														<label class="control-label mb-10">Cost Price*</label>
-														<input type="text" name="item_warehouse_price" value="<?= $item->item_warehouse_price; ?>" class="form-control"
-														placeholder="Rs:0.00" max="11">
-														<?= form_error('item_warehouse_price', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
-													</div>
-												</div>
-												<div class="col-md-6">
-													<div class="form-group">
 														<label class="control-label mb-10">Trade Price*</label>
 														<input type="text" name="item_trade_price" class="form-control" value="<?= $item->item_trade_price; ?>"
-														placeholder="Rs:0.00" max="11">
+														 placeholder="Rs:0.00" max="11">
 														<?= form_error('item_trade_price', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
-													</div>
-												</div>
-												<div class="col-md-6">
-													<div class="form-group">
-														<label class="control-label mb-10">Retail Price*</label>
-														<input type="text" name="item_retail_price" value="<?= $item->item_retail_price; ?>" class="form-control"
-														placeholder="Rs:0.00" max="11">
-														<?= form_error('item_retail_price', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
-													</div>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
-														<label class="control-label mb-10">Product Barcode*</label>
-														<input type="text" name="item_barcode" class="form-control" value="<?= $item->item_barcode; ?>"
-														placeholder="" max="20">
-														<?= form_error('item_barcode', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
-													</div>
-												</div>
-												<div class="col-md-6">
-													<div class="form-group">
-														<label class="control-label mb-10">Expiry Date</label>
-														<input type="text" id="firstName" class="form-control" placeholder="">
 													</div>
 												</div>
 											</div>
@@ -160,15 +119,6 @@
 													</div>
 												</div>
 											</div>
-											<div class="row">
-												<div class="col-md-12">
-													<div class="form-group">
-														<label class="control-label mb-10">Description</label>
-														<input type="text" name="totalInventoryAdded" hidden>
-														<textarea name="item_description" class="form-control" rows="5"><?= $item->item_description; ?></textarea>
-													</div>
-												</div>
-											</div>
 										</div>
 									</div>
 								</div>
@@ -184,7 +134,7 @@
 								<div class="thumb-c">
 									<div class="upload-pic custom-thumb">Add Product thumbnail<br>maximam size 500X500 px</div>
 									<input type="file" id="itemThumbnail" name="item_thumbnail" class="dropify" accept=".png, .jpeg, .jpg, .bmp"
-									data-default-file="<?= $item->item_thumbnail; ?>" />
+									 data-default-file="<?= $item->item_thumbnail; ?>" />
 									<?= isset($item_thumbnail_error) ? '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">'.$item_thumbnail_error.'</small>' : '';?>
 								</div>
 							</div>

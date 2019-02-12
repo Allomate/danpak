@@ -1,4 +1,3 @@
-
 <footer class="footer" style="position: relative !important;">
 	<div class="container">
 		<div class="row">
@@ -21,25 +20,27 @@
 <script src="<?= base_url('assets/vendors/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js?v=1522837870'); ?> "></script>
 <script type="text/javascript" src="<?= base_url('assets/vendors/bower_components/moment/min/moment-with-locales.min.js?v=1522837870'); ?> "></script>
 <script src="<?= base_url('assets/vendors/bower_components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js?v=1522837870'); ?> "></script>
-<script type="text/javascript" src="<?= base_url('assets/vendors/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js?v=1522837870'); ?> "></script> 
+<script type="text/javascript" src="<?= base_url('assets/vendors/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js?v=1522837870'); ?> "></script>
 <script src="<?= base_url('assets/dist/js/jquery.slimscroll.js?v=1522837870'); ?> "></script>
 <script src="<?= base_url('assets/vendors/bower_components/bootstrap-select/dist/js/bootstrap-select.min.js?v=1522837870'); ?> "></script>
 <script src="<?= base_url('assets/vendors/bower_components/owl.carousel/dist/owl.carousel.min.js?v=1522837870'); ?> "></script>
 <script src="<?= base_url('assets/vendors/bower_components/multiselect/js/jquery.multi-select.js?v=1522837870'); ?> "></script>
-<script src="<?= base_url('assets/vendors/bower_components/nestable2/jquery.nestable.js?v=1522837870'); ?> "></script>		
+<script src="<?= base_url('assets/vendors/bower_components/nestable2/jquery.nestable.js?v=1522837870'); ?> "></script>
 <script src="<?= base_url('assets/dist/js/nestable-data.js?v=1522837870'); ?> "></script>
-<script src="<?= base_url('assets/dist/js/dropdown-bootstrap-extended.js?v=1522837870'); ?> "></script>	
-<script src="<?= base_url('assets/dist/js/init.js?v=1522837870'); ?> "></script> 
+<script src="<?= base_url('assets/dist/js/dropdown-bootstrap-extended.js?v=1522837870'); ?> "></script>
+<script src="<?= base_url('assets/dist/js/init.js?v=1522837870'); ?> "></script>
 <script src="<?= base_url('assets/multi/multi.min.js?v=1522837870'); ?> "></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.18.0/sweetalert2.all.min.js"></script>
 <script type="text/javascript">
-	$(document).ready(function(){
+	$(document).ready(function () {
 		var pathname = window.location.pathname;
 		if (pathname.indexOf("DashboardHrm") == -1 && pathname.indexOf("Dashboardv1") == -1) {
-			$('.table').DataTable();
+			// $('.table').DataTable();
 		}
 	});
+
 </script>
 
 </body>
+
 </html>

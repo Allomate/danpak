@@ -2,8 +2,16 @@
 
 class RetailersModel extends CI_Model{
 	
-	public function GetRetailers(){
+	public function GetRetailers($id){
+		return $this->db->select('id, retailer_name, distributor_username, retailer_email, retailer_address, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as territory_name, (SELECT retailer_type_name from retailer_types where id = rd.retailer_type_id) as retailer_type')->where('retailer_territory_id = '.$id.' and find_in_set(rd.retailer_type_id, (SELECT GROUP_CONCAT(id) from retailer_types where retailer_or_distributor = "dist"))')->order_by("retailer_name", "")->get("retailers_details rd")->result();
+	}
+	
+	public function GetRetailersWithoutTerritory(){
 		return $this->db->select('id, retailer_name, distributor_username, retailer_email, retailer_address, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as territory_name, (SELECT retailer_type_name from retailer_types where id = rd.retailer_type_id) as retailer_type')->where('find_in_set(rd.retailer_type_id, (SELECT GROUP_CONCAT(id) from retailer_types where retailer_or_distributor = "dist"))')->order_by("retailer_name", "")->get("retailers_details rd")->result();
+	}
+
+	public function GetTerritoriesWithTotalDistributors(){
+        return $this->db->select('id, territory_name, (SELECT CONCAT(employee_first_name," ",employee_last_name) from employees_info where employee_id = tm.territory_poc_id) territory_poc, (SELECT count(*) from retailers_details rd where retailer_territory_id = tm.id and find_in_set(rd.retailer_type_id, (SELECT GROUP_CONCAT(id) from retailer_types where retailer_or_distributor = "dist"))) totalRetailers')->where('territory_poc_id IN (SELECT employee_id from employees_info where employee_designation IN ("ASM","RSM"))')->get("territory_management tm")->result();
 	}
 	
 	public function GetRetailerTypes(){
@@ -104,6 +112,10 @@ class RetailersModel extends CI_Model{
         from ((SELECT item_quantity_booker FROM `order_contents` oc where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where retailer_id = '.$id.' )) order by item_quantity_booker desc LIMIT 0,5)) as sumed))*100), 2) as percent_value FROM `order_contents` oc where find_in_set(order_id, (SELECT GROUP_CONCAT(id) from orders where retailer_id = '.$id.' )) order by item_quantity_booker desc LIMIT 0,5')->result(), 'orders' => $orderDetails);
 	}
 
+	public function getRetailersAgainstEmployeeTerritory($employeeId){
+		return $this->db->select('`id`, `retailer_name`, `retailer_phone`, `retailer_email`, `retailer_address`, `retailer_lats`, `retailer_longs`, `retailer_city`, `retailer_type_id`, (SELECT retailer_type_name from retailer_types where id = rd.retailer_type_id) as retailer_type, `retailer_territory_id`, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as retailer_territory, `retailer_image`, `added_by`, `updated_by`, `created_at`, (SELECT IFNULL((SELECT count(retailer_id) from retailers_assignment where retailer_id = rd.id), 0)) as assigned')->where('retailer_territory_id = (SELECT territory_id from employees_info where employee_id = '.$employeeId.') and find_in_set(rd.retailer_type_id, (SELECT GROUP_CONCAT(id) from retailer_types where retailer_or_distributor = "dist"))')->get('retailers_details rd')->result();
+	}
+
 	public function get_non_assigned_retailers(){
 		return $this->db->select('`id`, `retailer_name`, `retailer_phone`, `retailer_email`, `retailer_address`, `retailer_lats`, `retailer_longs`, `retailer_city`, `retailer_type_id`, (SELECT retailer_type_name from retailer_types where id = rd.retailer_type_id) as retailer_type, `retailer_territory_id`, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as retailer_territory, `retailer_image`, `added_by`, `updated_by`, `created_at`, (SELECT IFNULL((SELECT count(retailer_id) from retailers_assignment where retailer_id = rd.id), 0)) as assigned')->where('find_in_set(rd.retailer_type_id, (SELECT GROUP_CONCAT(id) from retailer_types where retailer_or_distributor = "dist"))')->get('retailers_details rd')->result();
 	}
@@ -139,57 +151,27 @@ class RetailersModel extends CI_Model{
 	}
 
 	public function ViewCompleteRetailersList($employeeId, $assiged_for_day){
-		$distributors = $this->db->select('id')->where('retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")')->get('retailers_details')->result();
-		$dists = null;
-		foreach($distributors as $distributor) :
-			if(!$dists){
-				$dists = $distributor->id;
-			}else{
-				$dists = $dists . ", " . $distributor->id;
-			}
-		endforeach;
-
-		return $this->db->select('(SELECT retailer_name from retailers_details where id = rd.retailer_id) as retailer_name, (SELECT retailer_address from retailers_details where id = rd.retailer_id) as retailer_address, (SELECT territory_name from territory_management where id = (SELECT retailer_territory_id from retailers_details where id = rd.retailer_id)) as territory_name')->where('employee_id = '.$employeeId.' and assigned_for_day = "'.$assiged_for_day.'" and retailer_id IN ('.$dists.')')->get('retailers_assignment rd')->result();
+		return $this->db->select('(SELECT retailer_name from retailers_details where id = rd.retailer_id) as retailer_name, (SELECT retailer_address from retailers_details where id = rd.retailer_id) as retailer_address, (SELECT territory_name from territory_management where id = (SELECT retailer_territory_id from retailers_details where id = rd.retailer_id)) as territory_name')->where('employee_id = '.$employeeId.' and assigned_for_day = "'.$assiged_for_day.'" and retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor  = "dist"))')->get('retailers_assignment rd')->result();
 	}
 
 	public function ListRetailersAssignments(){
-		$distributors = $this->db->select('id')->where('retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")')->get('retailers_details')->result();
-		$dists = null;
-		foreach($distributors as $distributor) :
-			if(!$dists){
-				$dists = $distributor->id;
-			}else{
-				$dists = $dists . ", " . $distributor->id;
-			}
-		endforeach;
-		if($dists){
+
 		$data = $this->db->select('employee_id, assigned_for_day,
 		(SELECT CONCAT(employee_first_name, " ", employee_last_name) from employees_info where employee_id = rd.employee_id) as employee,
-		(SELECT count(*) FROM `retailers_assignment` where employee_id = rd.employee_id and assigned_for_day = rd.assigned_for_day and retailer_id IN ('.$dists.')) as total_distributors_assigned,
-		(SELECT territory_name from territory_management where id = (SELECT territory_id from employees_info where employee_id = rd.employee_id)) as territory_name')->where('retailer_id IN ('.$dists.')')->get('retailers_assignment rd')->result();
-			return $data;
-		}
-		return null;
+		(SELECT count(*) FROM `retailers_assignment` where employee_id = rd.employee_id and assigned_for_day = rd.assigned_for_day and retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")) ) as total_distributors_assigned,
+		(SELECT territory_name from territory_management where id = (SELECT territory_id from employees_info where employee_id = rd.employee_id)) as territory_name')->where('retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist"))')->get('retailers_assignment rd')->result();
+		return $data;
 	}
 
 	public function GetSingleRetailerAssignment($employee_id, $assigned_for_day){
-		$distributors = $this->db->select('id')->where('retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")')->get('retailers_details')->result();
-		$dists = null;
-		foreach($distributors as $distributor) :
-			if(!$dists){
-				$dists = $distributor->id;
-			}else{
-				$dists = $dists . ", " . $distributor->id;
-			}
-		endforeach;
-		$retailerAssignments = array('details' => $this->db->select('id, retailer_name')->where('find_in_set(id, (SELECT GROUP_CONCAT(retailer_id) from retailers_assignment where employee_id = '.$employee_id.' and assigned_for_day = "'.$assigned_for_day.'" and retailer_id IN ('.$dists.') ))')->get('retailers_details')->result(), 'verbose' => $this->db->select('GROUP_CONCAT(id) as retailer_assignment_id, employee_id, (SELECT CONCAT(employee_first_name, " ", employee_last_name) from employees_info where employee_id = rd.employee_id and assigned_for_day = rd.assigned_for_day) as employee, assigned_for_day')->group_by('employee_id')->where('employee_id='.$employee_id.' and assigned_for_day = "'.$assigned_for_day.'" and retailer_id IN ('.$dists.')')->get('retailers_assignment rd')->row());
+		$retailerAssignments = array('details' => $this->db->select('id, retailer_name')->where('id IN (SELECT retailer_id from retailers_assignment where employee_id = '.$employee_id.' and assigned_for_day = "'.$assigned_for_day.'" and retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor  = "dist")) )')->get('retailers_details')->result(), 'verbose' => $this->db->select('GROUP_CONCAT(id) as retailer_assignment_id, employee_id, (SELECT CONCAT(employee_first_name, " ", employee_last_name) from employees_info where employee_id = rd.employee_id and assigned_for_day = rd.assigned_for_day) as employee, assigned_for_day')->group_by('employee_id')->where('employee_id='.$employee_id.' and assigned_for_day = "'.$assigned_for_day.'" and retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor  = "dist"))')->get('retailers_assignment rd')->row());
 		return $retailerAssignments;
 	}
 
 	public function AssignRetailers($assignmentsData){
-		$distributors = $this->db->select('id')->where('retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")')->get('retailers_details')->result();
 		$retailersForAssignments = "";
 		if(isset($assignmentsData["bunchAssignment"])){
+			$this->db->query("SET SESSION group_concat_max_len = 1000000");
 			if($assignmentsData["bunchAssignment"] == "region"){
 				$areaIds = $this->db->select('GROUP_CONCAT(id) as areas')->where('region_id', $assignmentsData["region_id"])->get('area_management')->row()->areas;
 				$territory_ids = $this->db->select('GROUP_CONCAT(id) as territories')->where('find_in_set(area_id, ("'.$areaIds.'") )')->get('territory_management')->row()->territories;
@@ -198,45 +180,42 @@ class RetailersModel extends CI_Model{
 			}else if($assignmentsData["bunchAssignment"] == "territory"){
 				$territory_ids = $assignmentsData["territory_id"];
 			}
-			
-			$existingAssignedDets = $this->db->select('GROUP_CONCAT(retailer_id) as retailers')->get('retailers_assignment')->row()->retailers;
-			if($existingAssignedDets != ""){
-				$retailersForAssignments = $this->db->select('GROUP_CONCAT(id) as ids')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist") and id NOT IN ('.$existingAssignedDets.')')->get('retailers_details')->row()->ids;
-			}else{
-				$retailersForAssignments = $this->db->select('GROUP_CONCAT(id) as ids')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")')->get('retailers_details')->row()->ids;
-			}
+
+			$retailersForAssignments = $this->db->select('id')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist") and id NOT IN (SELECT retailer_id from retailers_assignment where retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")) and employee_id != '.$assignmentsData["employee"].' )')->get('retailers_details')->result();
+			// $retailersForAssignments = $this->db->select('id')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist") and id NOT IN (SELECT retailer_id from retailers_assignment where retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist") ))')->get('retailers_details')->result();
 		}
 
-		$dists = null;
-		foreach($distributors as $distributor) :
-			if(!$dists){
-				$dists = $distributor->id;
-			}else{
-				$dists = $dists . ", " . $distributor->id;
-			}
-		endforeach;
-		if ($this->db->where('employee_id = '.$assignmentsData["employee"].' and assigned_for_day = "'.$assignmentsData["assigned_for_day"].'" and retailer_id IN ('.$dists.')')->get('retailers_assignment')->result()) {
+		if ($this->db->where('employee_id = '.$assignmentsData["employee"].' and assigned_for_day = "'.$assignmentsData["assigned_for_day"].'" and retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor  = "dist")) ')->get('retailers_assignment')->result()) {
 			return "Exist";
 		}
 
 		$retailers = explode(",", $assignmentsData["retailersForAssignments"]);
 		if(isset($assignmentsData["bunchAssignment"])){
-			$retailers = explode(",", $retailersForAssignments);
+			if(!sizeOf($retailersForAssignments)){
+				return "all_retailers_assigned";
+			}
+			$retailers = $retailersForAssignments;
 		}
+
 		$assignmentsBatch = array();
 		for ($i=0; $i < sizeof($retailers); $i++) :
-			$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]);
+			if(isset($assignmentsData["bunchAssignment"])){
+				$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]->id);
+			}else{
+				$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]);
+			}
 		endfor;
-		
-		if ($this->db->insert_batch('retailers_assignment', $assignmentsBatch)) :
-			return "Success";
-		else:
+
+		if(sizeOf($assignmentsBatch)){
+			if ($this->db->insert_batch('retailers_assignment', $assignmentsBatch)) :
+				return "Success";
+			endif;
+		}else{
 			return "Failed";
-		endif;
+		}
 	}
 
 	public function UpdateRetailersAssignment($existingEmployeeId, $assignmentsData){
-		$distributors = $this->db->select('id')->where('retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")')->get('retailers_details')->result();
 		$retailersForAssignments = "";
 		if(isset($assignmentsData["bunchAssignment"])){
 			if($assignmentsData["bunchAssignment"] == "region"){
@@ -247,61 +226,49 @@ class RetailersModel extends CI_Model{
 			}else if($assignmentsData["bunchAssignment"] == "territory"){
 				$territory_ids = $assignmentsData["territory_id"];
 			}
-			
-			$existingAssignedDetsLive = $this->db->select('retailer_id as id')->get('retailers_assignment')->result();
-			$existingAssignedDets = "";
-			foreach($existingAssignedDetsLive as $dets){
-				if($existingAssignedDets == ""){
-					$existingAssignedDets = $dets->id;
-				}else{
-					$existingAssignedDets .= "," . $dets->id;
-				}
-			}
 
-			if($existingAssignedDets != ""){
-				$retailersForAssignments = $this->db->select('GROUP_CONCAT(id) as ids')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist") and id NOT IN ('.$existingAssignedDets.')')->get('retailers_details')->row()->ids;
-			}else{
-				$retailersForAssignments = $this->db->select('GROUP_CONCAT(id) as ids')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")')->get('retailers_details')->row()->ids;
+			$retailersForAssignments = $this->db->select('id')->where('retailer_territory_id IN ('.$territory_ids.') and retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist") and id NOT IN (SELECT retailer_id from retailers_assignment where retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor = "dist")) and employee_id != '.$assignmentsData["employee"].' )')->get('retailers_details')->result();
+
+		}
+		
+		$retailers = explode(",", $assignmentsData["retailersForAssignments"]);
+
+		if(isset($assignmentsData["bunchAssignment"])){
+			if(!sizeOf($retailersForAssignments)){
+				return "all_retailers_assigned";
 			}
+			$retailers = $retailersForAssignments;
 		}
 
-		$dists = null;
-		foreach($distributors as $distributor) :
-			if(!$dists){
-				$dists = $distributor->id;
-			}else{
-				$dists = $dists . ", " . $distributor->id;
-			}
-		endforeach;
-		if ($this->db->where('employee_id = '. $assignmentsData["employee"] . ' and assigned_for_day = "'.$assignmentsData['assigned_for_day'].'" and retailer_id IN ('.$dists.') and id NOT IN ('.$assignmentsData['existingAssignmentIds'].')')->get('retailers_assignment')->result()) {
+		$mainRetailers = $this->db->query('(SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor  = "dist"))')->result();
+
+		if ($this->db->where('employee_id = '. $assignmentsData["employee"] . ' and assigned_for_day = "'.$assignmentsData["assigned_for_day"].'" and retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor  = "dist")) and id NOT IN (SELECT id from retailers_assignment rd where employee_id = '.$assignmentsData["employee"] .' and assigned_for_day = "'.$assignmentsData["assigned_for_day"].'" and retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor  = "dist")))')->get('retailers_assignment')->result()) {
 			return "Exist";
 		}
+
 		if($assignmentsData["existing_day"] == $assignmentsData["assigned_for_day"]){
-			if ($this->db->where('employee_id = '.$existingEmployeeId.' and assigned_for_day = "'.$assignmentsData["assigned_for_day"].'" and retailer_id IN ('.$dists.')')->delete('retailers_assignment')) :
-				$retailers = explode(",", $assignmentsData["retailersForAssignments"]);
-				if(isset($assignmentsData["bunchAssignment"])){
-					if($retailersForAssignments == ""){
-						return "all_retailers_assigned";
-					}
-					$retailers = explode(",", $retailersForAssignments);
-				}
+			if ($this->db->where('employee_id = '.$existingEmployeeId.' and assigned_for_day = "'.$assignmentsData["assigned_for_day"].'" and retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor  = "dist"))')->delete('retailers_assignment')) :
 				$assignmentsBatch = array();
 				for ($i=0; $i < sizeof($retailers); $i++) :
-					$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]);
+					if(isset($assignmentsData["bunchAssignment"])){
+						$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]->id);
+					}else{
+						$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]);
+					}
 				endfor;
 				return $this->db->insert_batch('retailers_assignment', $assignmentsBatch);
 			else :
 				return false;
 			endif;
 		}else{
-			if ($this->db->where('employee_id = '.$existingEmployeeId.' and assigned_for_day = "'.$assignmentsData["existing_day"].'" and retailer_id IN ('.$dists.')')->delete('retailers_assignment')) :
-				$retailers = explode(",", $assignmentsData["retailersForAssignments"]);
-				if(isset($assignmentsData["bunchAssignment"])){
-					$retailers = explode(",", $retailersForAssignments);
-				}
+			if ($this->db->where('employee_id = '.$existingEmployeeId.' and assigned_for_day = "'.$assignmentsData["existing_day"].'" and retailer_id IN (SELECT id from retailers_details where retailer_type_id IN (SELECT id from retailer_types where retailer_or_distributor  = "dist"))')->delete('retailers_assignment')) :
 				$assignmentsBatch = array();
 				for ($i=0; $i < sizeof($retailers); $i++) :
-					$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]);
+					if(isset($assignmentsData["bunchAssignment"])){
+						$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]->id);
+					}else{
+						$assignmentsBatch[] = array("employee_id"=>$assignmentsData["employee"], "assigned_for_day"=>$assignmentsData["assigned_for_day"], "retailer_id"=>$retailers[$i]);
+					}
 				endfor;
 				return $this->db->insert_batch('retailers_assignment', $assignmentsBatch);
 			else :

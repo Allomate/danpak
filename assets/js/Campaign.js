@@ -17,7 +17,6 @@ $(document).ready(function() {
     });
 
     $('#addCampaignBtn').click(function() {
-        debugger;
         var checkboxValidator = false;
         $('input[type="checkbox"]').each(function() {
             if ($(this).attr('checked')) {

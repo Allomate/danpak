@@ -86,16 +86,14 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Employee Base Station Latitude*</label>
-											<input type="text" name="employee_base_station_lats" class="form-control" value="<?= set_value('employee_base_station_lats');?>"
-											/>
+											<input type="text" name="employee_base_station_lats" class="form-control" value="<?= set_value('employee_base_station_lats');?>" />
 											<?= form_error('employee_base_station_lats', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Employee Base Station Longitude*</label>
-											<input type="text" name="employee_base_station_longs" class="form-control" value="<?= set_value('employee_base_station_longs');?>"
-											/>
+											<input type="text" name="employee_base_station_longs" class="form-control" value="<?= set_value('employee_base_station_longs');?>" />
 											<?= form_error('employee_base_station_longs', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 										</div>
 									</div>
@@ -150,19 +148,6 @@
 												<?php foreach ($employees as $employee) : ?>
 												<option value="<?= $employee->employee_id; ?>">
 													<?= $employee->employee_username; ?>
-												</option>
-												<?php endforeach; ?>
-											</select>
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label class="control-label mb-10">Territory*</label>
-											<select class="selectpicker" data-style="form-control btn-default btn-outline" id="territoryDD" name="territory_id">
-												<option value="0" disabled="disabled" selected="selected">Please select a territory</option>
-												<?php foreach ($territories as $territory) : ?>
-												<option value="<?= $territory->id; ?>">
-													<?= $territory->territory_name; ?>
 												</option>
 												<?php endforeach; ?>
 											</select>

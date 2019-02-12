@@ -77,6 +77,7 @@ $(document).ready(function() {
     });
 
     if ($('#updateUrl').length) {
+        debugger;
         $.ajax({
             type: 'POST',
             url: $('#updateUrl').val(),

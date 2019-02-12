@@ -28,6 +28,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="box-white m-b-30">
+						<br>
 						<div id="example-basic">
 							<h3>
 								<span class="head-font capitalize-font wz-pt">Create Catalogue</span>
@@ -69,18 +70,88 @@
 								</div>
 							</section>
 							<h3>
-								<span class="head-font capitalize-font wz-pt">Select Product</span>
+								<span class="head-font capitalize-font wz-pt">Select Products</span>
 							</h3>
 							<section>
 								<div class="col-md-12" id="productsDiv">
-									<h3 class="m-b-15">Select Products for Catalogue</h3>
-									<select multiple="multiple" name="inventory_items" id="inventory_items">
-										<?php foreach($inventoryList as $inventory) : ?>
-										<option value="<?= $inventory->pref_id; ?>">
-											<?= $inventory->item_name; ?>
-										</option>
-										<?php endforeach; ?>
-									</select>
+									<div class="row">
+										<div class="col-md-12" id="viewAddedProducts" style="text-align: center; cursor: pointer">
+											<span style="font-weight: bold">VIEW ADDED PRODUCTS</span>
+										</div>
+										<div id="myModal" class="modal fade" role="dialog">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal">&times;</button>
+														<h4 class="modal-title">Products</h4>
+													</div>
+													<div class="modal-body">
+														<div class="list-group" id="prodsListAdded">
+														</div>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="table-wrap">
+										<div class="table-responsive">
+											<table class="table table-hover">
+												<thead>
+													<tr>
+														<th>S.No</th>
+														<th>Item Sku</th>
+														<th>Item Name</th>
+														<th>Item Brand</th>
+														<th>Units</th>
+														<th>Actions</th>
+													</tr>
+												</thead>
+												<tfoot>
+													<tr>
+														<th>S.No</th>
+														<th>Item Sku</th>
+														<th>Item Name</th>
+														<th>Item Brand</th>
+														<th>Units</th>
+														<th>Actions</th>
+													</tr>
+												</tfoot>
+												<tbody>
+													<?php $sno = 1; foreach($inventoryList as $inv): ?>
+													<tr>
+														<td>
+															<?= $sno++; ?>
+														</td>
+														<td>
+															<?= $inv->item_sku; ?>
+														</td>
+														<td>
+															<?= $inv->item_name; ?>
+														</td>
+														<td>
+															<?= $inv->item_brand; ?>
+														</td>
+														<td>
+															<select class="form-control" id="unitForCatalogue">
+																<?php foreach(explode("<-->", $inv->variants) as $v): ?>
+																<option value="<?= explode('<>', $v)[0]; ?>">
+																	<?= explode('<>', $v)[1]; ?>
+																</option>
+																<?php endforeach; ?>
+															</select>
+														</td>
+														<td>
+															<button class="btn view-report addItemToCatalogue">ADD</button>
+														</td>
+													</tr>
+													<?php endforeach; ?>
+												</tbody>
+											</table>
+										</div>
+									</div>
 								</div>
 							</section>
 							<h3>

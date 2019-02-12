@@ -44,8 +44,73 @@ class Employees extends WebAuth_Controller {
 
 	public function ListEmployees()
 	{
-		$employeesList = $this->em->get_employees_list();
-		$this->load->view('Employee/list_employees', ['employees'=>$this->em->get_employees_list()]);
+		if(!isset($_COOKIE['sage']))
+			return redirect('/');
+		$employeesList = $this->em->get_employees_list_management();
+		if($_COOKIE['sage'] == 1){
+			$employeesList = $this->em->get_employees_list_sales_agent();
+		}
+		$this->load->view('Employee/list_employees', ['employees'=>$employeesList]);
+	}
+
+	public function Deactivate($empId){
+		if ($this->em->deact_act_emp($empId, '0')) :
+			$this->session->set_flashdata("employee_deactivated", "Employee has been deactivated");
+		else:
+			$this->session->set_flashdata("employee_deactivate_failed", "Failed to deactive the employee");
+		endif;
+		return redirect('Employees/ListEmployees');
+	}
+
+	public function Activate($empId){
+		if ($this->em->deact_act_emp($empId, '1')) :
+			$this->session->set_flashdata("employee_activated", "Employee has been activated");
+		else:
+			$this->session->set_flashdata("employee_activate_failed", "Failed to active the employee");
+		endif;
+		return redirect('Employees/ListEmployees');
+	}
+
+	public function UpdateEmployeeProfilePicture(){
+		$employee_picture = '';
+		if (isset($_FILES['employee_picture'])) :
+			$_FILES['employee_picture'] = array_filter($_FILES['employee_picture']);
+		endif;
+		if (!empty($_FILES['employee_picture']['name'])) :
+			$employee['picture_deleted'] = 'deleted';
+			$config['upload_path'] = './assets/uploads/employee/';
+			$config['allowed_types'] = 'jpg|bmp|png|jpeg';
+			$config['max_size'] = 'jpg|bmp|png|jpeg';
+			$this->load->helper('file');
+			$this->load->library('upload', $config);
+			$item_thumbnail = '';
+			$_FILES['userfile']['name'] = time().'-'.trim($_FILES['employee_picture']['name']);
+			$_FILES['userfile']['type'] = $_FILES['employee_picture']['type'];
+			$_FILES['userfile']['tmp_name'] = $_FILES['employee_picture']['tmp_name'];
+			$_FILES['userfile']['error']    = isset($_FILES['employee_picture']['error']) ? $_FILES['employee_picture']['error'] : '';
+			$_FILES['userfile']['size'] = $_FILES['employee_picture']['size'];
+			if (!$this->upload->do_upload()) :
+				$this->load->view('Employee/add_employee', ['employees'=>$employeesList, 'territories'=>$this->tm->getAllTerritories(), 'employee_picture_error'=>$this->upload->display_errors()]);
+			else :
+				$file_data = $this->upload->data();
+				$employee_picture = $config['upload_path'].$file_data['file_name'];
+			endif;
+		endif;
+
+		$status = $this->em->update_employee_picture($employee_picture);
+		if (!$status) :
+			echo json_encode(['status' => 'failed', 'error' => $status]);
+			die;
+		endif;
+		echo json_encode(['status' => 'success', 'image' => str_replace("./", "/", $employee_picture)]);
+	}
+
+	public function PersonalInfo(){
+		$this->load->view('personal-profile', ["info" => $this->em->getLoggedInProfileInfo() ]);
+	}
+
+	public function ChangePwAjax(){
+		echo json_encode($this->em->updatePassword(sha1($this->input->post("pw"))));
 	}
 
 	public function EmployeeProfile($employeeId)

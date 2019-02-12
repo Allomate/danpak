@@ -122,16 +122,30 @@
 										</div>
 									</div>
 									<div class="col-md-6">
-										<div class="form-group">
-											<label class="control-label mb-10">Visit Status</label>
-											<div class="radio-group">
-												<input type="radio" name="visit_status" value="1" checked="checked"> Visit marked with no order
-												<br>
-												<input type="radio" name="visit_status" value="2"> Visit marked with order
+										<div class="row">
+											<div class="col-md-7">
+												<div class="form-group">
+													<label class="control-label mb-10">Add Campaign</label>
+													<select name="campaign_id" data-style="form-control btn-default btn-outline">
+														<?php foreach( $campaigns as $campaign ) : ?>
+														<option value="<?= $campaign->campaign_id; ?>">
+															<?= $campaign->campaign_name; ?>
+														</option>
+														<?php endforeach; ?>
+													</select>
+												</div>
+											</div>
+											<div class="col-md-5">
+												<div class="form-group">
+													<label class="control-label mb-10">Campaign Quantity</label>
+													<input type="text" id="campaign_quantity" min="1" class="form-control">
+													<small>Minimum eligibility criteria quantity</small>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
+								<input type="radio" name="visit_status" value="1" checked="checked" hidden>
 							</div>
 						</div>
 						</form>
@@ -141,6 +155,7 @@
 			<div class="row button-section">
 				<a type="button" href="/" class="btn btn-cancel">Cancel</a>
 				<a type="button" id="addToCartBtn" class="btn btn-save">Add to cart</a>
+				<a type="button" id="addCampaignBtn" class="btn btn-save">Add Campaign</a>
 				<a type="button" id="createOrderBtn" class="btn btn-save">Save</a>
 			</div>
 		</div>

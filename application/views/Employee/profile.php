@@ -12,8 +12,8 @@
 						<div class="row">
 							<div class="col-md-12">
 								<span class="emp_name">
-									<img src="<?= $employee->employee_picture ? $employee->employee_picture : base_url('assets/images/no-image.png') ; ?>" alt=""
-									class="emp_img img-circle">
+									<img src="<?= $employee->employee_picture ? $employee->employee_picture : base_url('assets/images/no-image.png') ; ?>"
+									 alt="" class="emp_img img-circle">
 									<?= $employee->employee_first_name.' '.$employee->employee_last_name;?>
 								</span>
 								<span class="emp-top-m">ID: #
@@ -60,31 +60,31 @@
 									<tr>
 										<td rowspan="2" class="emp_SS">
 											<span class="counter-anim font_s">
-												<?= $data["revenue_generated"] ? $data["revenue_generated"] : "0"; ?>
+												<?= number_format($data["revenue_generated"]) ? number_format($data["revenue_generated"]) : "0"; ?>
 											</span>
 											<span class="uppercase-font block">Total Revenue Generated</span>
 										</td>
 										<td class="emp_S1">
 											<span class="counter-anims" style="font-size: 25px; font-weight: 800; line-height: normal; color: #001e35;">
-												<?= $data["avg_monthly_sale"] ? $data["avg_monthly_sale"] : "0"; ?>
+												<?= number_format($data["avg_monthly_sale"]) ? number_format($data["avg_monthly_sale"]) : "0"; ?>
 											</span>
 											<span class="uppercase-font block p-t-5">AVG Monthly Sales</span>
 										</td>
 										<td class="emp_S1">
 											<span class="counter-anims" style="font-size: 25px; font-weight: 800; line-height: normal; color: #001e35;">
-												<?= $data["avg_per_week_sale"] ? $data["avg_per_week_sale"] : "0"; ?>
+												<?= number_format($data["avg_per_week_sale"]) ? number_format($data["avg_per_week_sale"]) : "0"; ?>
 											</span>
 											<span class="uppercase-font block p-t-5">AVG Weekly Sales</span>
 										</td>
 										<td class="emp_S1">
 											<span class="counter-anims" style="font-size: 25px; font-weight: 800; line-height: normal; color: #001e35;">
-												<?= $data["avg_daily_sale"] ? $data["avg_daily_sale"] : "0"; ?>
+												<?= number_format($data["avg_daily_sale"]) ? number_format($data["avg_daily_sale"]) : "0"; ?>
 											</span>
 											<span class="uppercase-font block p-t-5">AVG Daily Sales</span>
 										</td>
 										<td class="emp_S1 border-r-none">
 											<span class="counter-anims" style="font-size: 25px; font-weight: 800; line-height: normal; color: #001e35;">
-												<?= $data["avg_order_value"] ? $data["avg_order_value"] : "0"; ?>
+												<?= number_format($data["avg_order_value"]) ? number_format($data["avg_order_value"]) : "0"; ?>
 											</span>
 											<span class="uppercase-font block p-t-5">AVG Order Value</span>
 										</td>
@@ -93,26 +93,27 @@
 										<td class="emp_S2">
 											<span>
 												<span class="counter-anims" style="font-size: 25px; font-weight: 800; line-height: normal; color: #001e35;">
-													<?= $data["productive_sales_ratio"] ? $data["productive_sales_ratio"] : "0"; ?>
+													<?= number_format($data["productive_sales_ratio"]) ? number_format($data["productive_sales_ratio"]) : "0"; ?>
 												</span>%</span>
 											<span class="uppercase-font block p-t-5">Productive Sales Ratio</span>
 										</td>
 										<td class="emp_S2">
 											<span>
 												<span class="counter-anims" style="font-size: 25px; font-weight: 800; line-height: normal; color: #001e35;">
-													<?= $data["return_ratio"] ? $data["return_ratio"] : "0"; ?>
+													<?= number_format($data["return_ratio"]) ? number_format($data["return_ratio"]) : "0"; ?>
 												</span>%</span>
 											<span class="uppercase-font block p-t-5">Return Ratio</span>
 										</td>
 										<td class="emp_S2">
 											<span class="counter-anims" style="font-size: 25px; font-weight: 800; line-height: normal; color: #001e35;">
-												<?= $data["avg_products_per_order"] ? $data["avg_products_per_order"] : "0"; ?>
+												<?= number_format($data["avg_products_per_order"]) ? number_format($data["avg_products_per_order"]) : "0"; ?>
 											</span>
 											<span class="uppercase-font block p-t-5">AVG Products/Sales Order</span>
 										</td>
 										<td class="emp_S2 border-none">
 											<span>
-												<span class="counter-anims" style="font-size: 25px; font-weight: 800; line-height: normal; color: #001e35;"> N/A </span>%</span>
+												<span class="counter-anims" style="font-size: 25px; font-weight: 800; line-height: normal; color: #001e35;">
+													N/A </span>%</span>
 											<span class="uppercase-font block p-t-5">AVG Target Achievement</span>
 										</td>
 									</tr>
@@ -211,7 +212,7 @@
 									<tr>
 										<td rowspan="2" class="emp_SS">
 											<span class="counter-anim font_s">
-												<?= $data['total_orders_booked'] ? $data['total_orders_booked'] : "0"; ?>
+												<?= number_format($data['total_orders_booked']) ? number_format($data['total_orders_booked']) : "0"; ?>
 											</span>
 											<span class="uppercase-font block">Total Orders Booked</span>
 										</td>

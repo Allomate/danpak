@@ -77,6 +77,7 @@
 					<div class="box-white p-20">
 						<a href="<?=base_url('Retailers/AddRetailer');?>" class="btn add-emp">
 							<i class="fa fa-plus"> </i> New Distributor</a>
+						<a type="button" href="/Retailers/ListRetailers/List/All" class="btn btn-cancel" style="float: right;">Back</a>
 						<h2 class="m-b-0 less_600">Distributors List </h2>
 						<div class="table-wrap">
 							<div class="table-responsive">
@@ -87,7 +88,7 @@
 											<th>Address</th>
 											<th>Territory</th>
 											<th>Type</th>
-											<th>Created at</th>
+											<th style="width: 80px">Actions</th>
 										</tr>
 									</thead>
 									<tfoot>
@@ -96,7 +97,7 @@
 											<th>Address</th>
 											<th>Territory</th>
 											<th>Type</th>
-											<th>Created at</th>
+											<th style="width: 80px">Actions</th>
 										</tr>
 									</tfoot>
 									<tbody>
@@ -123,7 +124,7 @@
 													View Profile
 												</a>
 												&nbsp;
-												<a class="deleteConfirmation" href="<?=base_url('Retailers/DeleteRetailer/' . $retailer->id);?>">
+												<a class="deleteConfirmation" href="<?= base_url('Retailers/DeleteRetailer/'.$retailer->id.'/'.$this->uri->segment(4)); ?>">
 													<i class="fa fa-close"></i>
 												</a>
 											</td>

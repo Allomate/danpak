@@ -16,7 +16,8 @@ class CataloguesModel extends CI_Model{
 	}
 	
 	public function GetAllInventory(){
-		return $this->db->select('pref_id, item_thumbnail, CONCAT((SELECT item_name from inventory_items where item_id = ip.item_id), " (", (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id), ")") as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name')->get("inventory_preferences ip")->result();
+		return $this->db->select('item_id, item_sku, item_name, item_brand, (SELECT GROUP_CONCAT(CONCAT(pref_id, "<>", (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id)) SEPARATOR "<-->") from inventory_preferences ip where item_id = items.item_id) as variants')->get("inventory_items items")->result();
+		// return $this->db->select('pref_id, item_thumbnail, CONCAT((SELECT item_name from inventory_items where item_id = ip.item_id), " (", (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id), ")") as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name')->get("inventory_preferences ip")->result();
 	}
 
 	public function CreateCompleteCatalogue($catalogueData, $assignmentData){
@@ -48,8 +49,13 @@ class CataloguesModel extends CI_Model{
 		$catalogue_data->catalogue_assignment_data = $this->db->select('id as catalogue_assignment_id, employee_id, active_from, active_till')->where('catalogue_id', $catalogue_data->catalogue_id)->get('catalogue_assignment')->result();
 		$sortedPrefIds = explode(",", $catalogue_data->pref_id);
 		$preferencesArray = array();
+		$counter = 0;
 		foreach ($sortedPrefIds as $pref_id) {
 			$preferencesArray[] = $this->db->select('pref_id, CONCAT((SELECT item_name from inventory_items where item_id = ip.item_id), " (", (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id), ")") as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name')->where('pref_id', $pref_id)->get("inventory_preferences ip")->row();
+			if(!$preferencesArray[$counter]){
+				unset($preferencesArray[$counter]);
+			}
+			$counter++;
 		}
 		$catalogue_data->preferences = $preferencesArray;
 		return $catalogue_data;
@@ -150,8 +156,13 @@ class CataloguesModel extends CI_Model{
 		$catalogue_data->catalogue_assignment_data = $this->db->select('id as catalogue_assignment_id, employee_id, active_from, active_till')->where('catalogue_id', $catalogue_data->catalogue_id)->get('catalogue_assignment')->result();
 		$sortedPrefIds = explode(",", $catalogue_data->pref_id);
 		$preferencesArray = array();
+		$counter = 0;
 		foreach ($sortedPrefIds as $pref_id) {
 			$preferencesArray[] = $this->db->select('pref_id, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, item_id, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, REPLACE(item_thumbnail,"./","'.base_url().'") as item_thumbnail, (SELECT sub_category_name from sub_categories where sub_category_id = ip.sub_category_id) as category')->where('pref_id', $pref_id)->get("inventory_preferences ip")->row();
+			if(!isset($preferencesArray[$counter])){
+				unset($preferencesArray[$counter]);
+			}
+			$counter++;
 		}
 		return $preferencesArray;
 	}

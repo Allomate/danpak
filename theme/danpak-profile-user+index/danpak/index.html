@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title></title>
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<meta name="author" content="hencework"/>
+	
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="">
+	<link rel="icon" href="" type="image/x-icon">
+
+ 
+	<!-- bootstrap-select CSS -->
+	<link href="vendors/bower_components/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet" type="text/css"/>
+
+	<link href="dist/css/material-design-iconic-font.min.css" rel="stylesheet" type="text/css">
+	
+	<!-- Custom CSS -->
+	<link href="dist/css/style.css" rel="stylesheet" type="text/css">
+	
+</head>
+
+<body>
+	<!--Preloader-->
+	<div class="preloader-it">
+		<div class="la-anim-1"></div>
+	</div>
+	<!--/Preloader-->
+    <div class="wrapper theme-1-active">
+
+        <!-- Top Menu Items -->
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="mobile-only-brand pull-left">
+			<a id="toggle_nav_btn" class="toggle-left-nav-btn inline-block ml-20 pull-left" href="javascript:void(0);"><i class="zmdi zmdi-menu"></i></a>
+		 		
+				<div class="m-logo">
+				<a href="index.html">
+				 <img class="brand-img" src="images/allomate-logo.png" alt="brand"/>
+				 
+				</a>
+				</div>  
+		
+			</div>
+			
+			
+			
+			<div id="mobile_only_nav" class="mobile-only-nav pull-right">
+			 
+				<ul class="nav navbar-right top-nav pull-right">
+					
+					<li class="dropdown auth-drp">
+						<a href="#" class="dropdown-toggle pr-0" data-toggle="dropdown"><img src="images/profile-img.jpg" alt="" class="user-auth-img img-circle"/> </a>
+						<ul class="dropdown-menu user-auth-dropdown" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
+							<li>
+								<a href="profile.html"><i class="zmdi zmdi-account"></i><span>Profile</span></a>
+							</li>
+						  
+							<li>
+								<a href="#"><i class="zmdi zmdi-settings"></i><span>Settings</span></a>
+							</li>
+							<li class="divider"></li> 
+							<li>
+								<a href="#"><i class="zmdi zmdi-power"></i><span>Log Out</span></a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>	
+		</nav>
+		<!-- /Top Menu Items -->
+		
+		<!-- Left Sidebar Menu -->
+		<div class="fixed-sidebar-left">
+			<ul class="nav navbar-nav side-nav nicescroll-bar">
+
+								<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#dash_dr"><div class="pull-left"><i class="icon-dash1-icon mr-20"></i><span class="right-nav-text">Dashboard</span></div><div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="dash_dr" class="collapse collapse-level-1">
+						<li><a href="index-dashboard.html">Dashboard</a></li>
+						<li><a href="hrm.html">HRM</a></li>
+						<li><a href="sales-analytics.html">Sales Analytics</a> </li>
+						
+					</ul>
+				</li>
+				
+				
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#org_dr"><div class="pull-left"><i class="icon-org1-icon mr-20"></i><span class="right-nav-text">Organization Management</span></div><div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="org_dr" class="collapse collapse-level-1">
+						<li>
+							<a href="profile.html">Company Profile</a>
+						</li>
+						<li><a href="territory-management.html">Territory Management</a></li>
+						<li><a href="region-management.html">Region Management</a></li>
+						<li><a href="area-management.html">Area Management</a> </li>
+						
+					</ul>
+				</li>
+				 
+				<li> 
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#emp_dr"><div class="pull-left"><i class="zmdi zmdi-account-calendar mr-20"></i><span class="right-nav-text">Employee Management</span></div><div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="emp_dr" class="collapse collapse-level-1">
+						<li><a href="employee-profile.html">Employee Profile</a></li>
+						<li><a href="employee.html">Employee Management</a></li>
+						<li><a href="order-employee-list.html">Employee Orders</a></li>
+						<li><a href="employee-attendance.html">Employee Attendance</a></li>
+						<li><a href="employee-attendance-detail.html">Employee Attendance Detail</a></li> 
+						
+						
+					</ul>
+				</li> 
+				
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#inv_dr">
+					<div class="pull-left"><i class="icon-inv-icon mr-20"></i><span class="right-nav-text">Inventory Management</span></div>
+					<div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="inv_dr" class="collapse collapse-level-1">
+						<li><a href="inventory.html">Product Management</a></li>						
+						<li><a href="category-management.html">Category Management</a></li>
+						<li><a href="packaging-management.html">Packaging Management</a></li>
+						<li><a href="product-list.html">Product List</a></li>
+						<li><a href="product-detail.html">Product Detail</a></li>
+												
+					</ul>
+				</li>
+				
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#ret_dr">
+					<div class="pull-left"><i class="icon-ret1-icon mr-20"></i><span class="right-nav-text">Distributor Management</span></div>
+					<div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="ret_dr" class="collapse collapse-level-1">
+						<li>
+							<a href="distributor-management.html">Distributor List</a>
+						</li>
+						<li>
+							<a href="distributor-profile.html">Distributor Profile</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#ret_dr1">
+					<div class="pull-left"><img src="images/retailers-icon.svg" alt=""/><span class="right-nav-text">Retailers Management</span></div>
+					<div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="ret_dr1" class="collapse collapse-level-1">
+						<li>
+							<a href="#">Retailers List</a>
+						</li>
+			 
+					</ul>
+				</li>
+				
+ 
+				
+	 		 	<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#cat_dr">
+					<div class="pull-left"><i class="icon-cat1-icon mr-20"></i><span class="right-nav-text">Catalogue Management</span></div>
+					<div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="cat_dr" class="collapse collapse-level-1">
+						<li>
+							<a href="catalogue-management.html">Catalogue Management</a>
+						</li>
+						<li>
+							<a href="catalogue-assign-list.html">Catalogue Assign</a>
+						</li>
+						
+						
+					</ul>
+				</li>
+				
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#ord_dr">
+					<div class="pull-left"><i class="icon-ord1-icon mr-20"></i><span class="right-nav-text">Orders Management</span></div>
+					<div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="ord_dr" class="collapse collapse-level-1">
+						<li>
+							<a href="orders-management.html">Orders List</a>
+						</li>
+					</ul>
+				</li> 
+				
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#rep_dr">
+					<div class="pull-left"><i class="zmdi  zmdi-chart-donut mr-20"></i><span class="right-nav-text">Reports Management</span></div>
+					<div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="rep_dr" class="collapse collapse-level-1">
+						<li>
+							<a href="reports-management.html">Reports List</a>
+						</li>
+					</ul>
+				</li>
+				
+				  <li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#rep_dr001">
+					<div class="pull-left"><img src="images/kpi-icon.svg" alt=""/><span class="right-nav-text">KPI Management</span></div>
+					<div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="rep_dr001" class="collapse collapse-level-1">
+						<li>
+							<a href="reports-management.html">KPI Management</a>
+						</li>
+					</ul>
+				</li>  
+				
+				
+				
+
+			</ul>
+ 
+		</div>
+		<!-- /Left Sidebar Menu -->
+        
+        <!-- Right Sidebar Dashboard -->
+<div class="fixed-sidebar-right"> <a href="#" id="open_right_sidebar" class="close-btn-pl"></a>
+  <div class="pro-header-text2">
+    <h3>Dash Board</h3>
+  </div>
+  <div class="pc-cartlist2">
+    <div class="overflow-plist2">
+      <div class="plist-content2">
+        
+		  <ul class="_dash-links">
+						<li><a href="#"><img src="images/_sales-dash.svg" alt=""/> Sales Dashboard</a></li>
+						<li><a href="#"><img src="images/_employee-dash.svg" alt=""/>Employee Dashboard</a></li>
+						<li><a href="#"><img src="images/_inventory-dash.svg" alt=""/>Inventory Analytics</a></li>
+						<li><a href="#"><img src="images/_reporting-dash.svg" alt=""/>Reporting</a></li>
+						
+		  </ul>
+			    	
+      </div>
+    </div>
+  </div>
+</div>
+
+ 
+  
+         
+		<!-- Main Content -->
+		<div class="page-wrapper">
+            <div class="container">
+				
+				<!-- Title -->
+				<div class="row m-t-30">
+					<div class="col-md-12 align-center">
+						<h1 class="txt-dark uppercase-font">Sales and Distributor</h1>
+						<h3 class="txt-grey">Management System</h3>
+					</div>
+			 
+					<!-- /Breadcrumb -->
+				</div>
+				<!-- /Title -->
+		 
+				<!-- Row -->
+			    <div class="row">
+			    	<div class="col-md-12 m-t-30">
+			    	
+			    		<a href="#" id="open_right_sidebar">
+			    		
+			    		<div class="col-md-4">
+			    		<div class="box-sec">
+			    		<span class="icon-dash2-icon"></span>			    		
+			    		<h2>Dashboard</h2>			    			
+			    		</div>
+						</div>
+		    		    </a>	
+		    		    
+		    		    <a href="#" id="Organization_Management">
+		    			<div class="col-md-4">
+			    		<div class="box-sec">
+			    		<span class="icon-emp2-icon"></span>			    		
+			    		<h2>Organization Management</h2>		    			
+			    		</div>
+						</div>
+	    		        </a>	
+	    		        
+	    		        <a href="#">
+		    		    <div class="col-md-4">
+			    		<div class="box-sec">
+			    		<span class="img-svg"><img src="images/sale-icon-home.svg" alt=""/></span>
+						<h2>Sales Force Management</h2>			    			
+			    		</div>
+						</div>
+						</a>	 
+			    		
+						<a href="#">
+		    			<div class="col-md-4">
+			    		<div class="box-sec">
+			    		<span class="icon-inv2-icon"></span>			    		
+						<h2>Inventory Management</h2>			    			
+			    		</div>
+						</div>
+		    			</a>	
+
+		    			<a href="#">
+		    			<div class="col-md-4">
+			    		<div class="box-sec">
+			    		<span class="icon-cat2-icon"></span>			    		
+			    		<h2>Catalogue Management</h2>			    			
+			    		</div>
+						</div>
+	    		        </a>
+		    		
+		    			<a href="#">
+		    			<div class="col-md-4">
+			    		<div class="box-sec">
+			    		<span class="icon-ret2-icon"></span>			    		
+			    		<h2>Distributor Management</h2>			    			
+			    		</div>
+						</div>
+	    		        </a>
+		    		
+		    			<a href="#">
+		    			<div class="col-md-4">
+			    		<div class="box-sec">
+			    		<span class="icon-ord2-icon"></span>			    		
+			    		<h2>Orders Management </h2>			    			
+			    		</div>
+						</div>
+						</a>	    		
+		    		
+		    		       		
+		    		
+		    		    <a href="#">
+		    		    <div class="col-md-4">
+			    		<div class="box-sec">
+			    		<span class="img-svg"><img src="images/bulletins-icon-home.svg" alt=""/></span>
+						<h2>Bulletins Management</h2>			    			
+			    		</div>
+						</div>
+						</a>	    		
+		    		
+		    		    <a href="#">
+		    		    <div class="col-md-4">
+			    		<div class="box-sec">
+			    		<span class="img-svg"><img src="images/reports-icon-home.svg" alt=""/></span>
+						<h2>Reports Management</h2>			    			
+			    		</div>
+						</div>
+	    				</a>	 
+
+		 
+		  
+		    <br><br><br><h3>Dash board</h3>
+		    <ul class="_dash-links">					
+						<li><a href="#"><img src="images/_sales-dash.svg" alt=""/> Sales Dashboard</a></li>
+						<li><a href="#"><img src="images/_employee-dash.svg" alt=""/>Employee Dashboard</a></li>
+						<li><a href="#"><img src="images/_inventory-dash.svg" alt=""/>Inventory Analytics</a></li>
+						<li><a href="#"><img src="images/_reporting-dash.svg" alt=""/>Reporting</a></li>						
+		   </ul>
+		   
+		   
+		  
+		  <div class="col-md-12"><br><br><br><h3>Organization Management</h3></div>	
+    		 				
+		  <ul class="_dash-links">			 
+			  <li><a href="#"><img src="images/_approved-dash.svg" alt=""/> Company Profile</a></li>
+		      <li><a href="#"><img src="images/_region-dash.svg" alt=""/>Region</a></li>
+			  <li><a href="#"><img src="images/_area-dash.svg" alt=""/>Area</a></li>
+			  <li><a href="#"><img src="images/_territory-dash.svg" alt=""/>Territory</a></li>
+			  <li><a href="#"><img src="images/_organization-employee-dash.svg" alt=""/>Employees</a></li>
+		  </ul>
+		  
+		  <div class="col-md-12"><br><br><br><h3>Sales Force Management</h3></div>	
+    		 				
+		  <ul class="_dash-links">			 
+			  <li><a href="#"><img src="images/_salesagent-dash.svg" alt=""/> Add New Sales Agent</a></li>
+			  <li><a href="#"><img src="images/_salesagent02-dash.svg" alt=""/> Sales Agent</a></li>
+			  <li><a href="#"><img src="images/_attendance-dash.svg" alt=""/> Attendance</a></li>
+			  <li><a href="#"><img src="images/_ordercompliance-dash.svg" alt=""/> Order Compliance</a></li>
+			  <li><a href="#"><img src="images/_daily-routing-dash.svg" alt=""/> Daily Routing</a></li>
+			  <li><a href="#"><img src="images/_access-rights-dash.svg" alt=""/> Access Rights</a></li>
+		  </ul>
+		  
+		  <div class="col-md-12"><br><br><br><h3>Inventory Management</h3></div>	
+    		 				
+		  <ul class="_dash-links">			 
+			  <li><a href="#"><img src="images/_add-product-dash.svg" alt=""/>Add New Product</a></li>
+			  <li><a href="#"><img src="images/_update-product-dash.svg" alt=""/>Update Product</a></li>
+			  <li><a href="#"><img src="images/_product-gallery-dash.svg" alt=""/>Product Gallery</a></li>
+			  <li><a href="#"><img src="images/_sub-inventory-dash.svg" alt=""/>Sub Inventory</a></li>
+			  <li><a href="#"><img src="images/_packaging-options-dash.svg" alt=""/>Packaging Options</a></li>
+			  <li><a href="#"><img src="images/_main-categories-dash.svg" alt=""/>Main Categories</a></li>
+			  <li><a href="#"><img src="images/_sub-categories-dash.svg" alt=""/>Sub Categories</a></li>
+
+		  </ul>
+
+		  <div class="col-md-12"><br><br><br><h3>Catalogue Management</h3></div>	
+    		 				
+		  <ul class="_dash-links">			 
+			  <li><a href="#"><img src="images/_catalogue-dash.svg" alt=""/>Catalogue Management</a></li>
+			  <li><a href="#"><img src="images/_catalogue-assignments-dash.svg" alt=""/>Catalogue Assignments</a></li>
+		  </ul>
+		  
+		  <div class="col-md-12"><br><br><br><h3>Distributors Management</h3></div>	
+    		 				
+		  <ul class="_dash-links">			 
+			  <li><a href="#"><img src="images/_distributors-dash.svg" alt=""/>Distributors Management</a></li>
+			  <li><a href="#"><img src="images/_type-management-dash.svg" alt=""/>Type Management</a></li>
+			  <li><a href="#"><img src="images/_distributors-assignment-dash.svg" alt=""/>Distributors Assignment</a></li>
+		  </ul>
+		  
+		   <div class="col-md-12"><br><br><br><h3>Retailers Management</h3></div>	
+    		 				
+		  <ul class="_dash-links">			 
+			  <li><a href="#"><img src="images/retail-assignment-dash.svg" alt=""/>Retailers Management</a></li>
+			  <li><a href="#"><img src="images/_retail-type-dash.svg" alt=""/>Type Management</a></li>
+			  <li><a href="#"><img src="images/_retail-assignment-dash.svg" alt=""/>Retailers Assignment</a></li>
+		  </ul>
+		  
+		   <div class="col-md-12"><br><br><br><h3>Secondary Orders</h3></div>	
+    		 				
+		  <ul class="_dash-links">			 
+			  <li><a href="#"><img src="images/_order-entry-dash.svg" alt=""/>Order Entry</a></li>
+			  <li><a href="#"><img src="images/_new-orders-dash.svg" alt=""/>New Orders</a></li>
+			  <li><a href="#"><img src="images/_orders-process-dash.svg" alt=""/>Processed Orders</a></li>
+			  <li><a href="#"><img src="images/_complete-orders-dash.svg" alt=""/>Completed Orders</a></li>
+			  <li><a href="#"><img src="images/_cancelled-orders-dash.svg" alt=""/>Cancelled Orders</a></li>
+		  </ul>
+		  
+ 
+		   <div class="col-md-12"><br><br><br><h3>Bulletins & Questionnaires</h3></div>	
+    		 				
+		  <ul class="_dash-links">			 
+			  <li><a href="#"><img src="images/_groups-dash.svg" alt=""/>Groups Management</a></li>
+			  <li><a href="#"><img src="images/_message-broadcas.svg" alt=""/>Message Broadcast</a></li>
+			  <li><a href="#"><img src="images/_questionnaires-dash.svg" alt=""/>Questionnaires</a></li>
+		  </ul>
+
+		   <div class="col-md-12"><br><br><br><h3>KPI Management</h3></div>	
+    		 				
+		  <ul class="_dash-links">			 
+
+			  <li><a href="#"><img src="images/_kpi-settings.svg" alt=""/>KPI Settings</a></li>
+			  <li><a href="#"><img src="images/_hierarchy-tree.svg" alt=""/>Hierarchy Tree</a></li>
+		  </ul> 
+	 
+		    		
+			    	</div>
+			    </div>
+				<!-- /Row -->
+				
+				<!-- Footer -->
+				<footer class="footer">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-12 align-center">
+							<p>2018 &copy; Allomate All rights reserved</p>
+						</div>
+					</div>
+				</div>
+				</footer>
+				<!-- /Footer -->
+			</div>
+		</div>
+        <!-- /Main Content -->
+
+    </div>
+    <!-- /#wrapper -->
+	
+<!-- jQuery -->
+    <script src="vendors/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    
+ 
+		
+ 
+    
+    <script src="vendors/bower_components/jasny-bootstrap/dist/js/jasny-bootstrap.min.js"></script>
+    	<!-- Init JavaScript -->
+	<script src="dist/js/init.js"></script> 
+ 
+	
+	<!-- Select2 JavaScript -->
+	<script src="vendors/bower_components/select2/dist/js/select2.full.min.js"></script>
+ 
+	<!-- Bootstrap Touchspin JavaScript -->
+	<script src="vendors/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script> 
+		 
+	<!-- Bootstrap Switch JavaScript -->
+	<script src="vendors/bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script> 
+		
+ 
+		
+	<!-- Form Advance Init JavaScript -->
+	<script src="dist/js/form-advance-data.js"></script> 
+	
+	<!-- Slimscroll JavaScript -->
+	<script src="dist/js/jquery.slimscroll.js"></script>
+	
+	<!-- Bootstrap Select JavaScript -->
+	<script src="vendors/bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+	
+ 
+	
+	<!-- Switchery JavaScript -->
+	<script src="vendors/bower_components/switchery/dist/switchery.min.js"></script>
+	
+	<!-- Fancy Dropdown JS -->
+	<script src="dist/js/dropdown-bootstrap-extended.js"></script>	
+	
+	
+</body>
+
+</html>

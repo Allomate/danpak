@@ -5,7 +5,7 @@
 <div class="wrapper theme-1-active">
 	<?php require_once(APPPATH.'/views/includes/navbar&sidebar.php'); ?>
 	<div class="page-wrapper">
-		<div class="container-fluid">
+		<div class="container">
 			<?php if ($feedback = $this->session->flashdata('missing_information')) : ?>
 			<div class="row" style="margin-top: 20px;">
 				<div class="alert alert-dismissible alert-danger" style=" background: white; color: black;">
@@ -56,6 +56,7 @@
 										<div class="form-group">
 											<label class="control-label mb-10">Select Day</label>
 											<select class="selectpicker" name="assigned_for_day" data-style="form-control btn-default btn-outline">
+												<option value="everyday">Everyday</option>
 												<option value="monday">Monday</option>
 												<option value="tuesday">Tuesday</option>
 												<option value="wednesday">Wednesday</option>
@@ -93,8 +94,9 @@
 								</div>
 								<br>
 								<div class="row">
-									<div class="col-md-12" id="viewAssigns" style="text-align: center; cursor: pointer">
-										<span style="font-weight: bold">VIEW ASSIGNMENTS</span>
+									<div class="col-md-12">
+										<a href="#" id="viewAssigns" class="_viewAssign" data-toggle="modal" data-target="#ViewAssignments">VIEW
+											ASSIGNMENTS</a>
 									</div>
 									<div id="myModal" class="modal fade" role="dialog">
 										<div class="modal-dialog">
@@ -114,62 +116,25 @@
 										</div>
 									</div>
 								</div>
-								<br>
-								<div class="row">
-									<div class="col-md-12">
-										<div class="table-wrap">
-											<div class="table-responsive">
-												<table class="table table-hover">
-													<thead>
-														<tr>
-															<th>Distributor Name</th>
-															<th>Distributor Address</th>
-															<th>Distributor Type</th>
-															<th>Distributor Territory</th>
-															<th>Action</th>
-														</tr>
-													</thead>
-													<tbody>
-														<?php foreach ($Distributors as $retailer) : ?>
-														<tr>
-															<td>
-																<?= $retailer->retailer_name; ?>
-															</td>
-															<td>
-																<?= $retailer->retailer_address; ?>
-															</td>
-															<td>
-																<?= $retailer->retailer_type; ?>
-															</td>
-															<td>
-																<?= $retailer->retailer_territory; ?>
-															</td>
-															<td>
-																<?php if($retailer->assigned) : ?>
-																<span style="font-weight: bold">Already Assigned</span>
-																<?php else: ?>
-																<input type="number" value="<?= $retailer->id; ?>" hidden>
-																<a type="button" class="btn btn-save addRetailerForAssignment">ADD</a>
-																<?php endif;?>
-															</td>
-														</tr>
-														<?php endforeach; ?>
-													</tbody>
-												</table>
-											</div>
-										</div>
-									</div>
-								</div>
 								<input type="text" name="retailersForAssignments" id="retailersForAssignments" hidden>
 							</div>
 						</div>
 						</form>
 					</div>
+					<div class="box-white p-20 m-b-30">
+						<div class="table-wrap">
+							<div class="table-responsive" id="retailersTableDiv" style="display: none">
+							</div>
+							<div id="tableLoader" style="text-align: center">
+								<img style="width: auto; height: 50px;" src="/assets/images/wl-loader-2.gif" alt="">
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="row button-section">
 				<a type="button" href="<?= base_url('Retailers/ListRetailersAssignments'); ?>" id="backFromRetailersAssignmentsButton"
-				class="btn btn-cancel">Cancel</a>
+				 class="btn btn-cancel">Cancel</a>
 				<a type="button" id="addRetailersAssignmentsButton" class="btn btn-save">Save</a>
 			</div>
 		</div>

@@ -18,21 +18,41 @@ class TerritoriesModel extends CI_Model
         // }
     }
 
-    public function add_territory($territoryData)
+    public function add_territory($territoryData, $zones)
     {
-        return $this->db->insert('territory_management', $territoryData);
+        unset($territoryData["zones"]);
+        $this->db->insert('territory_management', $territoryData);
+        $terrId = $this->db->insert_id();
+        $this->db
+            ->where('employee_id', $territoryData["territory_poc_id"])
+            ->update('employees_info', ["territory_id" => $terrId]);
+        $zonesData = array();
+        foreach ($zones as $z) {
+            $zonesData[] = array('territory_id' => $terrId, 'zone_name' => $z);
+        }
+		return $this->db->insert_batch('zones_management', $zonesData);
     }
 
     public function getSingleTerritory($territoryId)
     {
-        return $this->db->where('id', $territoryId)->get("territory_management")->row();
+        return $this->db->select('id, territory_name, territory_poc_id, area_id, (SELECT GROUP_CONCAT(zone_name SEPARATOR "<>") FROM `zones_management` where territory_id = '.$territoryId.') as zones')->where('id', $territoryId)->get("territory_management")->row();
     }
 
-    public function update_territory($territoryId, $territoryData)
+    public function update_territory($territoryId, $territoryData, $zones)
     {
-        return $this->db
+        unset($territoryData["zones"]);
+        $this->db
             ->where('id', $territoryId)
             ->update('territory_management', $territoryData);
+        $this->db
+            ->where('employee_id', $territoryData["territory_poc_id"])
+            ->update('employees_info', ["territory_id" => $territoryId]);
+        $this->db->delete('zones_management', array('territory_id' => $territoryId));
+        $zonesData = array();
+        foreach (explode("<>", $zones) as $z) {
+            $zonesData[] = array('territory_id' => $territoryId, 'zone_name' => $z);
+        }
+		return $this->db->insert_batch('zones_management', $zonesData);
     }
 
     public function delete_territory($territoryId)

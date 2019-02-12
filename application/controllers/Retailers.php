@@ -12,8 +12,11 @@ class Retailers extends WebAuth_Controller{
 		$this->load->model('TerritoriesModel', 'tm');
 	}
 
-	public function ListRetailers(){
-		return $this->load->view('Retailer/ListRetailers', [ 'Distributors' => $this->rem->GetRetailers() ]);
+	public function ListRetailers($type, $id){
+		if($id == "All"){
+			return $this->load->view('Retailer/ListTerritoriesWithTotalDistributors', [ 'Territories' => $this->rem->GetTerritoriesWithTotalDistributors() ]);
+		}
+		return $this->load->view('Retailer/ListRetailers', [ 'Distributors' => $this->rem->GetRetailers($id) ]);
 	}
 
 	public function ListRetailerTypes(){
@@ -78,7 +81,7 @@ class Retailers extends WebAuth_Controller{
 			else:
 				$this->session->set_flashdata("retailer_add_failed", "Failed to add the distributor");
 			endif;
-			return redirect('Retailers/ListRetailers');
+			return redirect('Retailers/ListRetailers/List/All');
 		else:
 			return $this->load->view('Retailer/AddRetailer', [ 'Territories' => $this->tm->getAllTerritories(), 'RetailerTypes' => $this->rem->GetRetailerTypes() ]);
 		endif;
@@ -136,20 +139,20 @@ class Retailers extends WebAuth_Controller{
 			else:
 				$this->session->set_flashdata("retailer_update_failed", "Failed to update the distributor");
 			endif;
-			return redirect('Retailers/ListRetailers');
+			return redirect('Retailers/ListRetailers/List/All');
 		else:
 			return $this->load->view('Retailer/UpdateRetailers', [ 'Territories' => $this->tm->getAllTerritories(), 'Retailer' => $this->rem->GetSingleRetailer($retailerId), 'RetailerTypes' => $this->rem->GetRetailerTypes() ]);
 		endif;
 	}
 
-	public function DeleteRetailer($retailerId)
+	public function DeleteRetailer($retailerId, $terrId)
 	{
 		if ($this->rem->delete_retailer($retailerId)) :
 			$this->session->set_flashdata('retailer_deleted', 'Distributor has been deleted successfully');
 		else:
 			$this->session->set_flashdata('retailer_delete_failed', 'Unable to delete the Distributor');
 		endif;
-		return redirect('Retailers/ListRetailers');
+		return redirect('Retailers/ListRetailers/List/'.$terrId);
 	}
 
 	public function ListRetailersAssignments(){
@@ -185,7 +188,11 @@ class Retailers extends WebAuth_Controller{
 	}
 
 	public function AddMoreAssignments(){
-		return $this->load->view('Retailer/AddMoreAssignments', [ 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ] );
+		return $this->load->view('Retailer/AddMoreAssignments', [ 'Employees' => $this->em->get_employees_list(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ] );
+	}
+
+	public function getRetailersForThisEmployee(){
+		echo json_encode($this->rem->getRetailersAgainstEmployeeTerritory($this->input->post("employee_id")));
 	}
 
 	public function RetailerAssignemntOps(){
@@ -208,9 +215,7 @@ class Retailers extends WebAuth_Controller{
 	}
 
 	public function UpdateRetailersAssignments($employeeId, $assignedDay){
-		// echo sizeOf(explode(",", $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay)->retailer_names));die;
-		// echo "<pre>"; print_r($this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay)); die;
-		return $this->load->view('Retailer/UpdateRetailersAssignments', [ 'RetailersAssignment' => $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay), 'Distributors' => $this->rem->get_non_assigned_retailers(), 'Employees' => $this->em->get_employees_list(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ] );
+		return $this->load->view('Retailer/UpdateRetailersAssignments', [ 'RetailersAssignment' => $this->rem->GetSingleRetailerAssignment($employeeId, $assignedDay), 'Employees' => $this->em->get_employees_list(), 'Regions' => $this->rm->getAllRegions(), 'Areas' => $this->am->getAllAreas(), 'Territories' => $this->tm->getAllTerritories() ] );
 	}
 
 	public function UpdateRetailerAssignemntsOps($employeeId){

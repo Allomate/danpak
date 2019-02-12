@@ -49,7 +49,7 @@ class MerchantVisit extends Web_Services_Controller{
 		if (!$this->AuthenticateSession($visitInfo["session"])) :
 			return $this->ResponseMessage('Failed', 'Failed session Authentication');
 		endif;
-
+ 
 		if ($this->AuthenticateWebServiceCall($visitInfo["api_secret_key"])):
             unset($visitInfo['api_secret_key']);
             $counter = 0;

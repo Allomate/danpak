@@ -56,8 +56,10 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Product Sku*</label>
-											<input type="text" name="item_sku" class="form-control" value="<?= set_value('item_sku'); ?>" placeholder="" max="20">
-											<small id="skuExistError" style="color: red; font-weight: bold; margin-top: 5px; display: none">This sku already exist</small>
+											<input type="text" name="item_sku" class="form-control" value="<?= set_value('item_sku'); ?>" placeholder=""
+											 max="20">
+											<small id="skuExistError" style="color: red; font-weight: bold; margin-top: 5px; display: none">This sku
+												already exist</small>
 											<?= form_error('item_sku', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 										</div>
 									</div>
@@ -69,14 +71,22 @@
 										</div>
 									</div>
 								</div>
+								<div class="row" id="brandDiv">
+									<div class="col-md-12">
+										<div class="form-group">
+											<label class="control-label mb-10">Product Brand*</label>
+											<input type="text" name="item_brand" class="form-control" value="<?= set_value('item_brand'); ?>"
+											 placeholder="">
+											<?= form_error('item_brand', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+										</div>
+									</div>
+								</div>
 								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
 											<label class="control-label mb-10">Description</label>
 											<input type="text" name="totalInventoryAdded" hidden>
-											<textarea name="item_main_description" class="form-control" rows="5">
-												<?= set_value('item_main_description'); ?>
-											</textarea>
+											<textarea name="item_main_description" class="form-control" rows="5"><?= set_value('item_main_description'); ?></textarea>
 										</div>
 									</div>
 								</div>
@@ -107,9 +117,9 @@
 											</div>
 											<div class="col-md-6">
 												<div class="form-group">
-													<label class="control-label mb-10">Product Quantity*</label>
-													<input type="text" name="item_quantity_0" class="form-control" max="11">
-													<?= form_error('item_quantity', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+													<label class="control-label mb-10">Trade Price*</label>
+													<input type="text" name="item_trade_price_0" class="form-control" placeholder="Rs:0.00" max="11">
+													<?= form_error('item_trade_price', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 												</div>
 											</div>
 										</div>
@@ -118,7 +128,7 @@
 												<div class="form-group">
 													<label class="control-label mb-10">Child</label>
 													<select name="child_item_0" class="form-control childItems" data-style="form-control btn-default btn-outline">
-														<option value="0">No type selected</option>
+														<option value="0">No child selected</option>
 														<?php $unitTypeIds='';$unitTypeNames='';foreach ($UnitTypes as $unit) : ?>
 														<option value="<?= $unit->unit_id; ?>">
 															<?= $unit->unit_name; ?>
@@ -137,21 +147,14 @@
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-md-6">
+											<div class="col-md-6" style="display: none">
 												<div class="form-group">
 													<label class="control-label mb-10">Cost Price*</label>
 													<input type="text" name="item_warehouse_price_0" class="form-control" placeholder="Rs:0.00" max="11">
 													<?= form_error('item_warehouse_price', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 												</div>
 											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label class="control-label mb-10">Trade Price*</label>
-													<input type="text" name="item_trade_price_0" class="form-control" placeholder="Rs:0.00" max="11">
-													<?= form_error('item_trade_price', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
-												</div>
-											</div>
-											<div class="col-md-6">
+											<div class="col-md-6" style="display: none">
 												<div class="form-group">
 													<label class="control-label mb-10">Retail Price*</label>
 													<input type="text" name="item_retail_price_0" class="form-control" placeholder="Rs:0.00" max="11">
@@ -160,14 +163,14 @@
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-md-6">
+											<div class="col-md-6" style="display: none">
 												<div class="form-group">
 													<label class="control-label mb-10">Product Barcode*</label>
 													<input type="text" name="item_barcode_0" class="form-control" placeholder="" max="20">
 													<?= form_error('item_barcode', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 												</div>
 											</div>
-											<div class="col-md-6">
+											<div class="col-md-6" style="display: none">
 												<div class="form-group">
 													<label class="control-label mb-10">Expiry Date</label>
 													<input type="text" id="firstName" class="form-control" placeholder="">
@@ -175,15 +178,6 @@
 											</div>
 										</div>
 										<div class="row">
-										</div>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label class="control-label mb-10">Description</label>
-													<input type="text" name="totalInventoryAdded" hidden>
-													<textarea name="item_description_0" class="form-control" rows="5"></textarea>
-												</div>
-											</div>
 										</div>
 									</div>
 									<div class="row">
@@ -219,7 +213,7 @@
 						</div>
 					</div>
 					<div class="box-white m-b-30">
-						<h2>Assign Catalogue</h2>
+						<h2>Assign Category</h2>
 						<div class="form-wrap">
 							<div class="form-body">
 								<div class="row">

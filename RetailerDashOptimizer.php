@@ -2,12 +2,17 @@
 
 require_once './retailer-dash-optimizer-config.php';
 
-$json = file_get_contents('http://mgmt.danpakfoods.com/dashboard_services/sales/RetailersData');
-$objRetsData = json_decode($json);
-$json = file_get_contents('http://mgmt.danpakfoods.com/dashboard_services/sales/RetailersDataCharts/');
-$objRetsChartData = json_decode($json);
+$ctx = stream_context_create(array('http'=>
+    array(
+        'timeout' => 1200,  //1200 Seconds is 20 Minutes
+    )
+));
 
-// echo "<pre>"; print_r($objRetsData);die;
+$json = file_get_contents('http://mgmt.danpakfoods.com/dashboard_services/Sales/RetailersData', false, $ctx);
+$objRetsData = json_decode($json);
+
+$json = file_get_contents('http://mgmt.danpakfoods.com/dashboard_services/Sales/RetailersDataCharts', false, $ctx);
+$objRetsChartData = json_decode($json);
 
 $sql = "DELETE FROM dashboard_retailer_temp";
 $stmt = $conn->prepare($sql);

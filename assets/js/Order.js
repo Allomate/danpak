@@ -94,6 +94,43 @@ $(document).ready(function() {
             $(this).parent().parent().remove();
         });
 
+        $(document).on('click', '#addCampaignBtn', function() {
+
+            if (!$('input[name="custom_order_data"]').val() || !$('input[id="campaign_quantity"]').val()) {
+                alert('Please provide date & campaign quantity');
+            } else if (isNaN($('select[name="distributor_id"] :selected').val())) {
+                alert('No retailer/distributor selected');
+            } else {
+                if ($('select[name="campaign_id"]').val()) {
+                    var discount = 0;
+                    if ($('input[name="discount"]').val() && $('input[name="discount"]').val() !== "0") {
+                        discount = $('input[name="discount"]').val();
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Orders/GetDistDiscountForCampaign',
+                        data: { campaign_id: $('select[name="campaign_id"]').val(), quantity: $('input[id="campaign_quantity"]').val(), dist_id: $('select[name="distributor_id"]').val(), discount: discount },
+                        success: function(response) {
+                            var response = JSON.parse(response);
+                            var actualBill = parseFloat(response.campaign_price);
+                            var itemDiscount = 0;
+
+                            if ($('input[name="discount"]').val() && $('input[name="discount"]').val() !== "0") {
+                                itemDiscount = parseFloat($('input[name="discount"]').val());
+                                actualBill = actualBill - (actualBill * (itemDiscount / 100));
+                            }
+
+                            $('#totalCartDiv').css('width', '');
+                            $('#totalCartDiv').fadeIn();
+                            $('#totalCartDiv table tbody').append('<tr><td>' + $('input[name="custom_order_data"]').val() + '</td><td>' + $('select[name="employee_id"] option:selected').text() + '</td><td>' + $('select[name="campaign_id"] option:selected').text() + '</td><td>NA</td><td>' + $('select[name="distributor_id"] option:selected').text() + '</td><td>' + $('input[id="campaign_quantity"]').val() + '</td><td>' + itemDiscount + '%</td><td>' + response.distributor_discount + '%</td></td><td>' + Math.round(actualBill) + '</td><td><a id="removeFromCart"><i class="fa fa-close"></i></a><input id="campIdHidden" value="' + $('select[name="campaign_id"]').val() + '" hidden/></a><input id="retIdHidden" value="' + $('select[name="distributor_id"]').val() + '" hidden/></td></tr>');
+                        }
+                    });
+                } else {
+                    alert('There is no campaign selected');
+                }
+            }
+        });
+
         $(document).on('click', '#addToCartBtn', function() {
 
             if (isNaN($('select[name="distributor_id"] :selected').val())) {
@@ -143,13 +180,27 @@ $(document).ready(function() {
         $(this).attr('disabled', 'disabled');
         var result = [];
         $('#totalCartDiv table tbody tr').each(function() {
-            var retailer_id = $('select[name="distributor_id"]').val();
-            var employee_id = $('select[name="employee_id"]').val();
-            var pref_id = $(this).find('td:eq(9)').find('#prefIdHidden').val();
-            var item_quantity_booker = $(this).find('td:eq(5)').text();
-            var booker_discount = $(this).find('td:eq(6)').text().split("%")[0];
-            result.push({ retailer_id: retailer_id, employee_id: employee_id, pref_id: pref_id, item_quantity_booker: item_quantity_booker, booker_discount: booker_discount, order_data: $('input[name="custom_order_data"]').val() });
+            if ($(this).find('td:eq(9)').find('#prefIdHidden').length) {
+                var retailer_id = $('select[name="distributor_id"]').val();
+                var employee_id = $('select[name="employee_id"]').val();
+                var item_quantity_booker = $(this).find('td:eq(5)').text();
+                var booker_discount = $(this).find('td:eq(6)').text().split("%")[0];
+                var pref_id = $(this).find('td:eq(9)').find('#prefIdHidden').val();
+                result.push({ retailer_id: retailer_id, employee_id: employee_id, pref_id: pref_id, item_quantity_booker: item_quantity_booker, booker_discount: booker_discount, order_data: $('input[name="custom_order_data"]').val() });
+            }
         });
+
+        $('#totalCartDiv table tbody tr').each(function() {
+            if ($(this).find('td:eq(9)').find('#campIdHidden').length) {
+                var retailer_id = $('select[name="distributor_id"]').val();
+                var employee_id = $('select[name="employee_id"]').val();
+                var item_quantity_booker = $(this).find('td:eq(5)').text();
+                var booker_discount = $(this).find('td:eq(6)').text().split("%")[0];
+                var campaign_id = $(this).find('td:eq(9)').find('#campIdHidden').val();
+                result.push({ retailer_id: retailer_id, employee_id: employee_id, campaign_id: campaign_id, item_quantity_booker: item_quantity_booker, booker_discount: booker_discount, order_data: $('input[name="custom_order_data"]').val() });
+            }
+        });
+
         $('input[name="finalResult"]').val(JSON.stringify(result));
         $('#createOrderForm').submit();
     });

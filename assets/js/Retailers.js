@@ -2,12 +2,64 @@ $(document).ready(function() {
     var retailersAddedForAssignment = [];
     var usernameExist = false;
     var url = window.location.href;
+    var controller = "Retailers";
+
+    if (url.includes('RealRetailers/')) {
+        controller = "RealRetailers";
+    }
 
     if (url.indexOf("UpdateRetailersAssignments") >= 0) {
         $('#retailersForAssignments').val().split(",").forEach(function(item) {
             retailersAddedForAssignment.push(item);
         });
     }
+
+    if (window.location.pathname.includes("AddMoreAssignments") || window.location.pathname.includes("UpdateRetailersAssignments")) {
+        $.ajax({
+            type: 'POST',
+            data: { employee_id: $('select[name="employee"]').val() },
+            url: '/' + controller + '/getRetailersForThisEmployee',
+            success: function(response) {
+                var response = JSON.parse(response);
+                $('#retailersTableDiv').append('<table class="table table-hover" id="retailersAssignmentTable"><thead><tr><th>Retailer Name</th><th>Retailer Address</th><th>Retailer Type</th><th>Retailer Territory</th><th>Action</th></tr></thead><tbody></tbody></table>');
+                for (var i = 0; i < response.length; i++) {
+                    if (response[i].assigned == "1") {
+                        $('#retailersTableDiv table tbody').append('<tr><td>' + response[i].retailer_name + '</td><td>' + response[i].retailer_address + '</td><td>' + response[i].retailer_type + '</td><td>' + response[i].retailer_territory + '</td><td><span style="font-weight: bold">Already Assigned</span></td></tr>')
+                    } else {
+                        $('#retailersTableDiv table tbody').append('<tr><td>' + response[i].retailer_name + '</td><td>' + response[i].retailer_address + '</td><td>' + response[i].retailer_type + '</td><td>' + response[i].retailer_territory + '</td><td><input type="number" value="' + response[i].id + '" hidden /><a type="button" class="view-report addRetailerForAssignment">ADD</a></td></tr>')
+                    }
+                }
+                $('#retailersTableDiv table').DataTable();
+                $('#tableLoader').hide();
+                $('#retailersTableDiv').show();
+            }
+        });
+    }
+
+    $('select[name="employee"]').change(function() {
+        $('#tableLoader').show();
+        $('#retailersTableDiv').hide();
+        $.ajax({
+            type: 'POST',
+            data: { employee_id: $('select[name="employee"]').val() },
+            url: '/' + controller + '/getRetailersForThisEmployee',
+            success: function(response) {
+                var response = JSON.parse(response);
+                $('#retailersTableDiv').empty();
+                $('#retailersTableDiv').append('<table class="table table-hover" id="retailersAssignmentTable"><thead><tr><th>Retailer Name</th><th>Retailer Address</th><th>Retailer Type</th><th>Retailer Territory</th><th>Action</th></tr></thead><tbody></tbody></table>');
+                for (var i = 0; i < response.length; i++) {
+                    if (response[i].assigned == "1") {
+                        $('#retailersTableDiv table tbody').append('<tr><td>' + response[i].retailer_name + '</td><td>' + response[i].retailer_address + '</td><td>' + response[i].retailer_type + '</td><td>' + response[i].retailer_territory + '</td><td><span style="font-weight: bold">Already Assigned</span></td></tr>')
+                    } else {
+                        $('#retailersTableDiv table tbody').append('<tr><td>' + response[i].retailer_name + '</td><td>' + response[i].retailer_address + '</td><td>' + response[i].retailer_type + '</td><td>' + response[i].retailer_territory + '</td><td><input type="number" value="' + response[i].id + '" hidden /><a type="button" class="view-report addRetailerForAssignment">ADD</a></td></tr>')
+                    }
+                }
+                $('#retailersTableDiv table').DataTable();
+                $('#tableLoader').hide();
+                $('#retailersTableDiv').show();
+            }
+        });
+    });
 
     $('#viewAssigns').click(function() {
         if (!retailersAddedForAssignment.length) {
@@ -290,7 +342,8 @@ $(document).ready(function() {
         var thisRef = $(this);
         var retailerName = $.trim($(this).parent().parent().find('td:eq(0)').text());
 
-        $('#addedAssignmentsList').append('<li style="padding: 20px 10px; background: #fbf9f9; margin-bottom: 10px"><span style="width: 75%; display: inline-block;">' + retailerName + '</span><a style="width: 20%; display: inline-block; text-align: right; cursor: pointer" class="removeAddedAssignment" id="' + retailerId + '"><i class="fa fa-close"></i></a></li>');
+        $('#addedAssignmentsList').append('<div class="alert alert-success alert-style-1"><button type="button" class="close removeAddedAssignment" id="' + retailerId + '" aria-hidden="true">&times;</button><i class="zmdi zmdi-check"></i> ' + retailerName + '</div>');
+
         retailersAddedForAssignment.push(retailerId);
         $('#retailersForAssignments').val(retailersAddedForAssignment.join(","));
         $(this).css('background-color', 'green');

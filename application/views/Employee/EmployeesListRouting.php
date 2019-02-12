@@ -43,8 +43,7 @@
 											<?=$route->total_employees;?>
 										</td>
 										<td>
-											<a href="CompleteEmployeeRoutingList/<?=$route->date;?>" class="btn view-report">View Complete
-												List</a>
+											<a href="CompleteEmployeeRoutingList/<?=$route->date;?>" class="btn view-report">View Complete List</a>
 										</td>
 									</tr>
 									<?php endforeach;?>

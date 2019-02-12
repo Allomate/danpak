@@ -13,8 +13,7 @@ class AccRights extends WebAuth_Controller{
 	}
 
 	public function NewAccRights(){
-		// echo "<pre>"; print_r($this->rm->GetRetailers());die;
-		return $this->load->view('AccessRights/NewAccRights', [ 'Employees' => $this->ar->getAdminsList(), "Distributors" => $this->rm->GetRetailers() ]);
+		return $this->load->view('AccessRights/NewAccRights', [ 'Employees' => $this->ar->getAdminsList(), "Distributors" => $this->rm->GetRetailersWithoutTerritory() ]);
 	}
 
 	public function AddAccRightsOps(){
@@ -30,7 +29,7 @@ class AccRights extends WebAuth_Controller{
 
 	public function UpdateRights($rightId, $userType){
 		// echo "<pre>"; print_r($this->ar->getRightsDataForAdmin($rightId, $userType));die;
-		return $this->load->view('AccessRights/UpdateRights', [ 'Employees' => $this->ar->getAdminsList(), "Distributors" => $this->rm->GetRetailers(), 'RightsData' => $this->ar->getRightsDataForAdmin($rightId, $userType) ]);
+		return $this->load->view('AccessRights/UpdateRights', [ 'Employees' => $this->ar->getAdminsList(), "Distributors" => $this->rm->GetRetailersWithoutTerritory(), 'RightsData' => $this->ar->getRightsDataForAdmin($rightId, $userType) ]);
 	}
 
 	public function UpdateAccRightsOps($rightId){

@@ -86,16 +86,14 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Employee Base Station Latitude*</label>
-											<input type="text" name="employee_base_station_lats" class="form-control" value="<?= $employee->employee_base_station_lats;?>"
-											/>
+											<input type="text" name="employee_base_station_lats" class="form-control" value="<?= $employee->employee_base_station_lats;?>" />
 											<?= form_error('employee_base_station_lats', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label class="control-label mb-10">Employee Base Station Longitude*</label>
-											<input type="text" name="employee_base_station_longs" class="form-control" value="<?= $employee->employee_base_station_longs;?>"
-											/>
+											<input type="text" name="employee_base_station_longs" class="form-control" value="<?= $employee->employee_base_station_longs;?>" />
 											<?= form_error('employee_base_station_longs', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 										</div>
 									</div>
@@ -155,18 +153,6 @@
 											echo form_dropdown('reporting_to', $optionsReporting, $employee->reporting_to, $atts); ?>
 										</div>
 									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label class="control-label mb-10">Territory*</label>
-											<?php
-											$optionsNew["0"] = "Please select a territory";
-											foreach ($territories as $territory) : 
-												$optionsNew[$territory->id] = $territory->territory_name;
-											endforeach; 
-											$atts = array( 'class' => 'selectpicker', 'data-style' => 'form-control btn-default btn-outline', 'id' => 'territoryDD' );
-											echo form_dropdown('territory_id', $optionsNew, $employee->territory_id, $atts); ?>
-										</div>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -176,8 +162,7 @@
 					<div class="box-white m-b-30">
 						<div class="form-wrap">
 							<div class="upload-pic">Upload picture maximam size 500X500 px</div>
-							<input type="file" name="employee_picture" id="employee_picture" class="dropify" data-default-file="<?= str_replace('./', base_url(), $employee->employee_picture); ?>"
-							/>
+							<input type="file" name="employee_picture" id="employee_picture" class="dropify" data-default-file="<?= str_replace('./', base_url(), $employee->employee_picture); ?>" />
 						</div>
 					</div>
 					<div class="box-white m-b-30">

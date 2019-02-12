@@ -199,7 +199,48 @@ $(document).ready(function() {
         $('.progress-bar').html(totalWeightage + '%');
     }
 
+    var lastWeightageValue = 0;
+
+    $(document).on('keydown', '.weightage', function(e) {
+        lastWeightageValue = parseInt($(this).val());
+    });
+
     $(document).on('input', '.weightage', function(e) {
+        debugger;
+        if (selectedKpiCriteria == "monthly") {
+            var thisMonthWeightage = 0;
+            var moreNeedToHundred = 0;
+            $('.monthSelectedForKpi').each(function() {
+                if ($(this).val() == $('select[name="monthDD"]').val()) {
+                    thisMonthWeightage += parseInt($(this).parent().find('.weightage').val());
+                }
+            });
+        } else {
+            var thisMonthWeightage = 0;
+            $('.monthSelectedForKpi').each(function() {
+                if ($(this).val() == $('select[name="quarterDD"]').val()) {
+                    thisMonthWeightage += parseInt($(this).parent().find('.weightage').val());
+                }
+            });
+        }
+
+        var thisMonth = $(this).parent().parent().parent().find('.monthSelectedForKpi').val();
+        if (thisMonthWeightage > 100) {
+            swal("Invalid Weightage", "Please divide the weightage equally", "error");
+            $(this).val(1);
+            setTimeout(function() {
+                thisMonthWeightage = 0;
+                $('.monthSelectedForKpi').each(function() {
+                    if ($(this).val() == $('select[name="monthDD"]').val()) {
+                        thisMonthWeightage += parseInt($(this).parent().find('.weightage').val());
+                    }
+                });
+                $('#progressBar_' + thisMonth + ' .progress-bar').css('width', thisMonthWeightage + '%');
+                $('#progressBar_' + thisMonth + ' .progress-bar').html(thisMonthWeightage + '%');
+            }, 100);
+            return;
+        }
+
         totalWeightage = 0;
         if (!$.isNumeric($(this).val())) {
             if (!$(this).val()) {
@@ -216,11 +257,11 @@ $(document).ready(function() {
         if (parseInt($(this).val()) > 100) {
             $(this).val("100");
         }
-        $('.weightage').each(function() {
+        $('.weightage_' + thisMonth).each(function() {
             totalWeightage = parseInt($(this).val()) + totalWeightage;
         });
-        $('.progress-bar').css('width', totalWeightage + '%');
-        $('.progress-bar').html(totalWeightage + '%');
+        $('#progressBar_' + thisMonth + ' .progress-bar').css('width', totalWeightage + '%');
+        $('#progressBar_' + thisMonth + ' .progress-bar').html(totalWeightage + '%');
     });
 
     $(document).on('input', '.empTargets', function(e) {
@@ -270,11 +311,19 @@ $(document).ready(function() {
 
     $('#submitKpi').click(function() {
         var impure = false;
+        var weightageInvalid = false;
         if (!kpiTypesAlreadyAdded.length) {
             swal('Missing Kpi', 'Please add KPIs for this employee', 'error');
             return;
         }
-        if (parseInt($('.progress-bar').html().split("%")[0]) !== 100) {
+
+        $('.progress-bar').each(function() {
+            if (parseInt($(this).html().split("%")[0]) !== 100) {
+                weightageInvalid = true;
+            }
+        });
+
+        if (weightageInvalid) {
             swal('Weightage Invalid', 'Please evaluate KPIs and commulate them to a total of 100%', 'error');
             return;
         }
@@ -315,6 +364,29 @@ $(document).ready(function() {
         $('#addKpiForm').submit();
     });
 
+    var lastMonthCheckIfItsWeightageIsCompleted = '';
+    var progressBarCounter = 0;
+
+    $('select[name="monthDD"]').click(function() {
+        lastMonthCheckIfItsWeightageIsCompleted = $(this).val();
+    });
+
+    $('select[name="monthDD"]').change(function() {
+        var weightageForThisMonthOrQuarter = 0;
+        var monthInitiated = false;
+        $('.monthSelectedForKpi').each(function() {
+            if ($(this).val() == lastMonthCheckIfItsWeightageIsCompleted) {
+                var test = $(this).parent().find('.weightage').val();
+                weightageForThisMonthOrQuarter += parseInt($(this).parent().find('.weightage').val());
+            }
+            monthInitiated = true;
+        });
+        if (monthInitiated && weightageForThisMonthOrQuarter < 100) {
+            $('select[name="monthDD"]').val(lastMonthCheckIfItsWeightageIsCompleted);
+            swal('Weightage', 'Please complete 100% percent weightage of this criteria', 'warning');
+        }
+    });
+
     $('#createKpiForThisCriteria').click(function() {
         var selectedKpiType = $("input[name='kpi_type']:checked").val();
         if (selectedKpiCriteria == "monthly") {
@@ -322,6 +394,14 @@ $(document).ready(function() {
         } else {
             selectedMonthOrCriteria = $('select[name="quarterDD"]').val();
         }
+
+        var isThisMonthAlreadyInitializedForWeightage = false;
+        $('.monthSelectedForKpi').each(function() {
+            if ($(this).val() == selectedMonthOrCriteria) {
+                isThisMonthAlreadyInitializedForWeightage = true;
+            }
+        });
+
         var replicatedKpi = false;
         if (kpiTypesAlreadyAdded.length > 0) {
             $.each(kpiTypesAlreadyAdded, function(index, value) {
@@ -343,9 +423,13 @@ $(document).ready(function() {
 
         if (selectedKpiType == "product") {
             if (totalKpis !== 0) {
-                $('#kpiDynamicDiv').append('<br><br><br>');
+                $('#kpiDynamicDiv').append('<hr>');
             }
-            $('#kpiDynamicDiv').append('<h5>Product Wise (' + selectedMonthOrCriteria + ' - ' + (selectedMonthOrCriteria == "q1" ? "January/February/March" : (selectedMonthOrCriteria == "q2" ? "April/May/June" : (selectedMonthOrCriteria == "q3" ? "July/August/September" : (selectedMonthOrCriteria == "q4" ? "October/November/December" : "")))) + ') </h5><br><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Product</label><select class="form-control productDD" id="' + totalKpis + '" name="productDD_' + totalKpis + '" data-style="form-control btn-default btn-outline"><option>Select product</option></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Unit</label><select class="form-control unitDD" data-style="form-control btn-default btn-outline" id="' + totalKpis + '" name="unitDD_' + totalKpis + '"><option>Select unit</option></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Target</label><input type="text" name="target_' + totalKpis + '" class="form-control empTargets" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Eligibility</label><input type="text" name="eligibility_' + totalKpis + '" class="form-control empEligibility" value="1"></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Weightage (%)</label><input type="text" name="weightage_' + totalKpis + '" class="form-control weightage" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Incentive</label><input type="text" name="incentive_' + totalKpis + '" class="form-control empIncentives" value="1"></div></div><br><input type="text" name="for_month_or_criteria_' + totalKpis + '" value="' + selectedMonthOrCriteria + '" hidden /><input type="text" name="criteria_' + totalKpis + '" value="' + selectedKpiCriteria + '" hidden /><input type="text" name="for_kpi_type_' + totalKpis + '" value="' + selectedKpiType + '" hidden />');
+            if ($('#progressBar_' + selectedMonthOrCriteria).length) {
+                $('<br><br><h5>Product Wise (' + selectedMonthOrCriteria + ' - ' + (selectedMonthOrCriteria == "q1" ? "January/February/March" : (selectedMonthOrCriteria == "q2" ? "April/May/June" : (selectedMonthOrCriteria == "q3" ? "July/August/September" : (selectedMonthOrCriteria == "q4" ? "October/November/December" : "")))) + ') </h5><br><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Product</label><select class="form-control productDD" id="' + totalKpis + '" name="productDD_' + totalKpis + '" data-style="form-control btn-default btn-outline"><option>Select product</option></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Unit</label><select class="form-control unitDD" data-style="form-control btn-default btn-outline" id="' + totalKpis + '" name="unitDD_' + totalKpis + '"><option>Select unit</option></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Target</label><input type="text" name="target_' + totalKpis + '" class="form-control empTargets" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Eligibility</label><input type="text" name="eligibility_' + totalKpis + '" class="form-control empEligibility" value="1"></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Weightage (%)</label><input type="text" name="weightage_' + totalKpis + '" class="form-control weightage weightage_' + selectedMonthOrCriteria + '" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Incentive</label><input type="text" name="incentive_' + totalKpis + '" class="form-control empIncentives" value="1"></div></div><br><input type="text" class="monthSelectedForKpi" name="for_month_or_criteria_' + totalKpis + '" value="' + selectedMonthOrCriteria + '" hidden /><input type="text" name="criteria_' + totalKpis + '" value="' + selectedKpiCriteria + '" hidden /><input type="text" name="for_kpi_type_' + totalKpis + '" value="' + selectedKpiType + '" hidden />').insertBefore($('#progressBar_' + selectedMonthOrCriteria));
+            } else {
+                $('#kpiDynamicDiv').append('<h5>Product Wise (' + selectedMonthOrCriteria + ' - ' + (selectedMonthOrCriteria == "q1" ? "January/February/March" : (selectedMonthOrCriteria == "q2" ? "April/May/June" : (selectedMonthOrCriteria == "q3" ? "July/August/September" : (selectedMonthOrCriteria == "q4" ? "October/November/December" : "")))) + ') </h5><br><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Product</label><select class="form-control productDD" id="' + totalKpis + '" name="productDD_' + totalKpis + '" data-style="form-control btn-default btn-outline"><option>Select product</option></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Unit</label><select class="form-control unitDD" data-style="form-control btn-default btn-outline" id="' + totalKpis + '" name="unitDD_' + totalKpis + '"><option>Select unit</option></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Target</label><input type="text" name="target_' + totalKpis + '" class="form-control empTargets" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Eligibility</label><input type="text" name="eligibility_' + totalKpis + '" class="form-control empEligibility" value="1"></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Weightage (%)</label><input type="text" name="weightage_' + totalKpis + '" class="form-control weightage weightage_' + selectedMonthOrCriteria + '" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Incentive</label><input type="text" name="incentive_' + totalKpis + '" class="form-control empIncentives" value="1"></div></div><br><input type="text" class="monthSelectedForKpi" name="for_month_or_criteria_' + totalKpis + '" value="' + selectedMonthOrCriteria + '" hidden /><input type="text" name="criteria_' + totalKpis + '" value="' + selectedKpiCriteria + '" hidden /><input type="text" name="for_kpi_type_' + totalKpis + '" value="' + selectedKpiType + '" hidden />');
+            }
 
             $.ajax({
                 type: 'GET',
@@ -380,9 +464,13 @@ $(document).ready(function() {
             });
         } else if (selectedKpiType == "quantity") {
             if (totalKpis !== 0) {
-                $('#kpiDynamicDiv').append('<br><br><br>');
+                $('#kpiDynamicDiv').append('<hr>');
             }
-            $('#kpiDynamicDiv').append('<h5>Quantity Wise (' + selectedMonthOrCriteria + ' - ' + (selectedMonthOrCriteria == "q1" ? "January/February/March" : (selectedMonthOrCriteria == "q2" ? "April/May/June" : (selectedMonthOrCriteria == "q3" ? "July/August/September" : (selectedMonthOrCriteria == "q4" ? "October/November/December" : "")))) + ') </h5><br><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Unit</label><select class="form-control unitDD" id="' + totalKpis + '" name="unitDD_' + totalKpis + '" data-style="form-control btn-default btn-outline"><option>Select unit</option></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Target</label><input type="text" name="target_' + totalKpis + '" class="form-control empTargets" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Eligibility</label><input type="text" name="eligibility_' + totalKpis + '" class="form-control empEligibility" value="1"></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Weightage (%)</label><input type="text" name="weightage_' + totalKpis + '" class="form-control weightage" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Incentive</label><input type="text" name="incentive_' + totalKpis + '" class="form-control empIncentives" value="1"></div></div><br><input type="text" name="for_month_or_criteria_' + totalKpis + '" value="' + selectedMonthOrCriteria + '" hidden /><input type="text" name="criteria_' + totalKpis + '" value="' + selectedKpiCriteria + '" hidden /><input type="text" name="for_kpi_type_' + totalKpis + '" value="' + selectedKpiType + '" hidden />');
+            if ($('#progressBar_' + selectedMonthOrCriteria).length) {
+                $('<br><br><h5>Quantity Wise (' + selectedMonthOrCriteria + ' - ' + (selectedMonthOrCriteria == "q1" ? "January/February/March" : (selectedMonthOrCriteria == "q2" ? "April/May/June" : (selectedMonthOrCriteria == "q3" ? "July/August/September" : (selectedMonthOrCriteria == "q4" ? "October/November/December" : "")))) + ') </h5><br><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Unit</label><select class="form-control unitDD" id="' + totalKpis + '" name="unitDD_' + totalKpis + '" data-style="form-control btn-default btn-outline"><option>Select unit</option></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Target</label><input type="text" name="target_' + totalKpis + '" class="form-control empTargets" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Eligibility</label><input type="text" name="eligibility_' + totalKpis + '" class="form-control empEligibility" value="1"></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Weightage (%)</label><input type="text" name="weightage_' + totalKpis + '" class="form-control weightage weightage_' + selectedMonthOrCriteria + '" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Incentive</label><input type="text" name="incentive_' + totalKpis + '" class="form-control empIncentives" value="1"></div></div><br><input type="text" class="monthSelectedForKpi" name="for_month_or_criteria_' + totalKpis + '" value="' + selectedMonthOrCriteria + '" hidden /><input type="text" name="criteria_' + totalKpis + '" value="' + selectedKpiCriteria + '" hidden /><input type="text" name="for_kpi_type_' + totalKpis + '" value="' + selectedKpiType + '" hidden />').insertBefore($('#progressBar_' + selectedMonthOrCriteria));
+            } else {
+                $('#kpiDynamicDiv').append('<h5>Quantity Wise (' + selectedMonthOrCriteria + ' - ' + (selectedMonthOrCriteria == "q1" ? "January/February/March" : (selectedMonthOrCriteria == "q2" ? "April/May/June" : (selectedMonthOrCriteria == "q3" ? "July/August/September" : (selectedMonthOrCriteria == "q4" ? "October/November/December" : "")))) + ') </h5><br><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Unit</label><select class="form-control unitDD" id="' + totalKpis + '" name="unitDD_' + totalKpis + '" data-style="form-control btn-default btn-outline"><option>Select unit</option></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Target</label><input type="text" name="target_' + totalKpis + '" class="form-control empTargets" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Eligibility</label><input type="text" name="eligibility_' + totalKpis + '" class="form-control empEligibility" value="1"></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Weightage (%)</label><input type="text" name="weightage_' + totalKpis + '" class="form-control weightage weightage_' + selectedMonthOrCriteria + '" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Incentive</label><input type="text" name="incentive_' + totalKpis + '" class="form-control empIncentives" value="1"></div></div><br><input type="text" class="monthSelectedForKpi" name="for_month_or_criteria_' + totalKpis + '" value="' + selectedMonthOrCriteria + '" hidden /><input type="text" name="criteria_' + totalKpis + '" value="' + selectedKpiCriteria + '" hidden /><input type="text" name="for_kpi_type_' + totalKpis + '" value="' + selectedKpiType + '" hidden />');
+            }
 
             $.ajax({
                 type: 'GET',
@@ -406,9 +494,13 @@ $(document).ready(function() {
             });
         } else {
             if (totalKpis !== 0) {
-                $('#kpiDynamicDiv').append('<br><br><br>');
+                $('#kpiDynamicDiv').append('<hr>');
             }
-            $('#kpiDynamicDiv').append('<h5>Revenue Wise (' + selectedMonthOrCriteria + ' - ' + (selectedMonthOrCriteria == "q1" ? "January/February/March" : (selectedMonthOrCriteria == "q2" ? "April/May/June" : (selectedMonthOrCriteria == "q3" ? "July/August/September" : (selectedMonthOrCriteria == "q4" ? "October/November/December" : "")))) + ') </h5><br><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Target</label><input type="text" name="target_' + totalKpis + '" class="form-control empTargets" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Eligibility</label><input type="text" name="eligibility_' + totalKpis + '" class="form-control empEligibility" value="1"></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Weightage (%)</label><input type="text" name="weightage_' + totalKpis + '" class="form-control weightage" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Incentive</label><input type="text" name="incentive_' + totalKpis + '" class="form-control empIncentives" value="1"></div></div><br><input type="text" name="for_month_or_criteria_' + totalKpis + '" value="' + selectedMonthOrCriteria + '" hidden /><input type="text" name="criteria_' + totalKpis + '" value="' + selectedKpiCriteria + '" hidden /><input type="text" name="for_kpi_type_' + totalKpis + '" value="' + selectedKpiType + '" hidden />');
+            if ($('#progressBar_' + selectedMonthOrCriteria).length) {
+                $('<br><br><h5>Revenue Wise (' + selectedMonthOrCriteria + ' - ' + (selectedMonthOrCriteria == "q1" ? "January/February/March" : (selectedMonthOrCriteria == "q2" ? "April/May/June" : (selectedMonthOrCriteria == "q3" ? "July/August/September" : (selectedMonthOrCriteria == "q4" ? "October/November/December" : "")))) + ') </h5><br><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Target</label><input type="text" name="target_' + totalKpis + '" class="form-control empTargets" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Eligibility</label><input type="text" name="eligibility_' + totalKpis + '" class="form-control empEligibility" value="1"></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Weightage (%)</label><input type="text" name="weightage_' + totalKpis + '" class="form-control weightage weightage_' + selectedMonthOrCriteria + '" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Incentive</label><input type="text" name="incentive_' + totalKpis + '" class="form-control empIncentives" value="1"></div></div><br><input type="text" class="monthSelectedForKpi" name="for_month_or_criteria_' + totalKpis + '" value="' + selectedMonthOrCriteria + '" hidden /><input type="text" name="criteria_' + totalKpis + '" value="' + selectedKpiCriteria + '" hidden /><input type="text" name="for_kpi_type_' + totalKpis + '" value="' + selectedKpiType + '" hidden />').insertBefore($('#progressBar_' + selectedMonthOrCriteria));
+            } else {
+                $('#kpiDynamicDiv').append('<h5>Revenue Wise (' + selectedMonthOrCriteria + ' - ' + (selectedMonthOrCriteria == "q1" ? "January/February/March" : (selectedMonthOrCriteria == "q2" ? "April/May/June" : (selectedMonthOrCriteria == "q3" ? "July/August/September" : (selectedMonthOrCriteria == "q4" ? "October/November/December" : "")))) + ') </h5><br><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Target</label><input type="text" name="target_' + totalKpis + '" class="form-control empTargets" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Eligibility</label><input type="text" name="eligibility_' + totalKpis + '" class="form-control empEligibility" value="1"></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Weightage (%)</label><input type="text" name="weightage_' + totalKpis + '" class="form-control weightage weightage_' + selectedMonthOrCriteria + '" value="1" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Incentive</label><input type="text" name="incentive_' + totalKpis + '" class="form-control empIncentives" value="1"></div></div><br><input type="text" class="monthSelectedForKpi" name="for_month_or_criteria_' + totalKpis + '" value="' + selectedMonthOrCriteria + '" hidden /><input type="text" name="criteria_' + totalKpis + '" value="' + selectedKpiCriteria + '" hidden /><input type="text" name="for_kpi_type_' + totalKpis + '" value="' + selectedKpiType + '" hidden />');
+            }
             $('.modal').modal('hide');
             if (totalKpis == 0) {
                 $('#progressBar').fadeIn('fast');
@@ -419,10 +511,13 @@ $(document).ready(function() {
             thisRef.removeAttr('disabled');
             totalKpis++;
         }
+        debugger;
+        if (!isThisMonthAlreadyInitializedForWeightage) {
+            $('#kpiDynamicDiv').append('<div class="row" id="progressBar_' + selectedMonthOrCriteria + '"><div class="col-md-12"><div class="progress progress-lg m-t-30"><div class="progress-bar progress-bar-danger" style="width: 2%;" role="progressbar">0%</div></div></div></div>');
+        }
         kpiTypesAlreadyAdded.push({ "criteria": selectedKpiCriteria, "month_or_quarter": selectedMonthOrCriteria, "kpi_type": selectedKpiType });
-        totalWeightage++;
-        $('.progress-bar').css('width', totalWeightage + '%');
-        $('.progress-bar').html(totalWeightage + '%');
+        // $('.progress-bar').css('width', 0 + '%');
+        // $('.progress-bar').html(0 + '%');
     });
 
     $(document).on('change', '.productDD', function() {
@@ -462,6 +557,28 @@ $(document).ready(function() {
                 return;
             }
         }
+
+        if (selectedKpiCriteria == "monthly") {
+            var thisMonthWeightage = 0;
+            $('.monthSelectedForKpi').each(function() {
+                if ($(this).val() == $('select[name="monthDD"]').val()) {
+                    thisMonthWeightage += parseInt($(this).parent().find('.weightage').val());
+                }
+            });
+        } else {
+            var thisMonthWeightage = 0;
+            $('.monthSelectedForKpi').each(function() {
+                if ($(this).val() == $('select[name="quarterDD"]').val()) {
+                    thisMonthWeightage += parseInt($(this).parent().find('.weightage').val());
+                }
+            });
+        }
+
+        if (thisMonthWeightage == 100) {
+            swal('Weightage Completed', 'This month weightage has been completed. Kindly change the month or update the existing month\'s weightage', 'warning');
+            return;
+        }
+
         $('.modal').modal('show');
     });
 

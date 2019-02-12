@@ -15,14 +15,12 @@ class WebServices extends CI_Model
 
     public function GetRetailers($userInfo)
     {
-        $username = $this->db->select('username')->where('session', $userInfo['session'])->get('employee_session')->row()->username;
-        if ($this->db->select('employee_id')->where('employee_username', $username)->get('employees_info')->row()):
-            $employee_id = $this->db->select('employee_id')->where('employee_username', $username)->get('employees_info')->row()->employee_id;
-            if ($this->db->select('GROUP_CONCAT(retailer_id) as retailer_ids')->where(['employee_id' => $employee_id, 'LOWER(assigned_for_day)' => date("l")])->get('retailers_assignment')->row()):
-                $retailerIds = $this->db->select('GROUP_CONCAT(retailer_id) as retailer_ids')->where(['employee_id' => $employee_id, 'LOWER(assigned_for_day)' => date("l")])->get('retailers_assignment')->row()->retailer_ids;
-                return $this->db->select('id as retailer_id, retailer_name, retailer_phone, retailer_email, retailer_address, REPLACE(retailer_image,"./","' . base_url() . '") as retailer_image, retailer_lats, retailer_longs, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as territory_name, (SELECT count(*) FROM visits_marked where retailer_id = rd.id and DATE(created_at) = CURDATE()) as visit_marked, retailer_city, retailer_type_id, retailer_territory_id')->where("find_in_set(id, '" . $retailerIds . "')")->get("retailers_details rd")->result();
-            endif;
-        endif;
+    	$timestamp = strtotime(date("Y-m-d", strtotime('+10 hours')));
+    	$day = date('l', $timestamp);
+
+        $employee_id = $this->db->select('employee_id')->where('employee_username = (SELECT username from employee_session where session = "'.$userInfo['session'].'") ')->get('employees_info')->row()->employee_id;
+
+        return $this->db->select('id as retailer_id, retailer_name, retailer_phone, retailer_email, retailer_address, REPLACE(retailer_image,"./","' . base_url() . '") as retailer_image, retailer_lats, retailer_longs, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as territory_name, (SELECT count(*) FROM visits_marked where retailer_id = rd.id and DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR))) as visit_marked, retailer_city, retailer_type_id, retailer_territory_id')->where("id IN (SELECT retailer_id from retailers_assignment where employee_id = ".$employee_id." and LOWER(assigned_for_day) IN ('everyday', '".strtolower($day)."'))")->get("retailers_details rd")->result();
     }
 
     public function GetCategories()
@@ -49,7 +47,12 @@ class WebServices extends CI_Model
 
     public function GetRetailerTypes()
     {
-        return $this->db->select('id as retailer_type_id, retailer_type_name')->get("retailer_types")->result();
+        return $this->db->select('id as retailer_type_id, retailer_type_name')->where('retailer_or_distributor', 'ret')->get("retailer_types")->result();
+    }
+
+    public function GetDistributorTypes()
+    {
+        return $this->db->select('id as retailer_type_id, retailer_type_name')->where('retailer_or_distributor', 'dist')->get("retailer_types")->result();
     }
 
     public function GetAreas()
@@ -62,8 +65,39 @@ class WebServices extends CI_Model
         return $this->db->select('id as territory_id, territory_name')->get("territory_management")->result();
     }
 
+    public function GetZones($session)
+    {
+
+    	$empDesig = $this->db->select('employee_designation')->where('employee_username = (SELECT username from employee_session where session = "'.$session.'")')->get('employees_info')->row()->employee_designation;
+    	$retTypes = [];
+    	if($empDesig == "ASM" || $empDesig == "RSM"){
+    		$retTypes = $this->db->select('id, retailer_type_name')->where('retailer_or_distributor = "dist"')->get('retailer_types')->result();
+    	}else{
+    		$retTypes = $this->db->select('id, retailer_type_name')->where('retailer_or_distributor = "ret"')->get('retailer_types')->result();
+    	}
+
+        $zonesInfo = $this->db->select('id as zone_id, zone_name')->where('territory_id = (SELECT territory_id from employees_info where employee_username = (SELECT username from employee_session where session = "'.$session.'"))')->get("zones_management")->result();
+        $data = array();
+        $counter = 0;
+
+        $timestamp = strtotime(date("Y-m-d", strtotime('+10 hours')));
+    	$day = date('l', $timestamp);
+
+        $employee_id = $this->db->select('employee_id')->where('employee_username = (SELECT username from employee_session where session = "'.$session.'") ')->get('employees_info')->row()->employee_id;
+
+        foreach ($zonesInfo as $value) {
+            $data[$counter]['zone_id'] = $value->zone_id;
+            $data[$counter]['zone_name'] = $value->zone_name;
+            $data[$counter]["retailers"] = $this->db->select('id as retailer_id, retailer_name, retailer_phone, retailer_email, retailer_address, REPLACE(retailer_image,"./","' . base_url() . '") as retailer_image, retailer_lats, retailer_longs, (SELECT territory_name from territory_management where id = rd.retailer_territory_id) as territory_name, (SELECT count(*) FROM visits_marked where retailer_id = rd.id and DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR))) as visit_marked, retailer_city, retailer_type_id, retailer_territory_id')->where("id IN (SELECT retailer_id from retailers_assignment where employee_id = ".$employee_id." and LOWER(assigned_for_day) IN ('everyday', '".strtolower($day)."'))")->where('zone_id', $value->zone_id)->get("retailers_details rd")->result();
+            $counter++;
+        }
+        return array('retailer_types' => $retTypes, "zones_data" => $data);
+    }
+
     public function StoreRetailerInformationOffline($retailerInfo)
     {
+    	$timestamp = strtotime(date("Y-m-d", strtotime('+10 hours')));
+    	$day = date('l', $timestamp);
         $usersession = $retailerInfo['session'];
         $username = $this->db->select('username')->where('session', $usersession)->get('employee_session')->row()->username;
         $employee_id = $this->db->select('employee_id')->where('employee_username', $username)->get('employees_info')->row()->employee_id;
@@ -71,18 +105,39 @@ class WebServices extends CI_Model
         unset($retailerInfo['session']);
         $exceptionsArray = array();
         $result = array();
-        foreach ($retailerInfo["retailers"] as $ret) {
-            $oldId = $ret["retailer_id"];
-            unset($ret['retailer_id']);
-            $ret["added_by"] = $employee_id;
-            $ret["retailer_territory_id"] = $territoryId;
-            $response = $this->db->insert('retailers_details', $ret);
-            if ($response) {
-                $newId = $this->db->insert_id();
-                $this->db->insert('retailers_assignment', ['retailer_id' => $this->db->insert_id(), 'employee_id' => $employee_id, 'assigned_for_day' => strtolower(date('l'))]);
-                $result[] = array('new_id' => $newId, 'old_id' => $oldId);
-            } else {
-                $exceptionsArray[] = array('old_id' => $oldId, 'error' => $response);
+
+        $timestamp = strtotime(date("Y-m-d", strtotime('+10 hours')));
+        $day = date('l', $timestamp);
+        
+        if($this->db->select('assigned_for_day')->where('employee_id = '.$employee_id.' and assigned_for_day = "'.strtolower($day).'"')->get('retailers_assignment')->row()){
+            foreach ($retailerInfo["retailers"] as $ret) {
+                $oldId = $ret["retailer_id"];
+                unset($ret['retailer_id']);
+                $ret["added_by"] = $employee_id;
+                $ret["retailer_territory_id"] = $territoryId;
+                $response = $this->db->insert('retailers_details', $ret);
+                if ($response) {
+                    $newId = $this->db->insert_id();
+                    $result[] = array('new_id' => $newId, 'old_id' => $oldId);
+                    $this->db->insert('retailers_assignment', ['retailer_id' => $newId, 'employee_id' => $employee_id, 'assigned_for_day' => strtolower($day) ]);
+                } else {
+                    $exceptionsArray[] = array('old_id' => $oldId, 'error' => $response);
+                }
+            }
+        }else{
+            foreach ($retailerInfo["retailers"] as $ret) {
+                $oldId = $ret["retailer_id"];
+                unset($ret['retailer_id']);
+                $ret["added_by"] = $employee_id;
+                $ret["retailer_territory_id"] = $territoryId;
+                $response = $this->db->insert('retailers_details', $ret);
+                if ($response) {
+                    $newId = $this->db->insert_id();
+                    $result[] = array('new_id' => $newId, 'old_id' => $oldId);
+                    $this->db->insert('retailers_assignment', ['retailer_id' => $newId, 'employee_id' => $employee_id, 'assigned_for_day' => 'everyday' ]);
+                } else {
+                    $exceptionsArray[] = array('old_id' => $oldId, 'error' => $response);
+                }
             }
         }
         if (sizeOf($exceptionsArray)):
@@ -98,15 +153,23 @@ class WebServices extends CI_Model
         $employee_id = $this->db->select('employee_id')->where('employee_username', $username)->get('employees_info')->row()->employee_id;
         $retailerInfo['retailer_territory_id'] = $this->db->select('territory_id')->where('employee_username', $username)->get('employees_info')->row()->territory_id;
         $retailerInfo["added_by"] = $employee_id;
+        $retailerInfo["created_at"] = date("Y-m-d H:i:s", strtotime('+10 hours'));
         unset($retailerInfo['session']);
         $this->db->insert('retailers_details', $retailerInfo);
         
         $retailerIdLatest = $this->db->insert_id();
         
-        $orderVisitMarkedData = array('retailer_id' => $retailerIdLatest, 'latitude' => $retailerInfo["retailer_lats"], 'longitude' => $retailerInfo["retailer_longs"], 'employee_id' => $employee_id, 'took_order' => '0');
+        $orderVisitMarkedData = array('retailer_id' => $retailerIdLatest, 'latitude' => $retailerInfo["retailer_lats"], 'longitude' => $retailerInfo["retailer_longs"], 'employee_id' => $employee_id, 'took_order' => '0', 'created_at' => date("Y-m-d H:i:s", strtotime('+10 hours')));
         $this->db->insert('visits_marked', $orderVisitMarkedData);
+
+        $timestamp = strtotime(date("Y-m-d", strtotime('+10 hours')));
+    	$day = date('l', $timestamp);
         
-        return $this->db->insert('retailers_assignment', ['retailer_id' => $retailerIdLatest, 'employee_id' => $employee_id, 'assigned_for_day' => strtolower(date('l'))]);
+        if($this->db->select('assigned_for_day')->where('employee_id = '.$employee_id.' and assigned_for_day = "'.strtolower($day).'"')->get('retailers_assignment')->row()){
+            return $this->db->insert('retailers_assignment', ['retailer_id' => $retailerIdLatest, 'employee_id' => $employee_id, 'assigned_for_day' => strtolower($day)]);
+        }
+
+        return $this->db->insert('retailers_assignment', ['retailer_id' => $retailerIdLatest, 'employee_id' => $employee_id, 'assigned_for_day' => 'everyday' ]);
     }
 
     public function UpdateRetailerInformation($retailer_id, $retailerInfo)
@@ -123,7 +186,7 @@ class WebServices extends CI_Model
 
     public function AuthenticateLogin($loginInfo)
     {
-        return $this->db->where(['employee_username' => $loginInfo['username'], 'employee_password' => $loginInfo['password']])->get('employees_info')->row();
+        return $this->db->where(['employee_username' => $loginInfo['username'], 'employee_password' => $loginInfo['password'], 'status' => 1])->get('employees_info')->row();
     }
 
     public function StoreLoginAttempt($loginInfo)
@@ -170,11 +233,11 @@ class WebServices extends CI_Model
                     if (isset($userInfo["category_id"])):
                         if ($this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()):
                             $prefIds = $this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()->pref_id;
-                            $preferences = $this->db->select('item_id')->where('find_in_set(pref_id, ("' . $prefIds . '")) and sub_category_id = ' . $userInfo["category_id"])->group_by('item_id')->get('inventory_preferences ip')->result();
+                            $preferences = $this->db->select('item_id')->where('find_in_set(pref_id, ("' . $prefIds . '")) and item_id IN (SELECT item_id from inventory_items where is_active = 1) and sub_category_id = ' . $userInfo["category_id"])->group_by('item_id')->get('inventory_preferences ip')->result();
                             $response = array();
                             foreach ($preferences as $pref) {
-                                $itemDetails = $this->db->select('pref_id, sub_category_id as category_id, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, item_quantity, REPLACE(item_thumbnail,"./","' . base_url() . '") as item_thumbnail, REPLACE(item_image,"./","' . base_url() . '") as item_image, item_trade_price, (item_trade_price-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $userInfo['retailer_id'] . '))/100)*(ip.item_trade_price))) as after_discount')->where('item_id = ' . $pref->item_id . ' and find_in_set(pref_id, "' . $prefIds . '") and find_in_set(sub_category_id, "' . $userInfo["category_id"] . '")')->get('inventory_preferences ip')->result();
-                                $response[] = array('item_parent_data' => array('item_id' => $pref->item_id, 'item_name' => $this->db->select('item_name')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_name, 'item_sku' => $this->db->select('item_sku')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_sku, 'item_thumbnail' => $this->db->select('REPLACE(max(item_thumbnail),"./","' . base_url() . '") as item_thumbnail')->where('item_id', $pref->item_id)->get('inventory_preferences')->row()->item_thumbnail), 'item_childeren_data' => $itemDetails);
+                                $itemDetails = $this->db->select('pref_id, sub_category_id as category_id, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT item_brand from inventory_items where item_id = ip.item_id) as item_brand, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, item_quantity, REPLACE(item_thumbnail,"./","' . base_url() . '") as item_thumbnail, REPLACE(item_image,"./","' . base_url() . '") as item_image, item_trade_price, (item_trade_price-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $userInfo['retailer_id'] . '))/100)*(ip.item_trade_price))) as after_discount')->where('item_id = ' . $pref->item_id . ' and find_in_set(pref_id, "' . $prefIds . '") and find_in_set(sub_category_id, "' . $userInfo["category_id"] . '")')->get('inventory_preferences ip')->result();
+                                $response[] = array('item_parent_data' => array('item_id' => $pref->item_id, 'item_name' => $this->db->select('item_name')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_name, 'item_brand' => $this->db->select('item_brand')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_brand, 'item_sku' => $this->db->select('item_sku')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_sku, 'item_thumbnail' => $this->db->select('REPLACE(max(item_thumbnail),"./","' . base_url() . '") as item_thumbnail')->where('item_id', $pref->item_id)->get('inventory_preferences')->row()->item_thumbnail), 'item_childeren_data' => $itemDetails);
                             }
                             return $response;
                         else:
@@ -183,11 +246,11 @@ class WebServices extends CI_Model
                     else:
                         if ($this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()):
                             $prefIds = $this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()->pref_id;
-                            $preferences = $this->db->select('item_id')->where('find_in_set(pref_id, ("' . $prefIds . '"))')->group_by('item_id')->get('inventory_preferences ip')->result();
+                            $preferences = $this->db->select('item_id')->where('find_in_set(pref_id, ("' . $prefIds . '")) and item_id IN (SELECT item_id from inventory_items where is_active = 1)')->group_by('item_id')->get('inventory_preferences ip')->result();
                             $response = array();
                             foreach ($preferences as $pref) {
                                 $itemDetails = $this->db->select('pref_id, sub_category_id as category_id, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, item_quantity, REPLACE(item_thumbnail,"./","' . base_url() . '") as item_thumbnail, REPLACE(item_image,"./","' . base_url() . '") as item_image, item_trade_price, (item_trade_price-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $userInfo['retailer_id'] . '))/100)*(ip.item_trade_price))) as after_discount')->where('item_id = ' . $pref->item_id . ' and find_in_set(pref_id, "' . $prefIds . '")')->get('inventory_preferences ip')->result();
-                                $response[] = array('item_parent_data' => array('item_id' => $pref->item_id, 'item_name' => $this->db->select('item_name')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_name, 'item_sku' => $this->db->select('item_sku')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_sku, 'item_thumbnail' => $this->db->select('REPLACE(max(item_thumbnail),"./","' . base_url() . '") as item_thumbnail')->where('item_id', $pref->item_id)->get('inventory_preferences')->row()->item_thumbnail), 'item_childeren_data' => $itemDetails );
+                                $response[] = array('item_parent_data' => array('item_id' => $pref->item_id, 'item_name' => $this->db->select('item_name')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_name, 'item_brand' => $this->db->select('item_brand')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_brand, 'item_sku' => $this->db->select('item_sku')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_sku, 'item_thumbnail' => $this->db->select('REPLACE(max(item_thumbnail),"./","' . base_url() . '") as item_thumbnail')->where('item_id', $pref->item_id)->get('inventory_preferences')->row()->item_thumbnail), 'item_childeren_data' => $itemDetails );
                             }
                             return $response;
                         else:
@@ -234,11 +297,11 @@ class WebServices extends CI_Model
                     if (isset($userInfo["category_id"])):
                         if ($this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()):
                             $prefIds = $this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()->pref_id;
-                            $preferences = $this->db->select('item_id')->where('find_in_set(pref_id, ("' . $prefIds . '")) and sub_category_id = ' . $userInfo["category_id"])->group_by('item_id')->get('inventory_preferences ip')->result();
+                            $preferences = $this->db->select('item_id')->where('find_in_set(pref_id, ("' . $prefIds . '")) and item_id IN (SELECT item_id from inventory_items where is_active = 1) and sub_category_id = ' . $userInfo["category_id"])->group_by('item_id')->get('inventory_preferences ip')->result();
                             $response = array();
                             foreach ($preferences as $pref) {
-                                $itemDetails = $this->db->select('pref_id, sub_category_id as category_id, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, item_quantity, REPLACE(item_thumbnail,"./","' . base_url() . '") as item_thumbnail, REPLACE(item_image,"./","' . base_url() . '") as item_image, item_trade_price')->where('item_id = ' . $pref->item_id . ' and find_in_set(pref_id, "' . $prefIds . '") and find_in_set(sub_category_id, "' . $userInfo["category_id"] . '")')->get('inventory_preferences ip')->result();
-                                $response[] = array('item_parent_data' => array('item_id' => $pref->item_id, 'item_name' => $this->db->select('item_name')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_name, 'item_sku' => $this->db->select('item_sku')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_sku, 'item_thumbnail' => $this->db->select('REPLACE(max(item_thumbnail),"./","' . base_url() . '") as item_thumbnail')->where('item_id', $pref->item_id)->get('inventory_preferences')->row()->item_thumbnail), 'item_childeren_data' => $itemDetails);
+                                $itemDetails = $this->db->select('pref_id, sub_category_id as category_id, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT item_brand from inventory_items where item_id = ip.item_id) as item_brand, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, item_quantity, REPLACE(item_thumbnail,"./","' . base_url() . '") as item_thumbnail, REPLACE(item_image,"./","' . base_url() . '") as item_image, item_trade_price')->where('item_id = ' . $pref->item_id . ' and find_in_set(pref_id, "' . $prefIds . '") and find_in_set(sub_category_id, "' . $userInfo["category_id"] . '")')->get('inventory_preferences ip')->result();
+                                $response[] = array('item_parent_data' => array('item_id' => $pref->item_id, 'item_name' => $this->db->select('item_name')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_name, 'item_brand' => $this->db->select('item_brand')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_brand, 'item_sku' => $this->db->select('item_sku')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_sku, 'item_thumbnail' => $this->db->select('REPLACE(max(item_thumbnail),"./","' . base_url() . '") as item_thumbnail')->where('item_id', $pref->item_id)->get('inventory_preferences')->row()->item_thumbnail), 'item_childeren_data' => $itemDetails);
                             }
                             return $response;
                         else:
@@ -247,11 +310,11 @@ class WebServices extends CI_Model
                     else:
                         if ($this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()):
                             $prefIds = $this->db->select('pref_id')->where(['id' => $catalogue_id])->get('catalogues')->row()->pref_id;
-                            $preferences = $this->db->select('item_id')->where('find_in_set(pref_id, ("' . $prefIds . '"))')->group_by('item_id')->get('inventory_preferences ip')->result();
+                            $preferences = $this->db->select('item_id')->where('find_in_set(pref_id, ("' . $prefIds . '")) and item_id IN (SELECT item_id from inventory_items where is_active = 1)')->group_by('item_id')->get('inventory_preferences ip')->result();
                             $response = array();
                             foreach ($preferences as $pref) {
                                 $itemDetails = $this->db->select('pref_id, sub_category_id as category_id, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, item_quantity, REPLACE(item_thumbnail,"./","' . base_url() . '") as item_thumbnail, REPLACE(item_image,"./","' . base_url() . '") as item_image, item_trade_price')->where('item_id = ' . $pref->item_id . ' and find_in_set(pref_id, "' . $prefIds . '")')->get('inventory_preferences ip')->result();
-                                $response[] = array('item_parent_data' => array('item_id' => $pref->item_id, 'item_name' => $this->db->select('item_name')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_name, 'item_sku' => $this->db->select('item_sku')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_sku, 'item_thumbnail' => $this->db->select('REPLACE(max(item_thumbnail),"./","' . base_url() . '") as item_thumbnail')->where('item_id', $pref->item_id)->get('inventory_preferences')->row()->item_thumbnail), 'item_childeren_data' => $itemDetails );
+                                $response[] = array('item_parent_data' => array('item_id' => $pref->item_id, 'item_name' => $this->db->select('item_name')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_name, 'item_brand' => $this->db->select('item_brand')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_brand, 'item_sku' => $this->db->select('item_sku')->where('item_id', $pref->item_id)->get('inventory_items')->row()->item_sku, 'item_thumbnail' => $this->db->select('REPLACE(max(item_thumbnail),"./","' . base_url() . '") as item_thumbnail')->where('item_id', $pref->item_id)->get('inventory_preferences')->row()->item_thumbnail), 'item_childeren_data' => $itemDetails );
                             }
                             return $response;
                         else:
@@ -294,16 +357,23 @@ class WebServices extends CI_Model
                     }
                 }
 
+                $orderContents = null;
                 unset($orderDetails['session']);
-                if ($catalogue_id):
+                
+                if ($catalogue_id){
                     $orderDetails["catalogue_id"] = $catalogue_id;
                     $orderDetails["employee_id"] = $employee_id;
-                    $pref_id = $orderDetails["pref_id"];
-                    $item_quantity_booker = $orderDetails["item_quantity_booker"];
-                    $booker_discount = $orderDetails["booker_discount"];
-                    unset($orderDetails["pref_id"]);
-                    unset($orderDetails["item_quantity_booker"]);
-                    unset($orderDetails["booker_discount"]);
+                    $pref_id = "";
+                    $item_quantity_booker = "";
+                    $booker_discount = "";
+                    if(isset($orderDetails["pref_id"])){
+                        $pref_id = $orderDetails["pref_id"];
+                        $item_quantity_booker = $orderDetails["item_quantity_booker"];
+                        $booker_discount = $orderDetails["booker_discount"];
+                        unset($orderDetails["pref_id"]);
+                        unset($orderDetails["item_quantity_booker"]);
+                        unset($orderDetails["booker_discount"]);
+                    }
                     $campaign_id = "";
                     $campaign_pref_id = "";
                     $campaign_booker_quantity = "";
@@ -323,6 +393,7 @@ class WebServices extends CI_Model
                         $campaign_booker_discount = explode(",", str_replace(' ', '', $campaign_booker_discount));
                     }
                     $orderDetails["invoice_number"] = mt_rand(1000000000, mt_getrandmax());
+                    $orderDetails["created_at"] = date("Y-m-d H:i:s", strtotime('+10 hours'));
                     $this->db->insert('orders', $orderDetails);
                     $order_id = $this->db->insert_id();
                     $territory_id = $this->db->select('territory_id')->where('employee_id', $employee_id)->get('employees_info')->row()->territory_id;
@@ -331,7 +402,7 @@ class WebServices extends CI_Model
                     if (!$this->db->where('id', $order_id)->update('orders', array("booking_territory" => $territory_id, "booking_area" => $area_id, "booking_region" => $region_id))):
                         return "Unable to update booker territory/area/region";
                     endif;
-                    $pref_id = explode(",", $pref_id);
+                    $pref_id = array_filter(explode(",", $pref_id));
                     $item_quantity_booker = explode(",", $item_quantity_booker);
                     $booker_discount = explode(",", $booker_discount);
                     for ($i = 0; $i < sizeof($pref_id); $i++) {
@@ -345,37 +416,39 @@ class WebServices extends CI_Model
                         $finalQuantity = $deductFromThisQuantity - $item_quantity_booker[$i];
                         $this->db->where('pref_id', $pref_id[$i])->update('inventory_preferences', array('item_quantity' => $finalQuantity));
                     }
-                    // return $this->db->insert_batch('order_contents', $orderContents);
-                    if ($this->db->insert_batch('order_contents', $orderContents)):
-                        if($campaign_id !== ""){
-                            for ($i = 0; $i < sizeof($campaign_id); $i++) {
-                                $campaign = $this->db->where('campaign_id', $campaign_id[$i])->get('campaign_management')->row();
-                
-                                if($campaign->scheme_type == "1") :
-                                    $final_price =  $this->db->select('CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $orderDetails['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))) * "'.$campaign_booker_quantity[$i].'")) as final_price')->where('campaign_id', $campaign_id[$i])->get('campaign_management cm')->row()->final_price;
-                                elseif($campaign->scheme_type == "2") :
-                                    $final_price = $this->db->select('CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $orderDetails['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) * "'.$campaign_booker_quantity[$i].'")) as final_price')->where('campaign_id', $campaign_id[$i])->get('campaign_management cm')->row()->final_price;
-                                else:
-                                    $final_price = $this->db->query('SELECT (((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)*cm.minimum_quantity_for_eligibility)-cm.offered_gift_price)-IFNULL(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $orderDetails['retailer_id'] . '))/100), 0)*(((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)*cm.minimum_quantity_for_eligibility)-cm.offered_gift_price) as final_price from campaign_management cm where campaign_id = '.$campaign_id[$i])->row()->final_price;
-                                endif;
 
-                                $orderContentsForCampaign[] = array("pref_id" => $campaign_pref_id[$i], "item_quantity_booker" => $campaign_booker_quantity[$i], "booker_discount" => $campaign_booker_discount[$i], "order_id" => $order_id, "campaign_id" => $campaign_id[$i], "final_price" => $final_price);
-                                $deductFromThisQuantity = $this->db->select('item_quantity')->where('pref_id', $campaign_pref_id[$i])->get('inventory_preferences')->row()->item_quantity;
-                                $finalQuantity = $deductFromThisQuantity - $campaign_booker_quantity[$i];
-                                $this->db->where('pref_id', $campaign_pref_id[$i])->update('inventory_preferences', array('item_quantity' => $finalQuantity));
-                            }
+                    if(sizeof($pref_id)){
+                        $this->db->insert_batch('order_contents', $orderContents);
+                    }
 
-                            $this->db->insert_batch('order_contents', $orderContentsForCampaign);
+                    if($campaign_id !== ""){
+                        for ($i = 0; $i < sizeof($campaign_id); $i++) {
+                            $campaign = $this->db->where('campaign_id', $campaign_id[$i])->get('campaign_management')->row();
+            
+                            if($campaign->scheme_type == "1") :
+                                $final_price =  $this->db->select('CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $orderDetails['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))) * "'.$campaign_booker_quantity[$i].'")) as final_price')->where('campaign_id', $campaign_id[$i])->get('campaign_management cm')->row()->final_price;
+                            elseif($campaign->scheme_type == "2") :
+                                $final_price = $this->db->select('CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $orderDetails['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) * "'.$campaign_booker_quantity[$i].'")) as final_price')->where('campaign_id', $campaign_id[$i])->get('campaign_management cm')->row()->final_price;
+                            else:
+                                $final_price = $this->db->query('SELECT (((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)*cm.minimum_quantity_for_eligibility)-cm.offered_gift_price)-IFNULL(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $orderDetails['retailer_id'] . '))/100), 0)*(((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)*cm.minimum_quantity_for_eligibility)-cm.offered_gift_price) as final_price from campaign_management cm where campaign_id = '.$campaign_id[$i])->row()->final_price;
+                            endif;
+
+                            $orderContentsForCampaign[] = array("pref_id" => $campaign_pref_id[$i], "item_quantity_booker" => $campaign_booker_quantity[$i], "booker_discount" => $campaign_booker_discount[$i], "order_id" => $order_id, "campaign_id" => $campaign_id[$i], "final_price" => $final_price);
+                            $deductFromThisQuantity = $this->db->select('item_quantity')->where('pref_id', $campaign_pref_id[$i])->get('inventory_preferences')->row()->item_quantity;
+                            $finalQuantity = $deductFromThisQuantity - $campaign_booker_quantity[$i];
+                            $this->db->where('pref_id', $campaign_pref_id[$i])->update('inventory_preferences', array('item_quantity' => $finalQuantity));
                         }
-                        $this->db->delete('visits_marked', 'employee_id = '.$employee_id.' and retailer_id = '.$orderDetails['retailer_id'].' and DATE(created_at) = CURDATE()');
-                        $orderVisitMarkedData = array('retailer_id' => $orderDetails["retailer_id"], 'latitude' => $orderDetails["booker_lats"], 'longitude' => $orderDetails["booker_longs"], 'employee_id' => $employee_id, 'took_order' => '1');
-                        if($this->db->insert('visits_marked', $orderVisitMarkedData)){
-                            return "Success";
-                        }
-                    endif;
-                else:
+
+                        $this->db->insert_batch('order_contents', $orderContentsForCampaign);
+                    }
+                    $this->db->delete('visits_marked', 'employee_id = '.$employee_id.' and retailer_id = '.$orderDetails['retailer_id'].' and DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR))');
+                    $orderVisitMarkedData = array('retailer_id' => $orderDetails["retailer_id"], 'latitude' => $orderDetails["booker_lats"], 'longitude' => $orderDetails["booker_longs"], 'employee_id' => $employee_id, 'took_order' => '1', 'created_at' => date("Y-m-d H:i:s", strtotime('+10 hours')));
+                    if($this->db->insert('visits_marked', $orderVisitMarkedData)){
+                        return "Success";
+                    }
+                }else{
                     return "Unable to find catalogue for today";
-                endif;
+                }
             else:
                 return "Unable to find employee id with this username";
             endif;
@@ -411,8 +484,8 @@ class WebServices extends CI_Model
     {
         $employee_id = $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $attendanceData['session'] . '"))')->get('employees_info')->row()->employee_id;
 
-        if ($this->db->where('DATE(created_at) = CURDATE() and checking_status = 1 and employee_id = ' . $employee_id)->get('ams')->result()):
-            if ($this->db->where('DATE(created_at) = CURDATE() and checking_status = 0 and employee_id = ' . $employee_id)->get('ams')->result()):
+        if ($this->db->where('DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR)) and checking_status = 1 and employee_id = ' . $employee_id)->get('ams')->result()):
+            if ($this->db->where('DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR)) and checking_status = 0 and employee_id = ' . $employee_id)->get('ams')->result()):
                 return "1";
             else:
                 return "2";
@@ -427,11 +500,11 @@ class WebServices extends CI_Model
 
         $employee_id = $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $attendanceData['session'] . '"))')->get('employees_info')->row()->employee_id;
 
-        if ($this->db->where('DATE(created_at) = CURDATE() and checking_status = 0 and employee_id = ' . $employee_id)->get('ams')->result()):
+        if ($this->db->where('DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR)) and checking_status = 0 and employee_id = ' . $employee_id)->get('ams')->result()):
             return "Complete";
         endif;
 
-        if ($this->db->where('DATE(created_at) = CURDATE() and checking_status = 1 and employee_id = ' . $employee_id)->get('ams')->result()):
+        if ($this->db->where('DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR)) and checking_status = 1 and employee_id = ' . $employee_id)->get('ams')->result()):
             return "Exist";
         endif;
 
@@ -441,6 +514,7 @@ class WebServices extends CI_Model
             'within_radius' => $attendanceData['within_radius'],
             'checking_status' => 1,
             'employee_id' => $employee_id,
+            'created_at' => date("Y-m-d H:i:s", strtotime('+10 hours'))
         );
         return $this->db->insert('ams', $checkIn);
     }
@@ -450,17 +524,18 @@ class WebServices extends CI_Model
 
         $employee_id = $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $attendanceData['session'] . '"))')->get('employees_info')->row()->employee_id;
 
-        if ($this->db->where('DATE(created_at) = CURDATE() and checking_status = 0 and employee_id = ' . $employee_id)->get('ams')->result()):
+        if ($this->db->where('DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR)) and checking_status = 0 and employee_id = ' . $employee_id)->get('ams')->result()):
             return "Exist";
         endif;
 
-        if ($this->db->where('DATE(created_at) = CURDATE() and checking_status = 1 and employee_id = ' . $employee_id)->get('ams')->result()):
+        if ($this->db->where('DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR)) and checking_status = 1 and employee_id = ' . $employee_id)->get('ams')->result()):
             $checkIn = array(
                 'latitude' => $attendanceData['latitude'],
                 'longitude' => $attendanceData['longitude'],
                 'within_radius' => $attendanceData['within_radius'],
                 'checking_status' => 0,
                 'employee_id' => $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $attendanceData['session'] . '"))')->get('employees_info')->row()->employee_id,
+                'created_at' => date("Y-m-d H:i:s", strtotime('+10 hours'))
             );
             return $this->db->insert('ams', $checkIn);
         else:
@@ -471,7 +546,7 @@ class WebServices extends CI_Model
     public function MarkVisit($visitData)
     {
         $employee_id = $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $visitData['session'] . '"))')->get('employees_info')->row()->employee_id;
-        if ($this->db->where('retailer_id = ' . $visitData["retailer_id"] . ' and employee_id = ' . $employee_id . ' and DATE(created_at) = CURDATE()')->get('visits_marked')->result()):
+        if ($this->db->where('retailer_id = ' . $visitData["retailer_id"] . ' and employee_id = ' . $employee_id . ' and DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR))')->get('visits_marked')->result()):
             return "Marked already for today";
         endif;
 
@@ -481,6 +556,7 @@ class WebServices extends CI_Model
             'took_order' => 0,
             'latitude' => $visitData["latitude"],
             'longitude' => $visitData["longitude"],
+            'created_at' => date("Y-m-d H:i:s", strtotime('+10 hours')),
             'employee_id' => $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $visitData['session'] . '"))')->get('employees_info')->row()->employee_id,
         );
         return $this->db->insert('visits_marked', $markVisit);
@@ -498,6 +574,7 @@ class WebServices extends CI_Model
                     'took_order' => 0,
                     'latitude' => $retailer["latitude"],
                     'longitude' => $retailer["longitude"],
+                    'took_order' => isset($retailer["took_order"]) ? $retailer["took_order"] : 0,
                     'employee_id' => $employee_id,
                 );
             endif;
@@ -510,24 +587,27 @@ class WebServices extends CI_Model
 
     public function GetOverviewStat($data){
         $employee_id = $this->db->select('employee_id')->where('employee_id = (SELECT employee_id from employees_info where employee_username = (SELECT username from employee_session where session = "' . $data['session'] . '"))')->get('employees_info')->row()->employee_id;
-        $orders = $this->db->select('GROUP_CONCAT(id) as orders')->where(['employee_id'=>$employee_id, 'DATE(created_at)'=>date("Y-m-d")])->get('orders')->row()->orders;
-        $totalOrders = 0;
-        $total_sale = 0;
-        if($orders):
-            $totalOrders = sizeOf(explode(",", $orders));
-            $total_sale = $this->db->select('IFNULL(SUM(final_price), "0") as total_sale')->where("order_id IN (".$orders.")")->get('order_contents')->row()->total_sale;
-        endif;
-        $punch_in_time = $this->db->select('count(DATE_FORMAT(TIME(created_at), "%r")) as record_found, IFNULL(DATE_FORMAT(TIME(created_at), "%r"), "Not checked in") as punch_in_time')->where('employee_id = ' . $employee_id.' and checking_status = 1 and DATE(created_at) = CURDATE()')->get('ams')->row()->punch_in_time;
-        $time_spent = $this->db->select('count(TIME_FORMAT(TIMEDIFF(TIME(NOW()), TIME(created_at)) , "%Hh %im")) as record_found, IFNULL(TIME_FORMAT(TIMEDIFF(TIME(NOW()), TIME(created_at)) , "%Hh %im"), "No time spent") as time_spent')->where('employee_id = ' . $employee_id.' and checking_status = 1 and DATE(created_at) = CURDATE()')->get('ams')->row()->time_spent;
-        $schedule_visits = $this->db->select('count(*) as schedule_visits')->where('employee_id = ' . $employee_id.' and DATE(plan_for_day) = CURDATE()')->get('employee_visit_plan')->row()->schedule_visits;
-        $done_visits = $this->db->select('count(*) as done_visits')->where('employee_id = ' . $employee_id.' and DATE(created_at) = CURDATE()')->get('visits_marked')->row()->done_visits;
+        $total_sale = $this->db->query('SELECT IFNULL(SUM(final_price), 0) as total_sale from order_contents where order_id IN (SELECT id from orders where employee_id = '.$employee_id.' and DATE(created_at) = "'.date("Y-m-d", strtotime('+10 hours')).'")')->row()->total_sale;
+        $punch_in_time = $this->db->select('IFNULL(DATE_FORMAT(TIME(created_at), "%r"), "Not checked in") as punch_in_time')->where('employee_id = ' . $employee_id.' and checking_status = 1 and DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR))')->get('ams')->row()->punch_in_time;
 
-        return array('total_sale' => $total_sale, 'punch_in_time' => $punch_in_time, 'time_spent' => $time_spent, 'total_orders' =>$totalOrders, 'schedule_visits' =>$schedule_visits, 'done_visits' =>$done_visits);
+        $end_shift = $this->db->select('count(*), TIME(created_at) as end_shift')->where('employee_id = '. $employee_id. ' and checking_status = 0 and DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR))')->get('ams')->row()->end_shift;
+        $time_spent = $this->db->select('IFNULL(TIME_FORMAT(TIMEDIFF(TIME(DATE_ADD(NOW(), INTERVAL 10 HOUR)), TIME(created_at)) , "%Hh %im"), "NA") as time_spent')->where('employee_id = ' . $employee_id.' and checking_status = 1 and DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR))')->get('ams')->row()->time_spent;
+
+        if($end_shift){
+            $time_spent = $this->db->select('IFNULL(TIME_FORMAT(TIMEDIFF("'.$end_shift.'", TIME(created_at)) , "%Hh %im"), "NA") as time_spent')->where('employee_id = ' . $employee_id.' and checking_status = 1 and DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR))')->get('ams')->row()->time_spent;
+        }
+
+        $schedule_visits = $this->db->select('count(*) as schedule_visits')->where('employee_id = ' . $employee_id.' and DATE(plan_for_day) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR))')->get('employee_visit_plan')->row()->schedule_visits;
+        $done_visits = $this->db->select('count(*) as done_visits')->where('employee_id = ' . $employee_id.' and DATE(created_at) = DATE(DATE_ADD(NOW(), INTERVAL 10 HOUR))')->get('visits_marked')->row()->done_visits;
+
+        return array('total_sale' => number_format($total_sale), 'punch_in_time' => $punch_in_time, 'time_spent' => $time_spent, 'total_orders' => $this->db->query('SELECT count(*) as total from orders where employee_id = '.$employee_id.' and DATE(created_at) = "'.date("Y-m-d", strtotime('+10 hours')).'"')->row()->total, 'schedule_visits' =>$schedule_visits, 'done_visits' =>$done_visits);
     }
 
     public function GetMarkStatus($visitData)
     {
-        if ($this->db->where(['retailer_id' => $visitData["retailer_id"], 'assigned_for_day' => date("l")])->get('visits_marked')->row()) {
+    	$timestamp = strtotime(date("Y-m-d", strtotime('+10 hours')));
+    	$day = date('l', $timestamp);
+        if ($this->db->where(['retailer_id' => $visitData["retailer_id"], 'assigned_for_day' => strtolower($day) ])->get('visits_marked')->row()) {
             return "Marked";
         } else {
             return "Unmarked";
@@ -671,14 +751,29 @@ class WebServices extends CI_Model
         }
 
         if($campaign->scheme_type == "1") :
-            return $this->db->select('eligibility_criteria_pref_id as pref_id, "'.$campData["item_quantity"].'" as quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))))) as individual_price, CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))) * "'.$campData["item_quantity"].'")) as final_price')->where('campaign_id', $campData["campaign_id"])->get('campaign_management cm')->row();
-        endif;
+            return $this->db->select('eligibility_criteria_pref_id as pref_id, "'.$campData["item_quantity"].'" as item_quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))))) as individual_price, CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))) * "'.$campData["item_quantity"].'")) as final_price')->where('campaign_id', $campData["campaign_id"])->get('campaign_management cm')->row();
+            elseif($campaign->scheme_type == "3") :
+                return $this->db->select('eligibility_criteria_pref_id as pref_id, "'.$campData["item_quantity"].'" as item_quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, CEIL(((((((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price)))))) as individual_price, CEIL(((((((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price)))) * "'.$campData["item_quantity"].'")) as final_price')->where('campaign_id', $campData["campaign_id"])->get('campaign_management cm')->row();
+            endif;
         return $this->db->select('eligibility_criteria_pref_id as pref_id, '.$campData["item_quantity"].' as item_quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)))) as individual_price, CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = ' . $campData['retailer_id'] . '))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) * "'.$campData["item_quantity"].'")) as final_price')->where('campaign_id', $campData["campaign_id"])->get('campaign_management cm')->row();
     }
 
     public function GetCampaigns($session){
         $empDetails = $this->db->select('territory_id, (SELECT area_id from territory_management where id = ei.territory_id) as area_id, (SELECT region_id from area_management where id = (SELECT area_id from territory_management where id = ei.territory_id)) as region_id')->where('employee_username = (SELECT username from employee_session where session = "'.$session.'")')->get('employees_info ei')->row();
-        return $this->db->select('campaign_id, scheme_type, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as product, CONCAT(cm.minimum_quantity_for_eligibility, " ", (SELECT unit_plural_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id))) as minimum_quantity_for_eligibility, CONCAT(cm.minimum_quantity_for_eligibility,"+",cm.quantity_for_free_item) as scheme, campaign_name, REPLACE(scheme_image,"./","' . base_url() . '") as background_image, discount_on_tp_pkr')->where('scheme_active = 1 and (region_id = '.$empDetails->region_id.' OR area_id = '.$empDetails->area_id.' OR territory_id = '.$empDetails->territory_id.')')->get('campaign_management cm')->result();
+        
+        $campaigns = $this->db->select('campaign_id, scheme_type, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as product, (SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as trade_price, CONCAT(cm.minimum_quantity_for_eligibility, " ", (SELECT unit_plural_name from inventory_types_units where unit_id = (SELECT unit_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id))) as minimum_quantity_for_eligibility, CONCAT(cm.minimum_quantity_for_eligibility,"+",cm.quantity_for_free_item) as scheme, campaign_name, REPLACE(scheme_image,"./","' . base_url() . '") as background_image, discount_on_tp_pkr, gift_item')->where('scheme_active = 1 and (region_id = '.$empDetails->region_id.' OR area_id = '.$empDetails->area_id.' OR territory_id = '.$empDetails->territory_id.')')->where('scheme_active', 1)->get('campaign_management cm')->result();
+        $index = 0;
+        foreach ($campaigns as $camp) {
+            if($camp->scheme_type == "1") :
+                $campaigns[$index]->preferences = $this->db->select('eligibility_criteria_pref_id as pref_id, cm.minimum_quantity_for_eligibility as item_quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))))) as individual_price, CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))) * cm.minimum_quantity_for_eligibility)) as final_price')->where('campaign_id', $camp->campaign_id)->get('campaign_management cm')->row();
+            elseif($camp->scheme_type == "3") :
+                $campaigns[$index]->preferences = $this->db->select('eligibility_criteria_pref_id as pref_id, cm.minimum_quantity_for_eligibility as item_quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, CEIL(((((((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price)))))) as individual_price, CEIL(((((((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price)))) * cm.minimum_quantity_for_eligibility)) as final_price')->where('campaign_id', $camp->campaign_id)->get('campaign_management cm')->row();
+            elseif($camp->scheme_type == "2"):
+                $campaigns[$index]->preferences = $this->db->select('eligibility_criteria_pref_id as pref_id, cm.minimum_quantity_for_eligibility as item_quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)))) as individual_price, CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) * cm.minimum_quantity_for_eligibility)) as final_price')->where('campaign_id', $camp->campaign_id)->get('campaign_management cm')->row();
+            endif;
+            $index++;
+        }
+        return $campaigns;
 
     }
 

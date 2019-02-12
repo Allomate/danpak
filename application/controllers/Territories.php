@@ -22,8 +22,9 @@ class Territories extends WebAuth_Controller{
 	{
 		$this->form_validation->set_rules('territory_name', 'Territory Name', 'required|max_length[100]');
 		if ($this->form_validation->run()) {
+			$zonesData = $this->input->post("zones");
 			$territoryData = $this->input->post();
-			if ($this->tm->add_territory($territoryData)) :
+			if ($this->tm->add_territory($territoryData, explode("<>", $zonesData))) :
 				$this->session->set_flashdata("territory_added", "Territory has been added successfully");
 			else:
 				$this->session->set_flashdata("territory_add_failed", "Failed to add the territory at the moment");
@@ -43,7 +44,8 @@ class Territories extends WebAuth_Controller{
 		$this->form_validation->set_rules('territory_name', 'Territory Name', 'required|max_length[100]');
 		if ($this->form_validation->run()) {
 			$territoryData = $this->input->post();
-			if ($this->tm->update_territory($territoryId, $territoryData)) :
+			$zonesData = $this->input->post("zones");
+			if ($this->tm->update_territory($territoryId, $territoryData, $zonesData)) :
 				$this->session->set_flashdata("territory_updated", "Territory has been update successfully");
 			else:
 				$this->session->set_flashdata("territory_update_failed", "Failed to update the territory");

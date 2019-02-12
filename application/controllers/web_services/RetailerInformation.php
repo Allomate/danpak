@@ -44,6 +44,19 @@ class RetailerInformation extends Web_Services_Controller
         endif;
     }
 
+    public function GetAllDistributorTypes()
+    {
+        if ($this->AuthenticateWebServiceCall($this->input->post("api_secret_key"))):
+            if ($this->ws->GetDistributorTypes()):
+                return $this->ResponseMessage('Success', $this->ws->GetDistributorTypes());
+            else:
+                return $this->ResponseMessage('Failed', 'No Distributor types to show');
+            endif;
+        else:
+            return $this->ResponseMessage('Failed', 'Failed Api Authentication');
+        endif;
+    }
+
     public function GetAllAreas()
     {
         if ($this->AuthenticateWebServiceCall($this->input->post("api_secret_key"))):
@@ -70,6 +83,19 @@ class RetailerInformation extends Web_Services_Controller
         endif;
     }
 
+    public function GetAllZones()
+    {
+        if ($this->AuthenticateWebServiceCall($this->input->post("api_secret_key"))):
+            if ($this->ws->GetAreas()):
+                return $this->ResponseMessage('Success', $this->ws->GetZones($this->input->post("session")));
+            else:
+                return $this->ResponseMessage('Failed', 'No Zones to show');
+            endif;
+        else:
+            return $this->ResponseMessage('Failed', 'Failed Api Authentication');
+        endif;
+    }
+
     public function AddRetailer()
     {
         if ($this->AuthenticateWebServiceCall($this->input->post("api_secret_key"))):
@@ -78,19 +104,20 @@ class RetailerInformation extends Web_Services_Controller
             if (isset($retailerInfo['retailer_name'], $retailerInfo['retailer_address'],
             $retailerInfo['retailer_lats'], $retailerInfo['retailer_longs'], $retailerInfo['retailer_phone'], $retailerInfo['retailer_type_id'], $retailerInfo['session'])):
                 $config['upload_path'] = './assets/uploads/retailers/';
-                if (isset($retailerInfo['retailer_image_b64'])):
+                if (isset($retailerInfo['retailer_image_b64']) && $retailerInfo['retailer_image_b64'] !== ''):
                     $imgData = base64_decode($_POST['retailer_image_b64']);
                     $imageName = $config['upload_path'] . random_string('alnum', 10) . '_' . time() . '.jpg';
                     $ifp = fopen($imageName, 'wb');
                     fwrite($ifp, $imgData);
                     fclose($ifp);
-                    unset($retailerInfo['retailer_image_b64']);
                     $retailerInfo['retailer_image'] = $imageName;
                 endif;
+                unset($retailerInfo['retailer_image_b64']);
                 $this->form_validation->set_rules('retailer_name', 'Retailer Name', 'max_length[100]');
                 $this->form_validation->set_rules('retailer_address', 'Retailer Address', 'max_length[500]');
                 $this->form_validation->set_rules('retailer_phone', 'Retailer Phone', 'numeric|max_length[100]');
                 if ($this->form_validation->run()):
+                //    echo "<pre>"; print_r($this->ws->StoreRetailerInformation($retailerInfo));die;
                     if ($this->ws->StoreRetailerInformation($retailerInfo)):
                         return $this->ResponseMessage('Success', 'Retailer has been added successfully');
                     else:
@@ -132,7 +159,6 @@ class RetailerInformation extends Web_Services_Controller
             }
 
             $response = $this->ws->StoreRetailerInformationOffline($retailerInfo);
-            // echo "<pre>"; print_r($response);die;
             if ($response["status"] == "Success"):
                 return $this->ResponseMessage('Success', $response["response"]);
             else:

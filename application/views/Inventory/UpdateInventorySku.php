@@ -88,6 +88,12 @@
 									<input style="width: auto; display: none" id="skuInput" type="text" class="form-control" value="<?= $GetMainDetails->item_sku; ?>">
 								</p>
 								<br>
+								<p class="font-18"><strong>Brand:</strong>
+									<span id="brandPara">
+										<?= $GetMainDetails->item_brand; ?></span>
+									<input style="width: auto; display: none" id="brandInput" type="text" class="form-control" value="<?= $GetMainDetails->item_brand; ?>">
+								</p>
+								<br>
 								<p class="font-18"><strong>Main Category: </strong>
 									<?= $GetMainDetails->main_category; ?>
 								</p>
@@ -156,9 +162,9 @@
 											</td>
 											<td style="text-align: center">
 												<a href="<?= base_url('Inventory/UpdateInventory/'.$inventory->pref_id).'/'.$this->uri->segment(3); ?>"><i
-													class="fa fa-pencil"></i></a>
+													 class="fa fa-pencil"></i></a>
 												<a class="deleteConfirmation" href="<?= base_url('Inventory/DeleteInventory/'.$inventory->pref_id); ?>"><i
-													class="fa fa-close"></i></a>
+													 class="fa fa-close"></i></a>
 											</td>
 										</tr>
 										<?php endforeach; ?>
@@ -184,12 +190,15 @@
 			$('#cancelSettings').show();
 			$('#namePara').hide();
 			$('#skuPara').hide();
+			$('#brandPara').hide();
 			$('#discPara').hide();
 
 			$('#nameInput').css('display', 'inline');
 			$('#nameInput').fadeIn();
 			$('#skuInput').css('display', 'inline');
 			$('#skuInput').fadeIn();
+			$('#brandInput').css('display', 'inline');
+			$('#brandInput').fadeIn();
 			$('#descriptionInput').fadeIn();
 		});
 
@@ -203,10 +212,13 @@
 			$('#nameInput').hide();
 			$('#skuInput').css('display', 'none');
 			$('#skuInput').hide();
+			$('#brandInput').css('display', 'none');
+			$('#brandInput').hide();
 			$('#descriptionInput').hide();
 
 			$('#namePara').fadeIn();
 			$('#skuPara').fadeIn();
+			$('#brandPara').fadeIn();
 			$('#discPara').fadeIn();
 		});
 
@@ -218,6 +230,7 @@
 					name: $('#nameInput').val(),
 					sku: $('#skuInput').val(),
 					description: $('#descriptionInput').val(),
+					brand: $('#brandInput').val(),
 					skuId: $('.updateItemName').attr("id")
 				},
 				success: function (response) {
@@ -230,6 +243,7 @@
 
 					$('#namePara span').text($('#nameInput').val());
 					$('#skuPara').text($('#skuInput').val());
+					$('#brandPara').text($('#brandInput').val());
 					$('#discPara').text($('#descriptionInput').val());
 
 					$('.updateItemName').fadeIn();
@@ -239,10 +253,13 @@
 					$('#nameInput').hide();
 					$('#skuInput').css('display', 'none');
 					$('#skuInput').hide();
+					$('#brandInput').css('display', 'none');
+					$('#brandInput').hide();
 					$('#descriptionInput').hide();
 
 					$('#namePara').fadeIn();
 					$('#skuPara').fadeIn();
+					$('#brandPara').fadeIn();
 					$('#discPara').fadeIn();
 				}
 			});

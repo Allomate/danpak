@@ -57,7 +57,7 @@ $(document).ready(function() {
     }
 
     $('#addAnotherVariantButton').click(function() {
-        $('#moreVariants').append('<hr><div><div class="row" style="margin-bottom: 20px"><button id="removeThisPackaging" class="form-control" style="float: right; width: 20%">Remove</button></div><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Variants*</label><select class="form-control unitIdsDd" name="unit_id_' + totalUnitsAdded + '" data-style="form-control btn-default btn-outline"></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Product Quantity*</label><input type="text" name="item_quantity_' + totalUnitsAdded + '" class="form-control" placeholder=""></div></div></div><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Child</label><select class="form-control childItems" name="child_item_' + totalUnitsAdded + '" data-style="form-control btn-default btn-outline"></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Child Quantity</label><input type="text" name="child_item_quantity_' + totalUnitsAdded + '" class="form-control" placeholder=""></div></div></div><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Cost Price*</label><input type="text" name="item_warehouse_price_' + totalUnitsAdded + '" class="form-control" placeholder="Rs:0.00"></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Trade Price*</label><input type="text" name="item_trade_price_' + totalUnitsAdded + '" class="form-control" placeholder="Rs:0.00"></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Retail Price*</label><input type="text" name="item_retail_price_' + totalUnitsAdded + '" class="form-control" placeholder="Rs:0.00"></div></div></div><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Product Barcode*</label><input type="text" name="item_barcode_' + totalUnitsAdded + '" class="form-control" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Expiry Date</label><input type="text" id="firstName" class="form-control" placeholder=""></div></div></div><div class="row"><div class="col-md-12"><div class="form-group"><label class="control-label mb-10">Description</label><textarea name="item_description_' + totalUnitsAdded + '" class="form-control" rows="5"></textarea></div></div></div></div>');
+        $('#moreVariants').append('<hr><div><div class="row" style="margin-bottom: 20px"><button id="removeThisPackaging" class="form-control" style="float: right; width: 20%">Remove</button></div><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Variants*</label><select class="form-control unitIdsDd" name="unit_id_' + totalUnitsAdded + '" data-style="form-control btn-default btn-outline"></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Trade Price*</label><input type="text" name="item_trade_price_' + totalUnitsAdded + '" class="form-control" placeholder="Rs:0.00"></div></div></div><div class="row"><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Child</label><select class="form-control childItems" name="child_item_' + totalUnitsAdded + '" data-style="form-control btn-default btn-outline"></select></div></div><div class="col-md-6"><div class="form-group"><label class="control-label mb-10">Child Quantity</label><input type="text" name="child_item_quantity_' + totalUnitsAdded + '" class="form-control" placeholder=""></div></div></div></div>');
 
         $('select[name="unit_id_' + totalUnitsAdded + '"]').append('<option value="0">No type selected</option>');
         for (var i = 0; i < unitTypeIds.length; i++) {
@@ -67,12 +67,16 @@ $(document).ready(function() {
                 $('select[name="unit_id_' + totalUnitsAdded + '"]').append('<option value="' + unitTypeIds[i] + '">' + unitTypeNames[i] + '</option>');
             }
         }
-        $('select[name="child_item_' + totalUnitsAdded + '"]').append('<option value="0">No type selected</option>');
+        $('select[name="child_item_' + totalUnitsAdded + '"]').append('<option value="0">No child selected</option>');
         for (var i = 0; i < unitTypeIds.length; i++) {
             if (jQuery.inArray(unitTypeIds[i], unitsToDisable) !== -1) {
                 $('select[name="child_item_' + totalUnitsAdded + '"]').append('<option value="' + unitTypeIds[i] + '" disabled="disabled">' + unitTypeNames[i] + '</option>');
             } else {
-                $('select[name="child_item_' + totalUnitsAdded + '"]').append('<option value="' + unitTypeIds[i] + '">' + unitTypeNames[i] + '</option>');
+                if (unitTypeIds[i] == $('.unitIdsDd')[($('.unitIdsDd').length - 2)].value) {
+                    $('select[name="child_item_' + totalUnitsAdded + '"]').append('<option value="' + unitTypeIds[i] + '" selected>' + unitTypeNames[i] + '</option>');
+                } else {
+                    $('select[name="child_item_' + totalUnitsAdded + '"]').append('<option value="' + unitTypeIds[i] + '">' + unitTypeNames[i] + '</option>');
+                }
             }
         }
 
@@ -191,26 +195,19 @@ $(document).ready(function() {
                 }
             }
 
-            if ($('input[name="item_barcode_' + i + '"]').length) {
-                if ($('input[name="item_barcode_' + i + '"]').val() == "") {
-                    swal('Missing Information', 'You need to provide barcodes for all the items', 'error');
-                    return;
-                }
-            }
+            // if ($('input[name="item_barcode_' + i + '"]').length) {
+            //     if ($('input[name="item_barcode_' + i + '"]').val() == "") {
+            //         swal('Missing Information', 'You need to provide barcodes for all the items', 'error');
+            //         return;
+            //     }
+            // }
 
-            if ($('input[name="item_quantity_' + i + '"]').length) {
-                if ($('input[name="item_quantity_' + i + '"]').val() == "") {
-                    swal('Missing Information', 'You need to provide quantity for all the items', 'error');
-                    return;
-                }
-            }
-
-            if ($('input[name="item_warehouse_price_' + i + '"]').length) {
-                if ($('input[name="item_warehouse_price_' + i + '"]').val() == "") {
-                    swal('Missing Information', 'You need to provide cost price for all the items', 'error');
-                    return;
-                }
-            }
+            // if ($('input[name="item_warehouse_price_' + i + '"]').length) {
+            //     if ($('input[name="item_warehouse_price_' + i + '"]').val() == "") {
+            //         swal('Missing Information', 'You need to provide cost price for all the items', 'error');
+            //         return;
+            //     }
+            // }
 
             if ($('input[name="item_trade_price_' + i + '"]').length) {
                 if ($('input[name="item_trade_price_' + i + '"]').val() == "") {
@@ -219,12 +216,12 @@ $(document).ready(function() {
                 }
             }
 
-            if ($('input[name="item_retail_price_' + i + '"]').length) {
-                if ($('input[name="item_retail_price_' + i + '"]').val() == "") {
-                    swal('Missing Information', 'You need to provide retail price for all the items', 'error');
-                    return;
-                }
-            }
+            // if ($('input[name="item_retail_price_' + i + '"]').length) {
+            //     if ($('input[name="item_retail_price_' + i + '"]').val() == "") {
+            //         swal('Missing Information', 'You need to provide retail price for all the items', 'error');
+            //         return;
+            //     }
+            // }
 
             if ($('select[name="child_item_' + i + '"]').length) {
                 if ($('select[name="child_item_' + i + '"]').val() != "0") {
@@ -244,11 +241,11 @@ $(document).ready(function() {
                 }
             }
 
-            if (jQuery.inArray($('input[name="item_barcode_' + i + '"]').val(), barcodesAddedInSameItem) !== -1) {
-                swal('Invalid Information', 'You can\'t add same barcodes for multiple items', 'error');
-                sameBarcodesAdded = true;
-                return;
-            }
+            // if (jQuery.inArray($('input[name="item_barcode_' + i + '"]').val(), barcodesAddedInSameItem) !== -1) {
+            //     swal('Invalid Information', 'You can\'t add same barcodes for multiple items', 'error');
+            //     sameBarcodesAdded = true;
+            //     return;
+            // }
 
             if (jQuery.inArray($('select[name="unit_id_' + i + '"]').val(), unitTypesAddedInSameItem) !== -1) {
                 swal('Invalid Information', 'You can\'t add same Unit types for multiple items', 'error');
@@ -258,14 +255,14 @@ $(document).ready(function() {
             if ($('select[name="unit_id_' + i + '"]').length) {
                 unitTypesAddedInSameItem.push($('select[name="unit_id_' + i + '"]').val());
             }
-            if ($('input[name="item_barcode_' + i + '"]').length) {
-                barcodesAddedInSameItem.push($('input[name="item_barcode_' + i + '"]').val());
-            }
+            // if ($('input[name="item_barcode_' + i + '"]').length) {
+            //     barcodesAddedInSameItem.push($('input[name="item_barcode_' + i + '"]').val());
+            // }
         }
 
-        if (sameBarcodesAdded || sameUnitTypesAdded) {
-            return;
-        }
+        // if (sameBarcodesAdded || sameUnitTypesAdded) {
+        //     return;
+        // }
 
         $(this).attr('disabled', 'disabled');
         $('input[name="totalInventoryAdded"]').val(totalUnitsAdded);

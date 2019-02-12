@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title></title>
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<meta name="author" content="hencework"/>
+	
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="">
+	<link rel="icon" href="" type="image/x-icon">
+
+	<!-- Bootstrap Dropify CSS -->
+	<link href="vendors/bower_components/dropify/dist/css/dropify.min.css" rel="stylesheet" type="text/css"/>	
+ 	<!-- Data table CSS -->
+	<link href="vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>	
+	<!-- bootstrap-select CSS -->
+	<link href="vendors/bower_components/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet" type="text/css"/>
+
+	<link href="dist/css/material-design-iconic-font.min.css" rel="stylesheet" type="text/css">
+	
+	<!-- Custom CSS -->
+	<link href="dist/css/style.css" rel="stylesheet" type="text/css">
+ 
+	
+</head>
+
+<body>
+	<!--Preloader-->
+	<div class="preloader-it">
+		<div class="la-anim-1"></div>
+	</div>
+	<!--/Preloader-->
+    <div class="wrapper theme-1-active"> 
+
+        <!-- Top Menu Items -->
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="mobile-only-brand pull-left">
+			<a id="toggle_nav_btn" class="toggle-left-nav-btn inline-block ml-20 pull-left" href="javascript:void(0);"><i class="zmdi zmdi-menu"></i></a>
+			
+				 <!--<div class="nav-header pull-left">				
+					<div class="logo-wrap">
+						 
+					</div>
+				</div>	 -->
+				
+				<div class="m-logo">
+				<a href="index.html">
+				 <img class="brand-img" src="images/allomate-logo.png" alt="brand"/>
+							<!--<span class="brand-text">Jetson</span>-->
+				</a>
+				</div>
+				
+				<a id="toggle_mobile_search" data-toggle="collapse" data-target="#search_form" class="mobile-only-view" href="javascript:void(0);"><i class="zmdi zmdi-search"></i></a>
+				<a id="toggle_mobile_nav" class="mobile-only-view" href="javascript:void(0);"><i class="zmdi zmdi-more"></i></a>
+		
+			</div>
+			
+			
+			
+			<div id="mobile_only_nav" class="mobile-only-nav pull-right">
+					<form id="search_form" role="search" class="top-nav-search collapse pull-left">
+					<div class="input-group">
+						<input type="text" name="example-input1-group2" class="form-control" placeholder="Search">
+						<span class="input-group-btn">
+						<button type="button" class="btn btn-default"  data-target="#search_form"><i class="zmdi zmdi-search"></i></button>
+						</span>
+					</div>
+				</form>
+				<ul class="nav navbar-right top-nav pull-right">
+					<li>
+						<a id="open_right_sidebar" href="#"><i class="zmdi zmdi-settings top-nav-icon"></i></a>
+					</li>
+					<li class="dropdown app-drp">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="zmdi zmdi-apps top-nav-icon"></i></a>
+						<ul class="dropdown-menu app-dropdown" data-dropdown-in="slideInRight" data-dropdown-out="flipOutX">
+							<li>
+								<div class="app-nicescroll-bar">
+									<ul class="app-icon-wrap pa-10">
+										<li>
+											<a href="weather.html" class="connection-item">
+											<i class="zmdi zmdi-cloud-outline txt-info"></i>
+											<span class="block">weather</span>
+											</a>
+										</li>
+										<li>
+											<a href="inbox.html" class="connection-item">
+											<i class="zmdi zmdi-email-open txt-success"></i>
+											<span class="block">e-mail</span>
+											</a>
+										</li>
+										<li>
+											<a href="calendar.html" class="connection-item">
+											<i class="zmdi zmdi-calendar-check txt-primary"></i>
+											<span class="block">calendar</span>
+											</a>
+										</li>
+										<li>
+											<a href="vector-map.html" class="connection-item">
+											<i class="zmdi zmdi-map txt-danger"></i>
+											<span class="block">map</span>
+											</a>
+										</li>
+										<li>
+											<a href="chats.html" class="connection-item">
+											<i class="zmdi zmdi-comment-outline txt-warning"></i>
+											<span class="block">chat</span>
+											</a>
+										</li>
+										<li>
+											<a href="contact-card.html" class="connection-item">
+											<i class="zmdi zmdi-assignment-account"></i>
+											<span class="block">contact</span>
+											</a>
+										</li>
+									</ul>
+								</div>	
+							</li>
+							<li>
+								<div class="app-box-bottom-wrap">
+									<hr class="light-grey-hr ma-0"/>
+									<a class="block text-center read-all" href="javascript:void(0)"> more </a>
+								</div>
+							</li>
+						</ul>
+					</li>
+					<li class="dropdown full-width-drp">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="zmdi zmdi-more-vert top-nav-icon"></i></a>
+						<ul class="dropdown-menu mega-menu pa-0" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+							<li class="product-nicescroll-bar row">
+								<ul class="pa-20">
+									<li class="col-md-3 col-xs-6 col-menu-list">
+										<a href="javascript:void(0);"><div class="pull-left"><i class="zmdi zmdi-landscape mr-20"></i><span class="right-nav-text">Dashboard</span></div><div class="pull-right"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+										<hr class="light-grey-hr ma-0"/>
+										<ul>
+											<li>
+												<a href="index.html">Analytical</a>
+											</li>
+											<li>
+												<a href="index2.html">Demographic</a>
+											</li>
+											<li>
+												<a href="index3.html">Project</a>
+											</li>
+											<li>
+												<a href="index4.html">Hospital</a>
+											</li>
+											<li>
+												<a href="index5.html">HRM</a>
+											</li>
+											<li>
+												<a href="index6.html">Real Estate</a>
+											</li>
+											<li>
+												<a href="profile.html">profile</a>
+											</li>
+										</ul>
+									</li>
+									<li class="col-md-3 col-xs-6 col-menu-list">
+										<a href="javascript:void(0);">
+											<div class="pull-left">
+												<i class="zmdi zmdi-shopping-basket mr-20"></i><span class="right-nav-text">E-Commerce</span>
+											</div>	
+											<div class="pull-right"><span class="label label-success">hot</span>
+											</div>
+											<div class="clearfix"></div>
+										</a>
+										<hr class="light-grey-hr ma-0"/>
+										<ul>
+											<li>
+												<a href="e-commerce.html">Dashboard</a>
+											</li>
+											<li>
+												<a href="product.html">Products</a>
+											</li>
+											<li>
+												<a href="product-detail.html">Product Detail</a>
+											</li>
+											<li>
+												<a href="add-products.html">Add Product</a>
+											</li>
+											<li>
+												<a href="product-orders.html">Orders</a>
+											</li>
+											<li>
+												<a href="product-cart.html">Cart</a>
+											</li>
+											<li>
+												<a href="product-checkout.html">Checkout</a>
+											</li>
+										</ul>
+									</li>
+									<li class="col-md-6 col-xs-12 preview-carousel">
+										<a href="javascript:void(0);"><div class="pull-left"><span class="right-nav-text">latest products</span></div><div class="clearfix"></div></a>
+										<hr class="light-grey-hr ma-0"/>
+										<div class="product-carousel owl-carousel owl-theme text-center">
+											<a href="#">
+												<img src="dist/img/chair.jpg" alt="chair">
+												<span>Circle chair</span>
+											</a>
+											<a href="#">
+												<img src="dist/img/chair2.jpg" alt="chair">
+												<span>square chair</span>
+											</a>
+											<a href="#">
+												<img src="dist/img/chair3.jpg" alt="chair">
+												<span>semi circle chair</span>
+											</a>
+											<a href="#">
+												<img src="dist/img/chair4.jpg" alt="chair">
+												<span>wooden chair</span>
+											</a>
+											<a href="#">
+												<img src="dist/img/chair2.jpg" alt="chair">
+												<span>square chair</span>
+											</a>								
+										</div>
+									</li>
+								</ul>
+							</li>	
+						</ul>
+					</li>
+					<li class="dropdown alert-drp">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="zmdi zmdi-notifications top-nav-icon"></i><span class="top-nav-icon-badge">5</span></a>
+						<ul  class="dropdown-menu alert-dropdown" data-dropdown-in="bounceIn" data-dropdown-out="bounceOut">
+							<li>
+								<div class="notification-box-head-wrap">
+									<span class="notification-box-head pull-left inline-block">notifications</span>
+									<a class="txt-danger pull-right clear-notifications inline-block" href="javascript:void(0)"> clear all </a>
+									<div class="clearfix"></div>
+									<hr class="light-grey-hr ma-0"/>
+								</div>
+							</li>
+							<li>
+								<div class="streamline message-nicescroll-bar">
+									<div class="sl-item">
+										<a href="javascript:void(0)">
+											<div class="icon bg-green">
+												<i class="zmdi zmdi-flag"></i>
+											</div>
+											<div class="sl-content">
+												<span class="inline-block capitalize-font  pull-left truncate head-notifications">
+												New subscription created</span>
+												<span class="inline-block font-11  pull-right notifications-time">2pm</span>
+												<div class="clearfix"></div>
+												<p class="truncate">Your customer subscribed for the basic plan. The customer will pay $25 per month.</p>
+											</div>
+										</a>	
+									</div>
+									<hr class="light-grey-hr ma-0"/>
+									<div class="sl-item">
+										<a href="javascript:void(0)">
+											<div class="icon bg-yellow">
+												<i class="zmdi zmdi-trending-down"></i>
+											</div>
+											<div class="sl-content">
+												<span class="inline-block capitalize-font  pull-left truncate head-notifications txt-warning">Server #2 not responding</span>
+												<span class="inline-block font-11 pull-right notifications-time">1pm</span>
+												<div class="clearfix"></div>
+												<p class="truncate">Some technical error occurred needs to be resolved.</p>
+											</div>
+										</a>	
+									</div>
+									<hr class="light-grey-hr ma-0"/>
+									<div class="sl-item">
+										<a href="javascript:void(0)">
+											<div class="icon bg-blue">
+												<i class="zmdi zmdi-email"></i>
+											</div>
+											<div class="sl-content">
+												<span class="inline-block capitalize-font  pull-left truncate head-notifications">2 new messages</span>
+												<span class="inline-block font-11  pull-right notifications-time">4pm</span>
+												<div class="clearfix"></div>
+												<p class="truncate"> The last payment for your G Suite Basic subscription failed.</p>
+											</div>
+										</a>	
+									</div>
+									<hr class="light-grey-hr ma-0"/>
+									<div class="sl-item">
+										<a href="javascript:void(0)">
+											<div class="sl-avatar">
+												<img class="img-responsive" src="dist/img/avatar.jpg" alt="avatar"/>
+											</div>
+											<div class="sl-content">
+												<span class="inline-block capitalize-font  pull-left truncate head-notifications">Sandy Doe</span>
+												<span class="inline-block font-11  pull-right notifications-time">1pm</span>
+												<div class="clearfix"></div>
+												<p class="truncate">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit</p>
+											</div>
+										</a>	
+									</div>
+									<hr class="light-grey-hr ma-0"/>
+									<div class="sl-item">
+										<a href="javascript:void(0)">
+											<div class="icon bg-red">
+												<i class="zmdi zmdi-storage"></i>
+											</div>
+											<div class="sl-content">
+												<span class="inline-block capitalize-font  pull-left truncate head-notifications txt-danger">99% server space occupied.</span>
+												<span class="inline-block font-11  pull-right notifications-time">1pm</span>
+												<div class="clearfix"></div>
+												<p class="truncate">consectetur, adipisci velit.</p>
+											</div>
+										</a>	
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="notification-box-bottom-wrap">
+									<hr class="light-grey-hr ma-0"/>
+									<a class="block text-center read-all" href="javascript:void(0)"> read all </a>
+									<div class="clearfix"></div>
+								</div>
+							</li>
+						</ul>
+					</li>
+					<li class="dropdown auth-drp">
+						<a href="#" class="dropdown-toggle pr-0" data-toggle="dropdown"><img src="images/profile-img.jpg" alt="" class="user-auth-img img-circle"/><span class="user-online-status"></span></a>
+						<ul class="dropdown-menu user-auth-dropdown" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
+							<li>
+								<a href="profile.html"><i class="zmdi zmdi-account"></i><span>Profile</span></a>
+							</li>
+							<li>
+								<a href="#"><i class="zmdi zmdi-card"></i><span>my balance</span></a>
+							</li>
+							<li>
+								<a href="inbox.html"><i class="zmdi zmdi-email"></i><span>Inbox</span></a>
+							</li>
+							<li>
+								<a href="#"><i class="zmdi zmdi-settings"></i><span>Settings</span></a>
+							</li>
+							<li class="divider"></li>
+							<li class="sub-menu show-on-hover">
+								<a href="#" class="dropdown-toggle pr-0 level-2-drp"><i class="zmdi zmdi-check text-success"></i> available</a>
+								<ul class="dropdown-menu open-left-side">
+									<li>
+										<a href="#"><i class="zmdi zmdi-check text-success"></i><span>available</span></a>
+									</li>
+									<li>
+										<a href="#"><i class="zmdi zmdi-circle-o text-warning"></i><span>busy</span></a>
+									</li>
+									<li>
+										<a href="#"><i class="zmdi zmdi-minus-circle-outline text-danger"></i><span>offline</span></a>
+									</li>
+								</ul>	
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="#"><i class="zmdi zmdi-power"></i><span>Log Out</span></a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>	
+		</nav>
+		<!-- /Top Menu Items -->
+		
+		<!-- Left Sidebar Menu -->
+		<div class="fixed-sidebar-left">
+			<ul class="nav navbar-nav side-nav nicescroll-bar">
+			
+				<li class="corner">
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#dashboard_dr"><div class="pull-left"><i class="icon-dash1-icon mr-20"></i><span class="right-nav-text">Dashboard</span></div><div class="clearfix"></div></a>					
+				</li>
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#org_dr"><div class="pull-left"><i class="icon-org1-icon mr-20"></i><span class="right-nav-text">Organization</span></div><div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="org_dr" class="collapse collapse-level-1">
+						<li>
+							<a href="profile.html">Company Profile</a>
+						</li>
+						<li>
+							<a href="employee.html">Employee Management</a>
+						</li>
+						<li><a href="territory-management.html">Territory Management</a></li>
+						<li><a href="region-management.html">Region Management</a></li>
+						<li><a href="area-management.html">Area Management</a> </li>
+						
+					</ul>
+				</li>
+				
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#inv_dr">
+					<div class="pull-left"><i class="icon-inv-icon mr-20"></i><span class="right-nav-text">Product</span></div>
+					<div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="inv_dr" class="collapse collapse-level-1">
+						<li>
+							<a href="inventory.html">Product Management</a>
+						</li>
+					</ul>
+				</li>
+				
+	 		 	<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#cat_dr">
+					<div class="pull-left"><i class="icon-cat1-icon mr-20"></i><span class="right-nav-text">Catalogue</span></div>
+					<div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="cat_dr" class="collapse collapse-level-1">
+						<li>
+							<a href="catalogue-management.html">Catalogue Management</a>
+						</li>
+					</ul>
+				</li>
+				
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#ret_dr">
+					<div class="pull-left"><i class="icon-ret1-icon mr-20"></i><span class="right-nav-text">Distributor</span></div>
+					<div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="ret_dr" class="collapse collapse-level-1">
+						<li>
+							<a href="distributor-management.html">Distributor Management</a>
+						</li>
+					</ul>
+				</li>
+				
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#ord_dr">
+					<div class="pull-left"><i class="icon-ord1-icon mr-20"></i><span class="right-nav-text">Orders</span></div>
+					<div class="pull-right m-t-5"><i class="zmdi zmdi-caret-down"></i></div><div class="clearfix"></div></a>
+					<ul id="ord_dr" class="collapse collapse-level-1">
+						<li>
+							<a href="orders-management.html">Orders List</a>
+						</li>
+					</ul>
+				</li>
+	 
+
+			</ul>
+		</div>
+		<!-- /Left Sidebar Menu -->
+		
+		<!-- Right Sidebar Menu -->
+		<div class="fixed-sidebar-right">
+		 
+ 		<a href="#" id="open_right_sidebar" class="close-btn-pl"></a> 
+		<div class="pro-header-text"><h3>Update Order</h3> 
+		
+		
+  <div id="addProductNew" class="collapse">
+
+	  	<div class="form-wrap">
+ 			
+						  <div class="row">
+							  <div class="col-md-12"><h4 class="heading">Add New Product</h4></div>
+							<div class="col-md-6 col-sm-6">
+							  <div class="form-group">
+								<label class="control-label">Select Item</label>
+								<input type="text" id="" class="form-control" placeholder="Slect2 use">
+							  </div>
+							</div>
+							<div class="col-md-6 col-sm-6">
+							  <div class="form-group">
+								<label class="control-label">Select Unit</label>
+								<input type="text" id="" class="form-control" placeholder="Slect2 use">
+							  </div>
+							</div>
+			
+							<div class="col-md-3 col-sm-6">
+							  <div class="form-group">
+								<label class="control-label">Quantity</label>
+								<input type="text" id="" class="form-control" placeholder="">
+							  </div>
+							</div>
+							<div class="col-md-2 col-sm-6">
+							  <div class="form-group">
+								<label class="control-label">Discount (%)</label>
+								<input type="text" id="" class="form-control" placeholder="">
+							  </div>
+							</div> 
+			 
+							<div class="col-md-4 col-sm-6">
+							  <div class="form-group">
+								<label class="control-label">Add Campaign</label>
+								<input type="text" id="" class="form-control" placeholder="Slect2 use">
+							  </div>
+							</div>
+							<div class="col-md-3 col-sm-6">
+							  <div class="form-group">
+								<label class="control-label">Campaign Quantity</label>
+								<input type="text" id="" class="form-control" placeholder=""> 
+							  </div>
+							</div> 
+							
+							<div class="col-md-12">				 
+							  <div class="form-group">
+								<button type="button" class="btn btn-save mr-5 m-t-10">Add Product</button>
+			   					<button type="button" class="btn btn-cancel  m-t-10" data-toggle="collapse" data-target="#addProductNew">Cancel</button>  
+							  </div>
+							  </div>
+						 
+							
+						  </div>  
+			 
+		</div>
+	  
+  </div> 
+		
+		
+		</div>
+ 
+  <div class="pc-cartlist">
+ 
+    <div class="overflow-plist">
+ 
+      <div class="plist-content">
+      
+    <div class="_left-filter"> 
+		<div class="row RE-info">
+		<div class="col-md-8 col-sm-7">
+			<span class="block">Order booker: <strong>Saadi Khan</strong> </span>
+			<span class="font-16 block"><strong>Madina Munawwara Store</strong></span>
+			<span class="mr-20">Date:<strong> 22-05-2018</strong></span>
+			<span class="mr-20">ID: <strong>25465</strong></span>
+			<span class="mr-20">Territory: <strong>Jahor Town</strong></span> 
+		</div>
+			<div class="col-md-4 col-sm-5">
+				<div class="total_am">Total Amount: 15600</div>
+			</div>
+		</div> 	
+		
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>
+							
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>
+							
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>
+							
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>
+							
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>
+							
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>
+							
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>
+							
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>
+							
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>
+							
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>
+							
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>
+							
+		<div class="pro_list-update">
+			<button class="btn del-btn"><i class="fa fa-times"></i></button>	
+								
+		<div class="pro_img">   	    
+   	    <img src="images/01.jpg" alt=""/>
+   	    </div>    
+   	    <div>
+   	    <h3 class="p-name">3D Car Rally (3DCarRally001)</h3>
+   	    <ul class="up-info-list">
+   	    	<li>    
+			 <label class="control-label mb-10">Unit</label>  
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+			<li>    
+			 <label class="control-label mb-10">Discount (%)</label>
+			 <input type="text" id="" class="form-control" placeholder="5%">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign</label>
+			 <input type="text" id="" class="form-control -wselect" placeholder="use select2"> 
+	 		</li>
+ 	    <li>    
+			 <label class="control-label mb-10">Campaign Qty</label>
+			 <input type="number" name="quantity" class="form-control">
+	 		</li>
+  	    
+   	    </ul>
+   	    
+   	    <div class="-amont-pr">Rs: 3500</div>
+   	    
+   	    </div>  
+							
+		</div>								
+								
+	</div> 
+      </div>
+ 
+    </div> 
+ 
+ 
+  </div>
+  
+  
+<div class="_cl-bottom">
+
+			   <button type="submit" class="btn btn-save mr-5">Save</button>
+			   <button type="button" class="btn btn-save mr-5" data-toggle="collapse" data-target="#addProductNew">Add Product</button>
+			    
+			   <button id="pl-close" type="submit" class="btn btn-cancel">Cancel</button>   
+	 
+</div> 
+
+</div>
+		
+ 
+<style>
+.heading {
+	font-size: 18px;
+	font-weight: 500;
+	border-bottom: solid 2px #d9dde1;
+	line-height: normal;
+	padding-bottom: 15px;
+	margin-bottom: 10px;
+}
+#addProductNew .form-wrap {
+	padding: 20px;
+	margin-top: 0px;
+	background-color: #fff;
+	border-bottom: solid 2px #001e35;
+}
+#addProductNew .control-label {
+	font-size: 13px;
+	color: #5f5f67!important;
+	padding: 0!important;
+	margin: 0!important;
+	font-weight: normal;
+	display: block;
+	height: 30px;
+	line-height: 30px;
+}
+#addProductNew .form-wrap .form-group {
+	margin-bottom: 10px
+}
+.pro_list-update {
+	width: 100%;
+	overflow: hidden;
+	float: left;
+	padding: 15px 130px 15px 15px;
+	border-bottom: solid 1px #e9e9e9;
+	position: relative
+}
+.-amont-pr {
+	font-size: 16px;
+	font-weight: 600;
+	position: absolute;
+	top: 40px;
+	right: 40px
+}
+.pro_list-update .control-label {
+	font-size: 12px;
+	padding: 0!important;
+	margin: 0!important
+}
+.pro_list-update .form-control {
+	height: 28px;
+	font-size: 14px
+}
+.pro_list-update input {
+	width: 80px;
+	padding-left: 7px;
+	padding-right: 7px
+}
+.pro_list-update .-wselect {
+	width: 150px!important;
+}
+.pro_list-update .del-btn, .pro_list-update .del-btn:HOVER, .pro_list-update .del-btn:focus {
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	top: 10px;
+	right: 10px;
+	background-color: transparent!important;
+	color: #f12300;
+	box-shadow: nonne
+}
+.pro_list-update .p-name {
+	font-family: noir_prolight!important;
+	font-size: 14px;
+	font-weight: 600;
+	padding: 0;
+	margin: 0;
+	line-height: normal;
+	letter-spacing: 0.5px
+}
+.pro_list-update .del-btn .fa-times {
+	font-size: 16px;
+}
+.pro_img {
+	float: left;
+	height: 75px;
+	padding-right: 15px
+}
+.pro_img img {
+	width: 75px;
+	height: 75px;
+}
+.up-info-list {
+	padding: 5px 0px 0px;
+	margin: 0;
+}
+.up-info-list li {
+	padding: 0;
+	margin: 0;
+	float: left;
+	margin-right: 10px
+}
+.total_am {
+	border: solid 1px #001e35;
+	font-weight: 600;
+	padding: 10px 15px;
+	float: right;
+	margin-top: 12px;
+	border-radius: 6px;
+	box-shadow: 2px 2px 10px 0 rgba(79,79,79,.2);
+}
+.RE-info {
+	float: left;
+	background-color: #f7f7f7;
+	display: block;
+	width: 100%;
+	margin: 0;
+	padding: 15px 5px;
+	font-size: 15px;
+	font-weight: 500;
+	-webkit-transition: 450ms cubic-bezier(0.23, 1, 0.32, 1);
+	-moz-transition: 450ms cubic-bezier(0.23, 1, 0.32, 1);
+	transition: 450ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.RE-info span {
+	letter-spacing: 0.5px
+}
+.no-scroll {
+	overflow: hidden
+}
+.fixed-sidebar-right {
+	position: fixed;
+	top: 0px;
+	right: 0;
+	width: 850px;
+	margin-right: -850px;
+	bottom: 0;
+	z-index: 1500;
+	transition: all .4s ease;
+	height: 100vh;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	display: flex;
+	flex-direction: column;
+	background-color: #FFF;
+}
+.open-right-sidebar .fixed-sidebar-right {
+	-webkit-box-shadow: 0 0px 220px 0 rgba(79,79,79,1);
+	-moz-box-shadow: 0 0px 220px 0 rgba(79,79,79, 1);
+	box-shadow: 0 0px 220px 0 rgba(79,79,79,1);
+}
+.overlay {
+	display: none;
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0,0,0,.5);
+	z-index: 998;
+	opacity: 0;
+}
+.overlay.active {
+	display: block;
+	opacity: 1;
+}
+.pro-header-text {
+	border-bottom: solid 1px #fff;
+	background-color: #001e35;
+	position: relative;
+	margin-left: 0;
+	width: inherit;
+}
+.pro-header-text h3 {
+	font-size: 18px;
+	padding: 0px;
+	margin: 0;
+	font-weight: 500;
+	color: #fff;
+	padding: 5px 5px 5px 15px;
+}
+.pc-cartlist {
+	display: flex;
+	flex: 1;
+	min-height: 0px;
+	padding-bottom: 65px;
+}
+.overflow-plist {
+	flex: 1;
+	overflow: auto;
+}
+.plist-content {
+	color: black;
+	height: 100%;
+}
+.custom-select:focus, .form-control:focus {
+	box-shadow: none
+}
+._cl-checkout {
+	background-color: #001e35;
+	font-size: 18px;
+	color: #fff;
+	font-weight: 500;
+	width: 100%;
+	text-align: left;
+	padding: 10px;
+	padding-left: 15px;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+	-khtml-border-radius: 0;
+}
+.close-btn-pl {
+	position: absolute;
+	right: 10px;
+	top: 15px;
+	width: 30px;
+	height: 30px;
+	z-index: 100;
+}
+.close-btn-pl:hover {
+	opacity: 1
+}
+.close-btn-pl:after, .close-btn-pl:before {
+	position: absolute;
+	left: 15px;
+	content: ' ';
+	height: 19px;
+	width: 2px;
+	background-color: #fff
+}
+.close-btn-pl:before {
+	transform: rotate(45deg)
+}
+.close-btn-pl:after {
+	transform: rotate(-45deg)
+}
+._cl-bottom {
+	height: 60px;
+	margin: 0;
+	padding: 10px;
+	position: fixed;
+	width: 0;
+	right: 0;
+	bottom: -1px;
+	z-index: 100;
+	opacity: 0;
+	background-color: #f6f6f6;
+	padding-left: 15px;
+}
+.open-right-sidebar .fixed-sidebar-right ._cl-bottom {
+	opacity: 1;
+	transition: opacity 0.7s linear;
+	-webkit-transition: 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+	-moz-transition: 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+	transition: 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+	width: 850px;
+}
+._cl-bottom .btn, #addProductNew .btn {
+	font-size: 14px;
+	margin-top: 2px;
+	font-weight: 500;
+	box-shadow: none;
+	box-shadow: 2px 2px 10px 0 rgba(79,79,79,.2);
+}
+
+@media (max-width:800px) {
+.open-right-sidebar .fixed-sidebar-right ._cl-bottom {width: 100%}
+
+.fixed-sidebar-right {
+	width: 100%;
+	margin-right: -100%;
+}
+.pro_img {margin-bottom: 35px}
+.up-info-list li {padding-bottom: 5px}
+}
+@media (max-width:767px) {
+.total_am {
+	float: none;
+	text-align: center;
+}
+}
+@media (max-width:480px) {	
+.pro_img {margin-bottom: 0px}
+.-amont-pr {right: 20px}
+.pro_list-update {padding: 15px 108px 15px 15px}
+}
+</style>
+
+		
+		
+       
+		<!-- Main Content -->
+		<div class="page-wrapper">
+            <div class="container-fluid">
+            
+ 		
+				
+	<div class="row p-t-30">
+	
+					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+						<div class="panel panel-default card-view pa-0 emp-stats pr-box">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-dark block counter">820</span>
+													<span class="weight-500 uppercase-font block">Total Orders</span>
+												</div>
+												<div class="col-xs-6 text-center">
+													<img src="images/icon-all-orders.svg" alt="brand"/>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div> 
+					
+			<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+						<div class="panel panel-default card-view pa-0 emp-stats absent-box">
+							<div class="panel-wrapper">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-dark block counter">30</span>
+													<span class="weight-500 uppercase-font block">Cancel Orders</span>
+												</div>
+												<div class="col-xs-6 text-center  pl-0 pr-0 ">
+													<img src="images/icon-order-cancelled.svg" alt="brand"/>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div> 
+					
+					
+					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 ">
+						<div class="panel panel-default card-view pa-0 emp-stats blue-box">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-dark block counter">25</span>
+													<span class="weight-500 uppercase-font block font-13">Pending Orders</span>
+												</div>
+												<div class="col-xs-6 text-center  pl-0 pr-0">
+													<img src="images/icon-order-pending.svg" alt="brand"/>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 ">
+						<div class="panel panel-default card-view pa-0 emp-stats total-box">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-dark block counter">875</span>
+													<span class="weight-500 uppercase-font block font-13">Complete Orders</span>
+												</div>
+												<div class="col-xs-6 text-center  pl-0 pr-0">
+													<img src="images/icon-order-done.svg" alt="brand"/>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+	 
+ 	</div> 
+		    	   	
+		<div class="row">	
+			    	<div class="col-md-12">
+			    
+						<div class="box-white p-20"> 
+			    
+					<div class="table-wrap">
+										<div class="table-responsive">
+											<table id="datable_1" class="table table-hover display  pb-30" >
+												<thead>
+													<tr>
+														<th>Date</th>
+														<th>Emp ID</th>
+														<th>Emp Name</th>
+														<th>Distributor Name</th>														
+														<th>Region</th>
+														<th>Area</th>
+														<th>Territory</th>														
+														<th style="width: 80px;">Order within circle</th>
+														<th>Status</th>
+														<th>Actions</th>														
+													</tr>
+												</thead>
+ 	
+												<tfoot>
+													<tr>
+														<th>Date</th>
+														<th>Emp ID</th>
+														<th>Emp Name</th>
+														<th>Distributor Name</th>														
+														<th>Region</th>
+														<th>Area</th>
+														<th>Territory</th>														
+														<th>Order within circle</th>
+														<th>Status</th>
+														<th>Actions</th>														
+													</tr>
+												</tfoot>
+												<tbody>
+												 
+													
+													<tr>
+														<td>02/04/2018</td>
+														<td>0256</td>
+														<td>Rafique Khan</td>													 
+														<td>Baba Khan Distributor Name</td> 
+														<td>Info Here</td>
+														<td>Lahore</td>
+														<td>Wapda/Johar/PIA</td>
+														<td>Yes</td>
+														<td><span href="#" class="bluetext">Pending</span></td>
+														<td>
+														 <a href="#" class="view-report m-r-5">Process</a>
+														 										 
+														 <a href="#" id="open_right_sidebar" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Invoice"><i class="fa fa-list-alt"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-close"></i></a>
+														 	
+														 </td>	
+													</tr>
+													
+													
+													<tr>
+														<td>02/04/2018</td>
+														<td>0257</td>
+														<td>Ali Khan</td>													 
+														<td>Lala Khan Distributor Name</td>
+														<td>info here</td>
+														<td>info here</td>
+														<td>info here</td>
+														<td>No</td>
+														<td><span href="#" class="greentext">Complete</span></td>
+														<td>
+														 <a href="#" class="view-report m-r-5">Process</a>
+														 <a href="#" id="open_right_sidebar" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Invoice"><i class="fa fa-list-alt"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-close"></i></a>
+														 	
+														 </td>													
+														 
+														
+														
+													</tr>
+													
+													<tr>
+														<td>02/04/2018</td>
+														<td>0258</td>
+														<td>Saad Khan</td>														 
+														<td>Nawaz Khan Distributor Name</td>
+														<td>info here</td>
+														<td>info here</td>
+														<td>info here</td>
+														<td>Yes</td>
+														<td><span href="#" class="greentext">Complete</span></td>
+														<td>
+														 <a href="#" class="view-report m-r-5">Process</a>
+														 <a href="#" id="open_right_sidebar" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Invoice"><i class="fa fa-list-alt"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-close"></i></a>
+														 	
+														 </td>															
+														 
+													</tr>
+													
+													<tr>
+														<td>02/04/2018</td>
+														<td>0259</td>
+														<td>Tayyab Khan</td>
+													 
+														<td>Jugi Khan</td>
+														<td>info here</td>
+														<td>info here</td>
+														<td>info here</td>
+														<td>Yes</td>
+														<td><span href="#" class="redtext">Cancel</span></td>
+														<td>
+														 <a href="#" class="view-report m-r-5">Process</a>
+														 <a href="#" id="open_right_sidebar" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Invoice"><i class="fa fa-list-alt"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-close"></i></a>
+														 	
+														 </td>	
+														
+														 
+													</tr>
+													<tr>
+														<td>02/04/2018</td>
+														<td>0258</td>
+														<td>Saad Khan</td>
+													 
+														<td>Nawaz Khan</td>
+														<td>info here</td>
+														<td>info here</td>
+														<td>info here</td>
+														<td>Yes</td>
+														<td><span href="#" class="greentext">Complete</span></td>
+														<td>
+														 <a href="#" class="view-report m-r-5">Process</a>
+														 <a href="#" id="open_right_sidebar" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Invoice"><i class="fa fa-list-alt"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-close"></i></a>
+														 	
+														 </td>														
+														 
+													</tr>
+													<tr>
+														<td>02/04/2018</td>
+														<td>0258</td>
+														<td>Tahir Khan</td>
+													 
+														<td>Nawaz Khan</td>
+														<td>info here</td>
+														<td>info here</td>
+														<td>info here</td>
+														<td>Yes</td>
+														<td><span href="#" class="greentext">Complete</span></td>
+														<td>
+														 <a href="#" class="view-report m-r-5">Process</a>
+														 <a href="#" id="open_right_sidebar" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Invoice"><i class="fa fa-list-alt"></i></a>
+														 <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-close"></i></a>
+														 	
+														 </td>											
+														 
+													</tr>
+												 
+											 
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+					
+				 
+						
+						</div>
+					
+					</div>
+						
+					</div>
+					
+	 
+					
+				<!-- /Row -->
+				
+		 
+			</div>
+				
+				<!-- Footer -->
+				<footer class="footer">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-12 align-center">
+							<p>2018 &copy; Allomate All rights reserved</p>
+						</div>
+					</div>
+				</div>
+				</footer>
+				<!-- /Footer -->
+			</div>
+		</div>
+        <!-- /Main Content -->
+
+ 
+ 
+	
+	<!-- JavaScript -->
+	
+<!-- jQuery -->
+    <script src="vendors/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    
+    <!-- Bootstrap Daterangepicker JavaScript -->
+	<script src="vendors/bower_components/dropify/dist/js/dropify.min.js"></script>
+		
+	<!-- Form Flie Upload Data JavaScript -->
+	<script src="dist/js/form-file-upload-data.js"></script>
+    
+    <script src="vendors/bower_components/jasny-bootstrap/dist/js/jasny-bootstrap.min.js"></script>
+    	<!-- Init JavaScript -->
+	<script src="dist/js/init.js"></script> 
+	<!-- Data table JavaScript -->
+	<script src="vendors/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+	<script src="dist/js/dataTables-data.js"></script>
+	
+	<!-- Select2 JavaScript -->
+	<script src="vendors/bower_components/select2/dist/js/select2.full.min.js"></script>
+ 
+	<!-- Bootstrap Touchspin JavaScript -->
+	<script src="vendors/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script> 
+		 
+	<!-- Bootstrap Switch JavaScript -->
+	<script src="vendors/bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script> 
+		
+	<!-- Bootstrap Datetimepicker JavaScript -->
+	<script type="text/javascript" src="vendors/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script> 
+		
+	<!-- Form Advance Init JavaScript -->
+	<script src="dist/js/form-advance-data.js"></script> 
+	
+	<!-- Slimscroll JavaScript -->
+	<script src="dist/js/jquery.slimscroll.js"></script>
+	
+	<!-- Bootstrap Select JavaScript -->
+	<script src="vendors/bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+	
+	<!-- Owl JavaScript -->
+	<script src="vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
+	
+	<!-- Switchery JavaScript -->
+	<script src="vendors/bower_components/switchery/dist/switchery.min.js"></script>
+	
+	<!-- Fancy Dropdown JS -->
+	<script src="dist/js/dropdown-bootstrap-extended.js"></script>
+	
+ 
+ 
+</script>
+ 
+</body>
+
+</html>

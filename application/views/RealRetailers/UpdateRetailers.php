@@ -29,6 +29,7 @@
 						<h2>Add Retailer</h2>
 						<?php $attributes = array('id' => 'updateRetailerForm');
 						echo form_open('RealRetailers/UpdateRetailerOps/'.$Retailer->id, $attributes); ?>
+						<input type="text" value="<?= $Retailer->zone_id; ?>" id="selectedZoneId" hidden>
 						<div class="form-wrap">
 							<div class="form-body">
 								<div class="row">
@@ -40,14 +41,27 @@
 										</div>
 									</div>
 									<div class="col-md-6">
-										<div class="form-group">
-											<label class="control-label mb-10">Retailer Territory*</label>
-											<?php
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<label class="control-label mb-10">Retailer Territory*</label>
+													<?php
 												foreach ($Territories as $territory) : 
 													$options[$territory->id] = $territory->territory_name;
 												endforeach; 
 												$atts = array( 'class' => 'form-control' );
 												echo form_dropdown('retailer_territory_id', $options, $Retailer->retailer_territory_id, $atts); ?>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label class="control-label mb-10">Retailer Zone*</label>
+													<select class="form-control" name="zone_id" data-style="form-control btn-default btn-outline">
+														<option disabled selected>Select zone</option>
+													</select>
+													<?= form_error('zone_id', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -130,3 +144,51 @@
 </div>
 <?php require_once(APPPATH.'/views/includes/footer.php'); ?>
 <script type="text/javascript" src="<?= base_url('assets/js/Retailers.js').'?v='.time(); ?>"></script>
+
+<script>
+	$(document).ready(function () {
+		$('select[name="zone_id"]').empty();
+		$('select[name="zone_id"]').append('<option value="0" disabled selected>Loading zones..</option>');
+		$.ajax({
+			type: 'GET',
+			url: '/RealRetailers/GetZones/' + $('select[name="retailer_territory_id"]').val(),
+			success: function (response) {
+				$('select[name="zone_id"]').empty();
+				var response = JSON.parse(response);
+				if (!response.length)
+					$('select[name="zone_id"]').append('<option disabled selected>Select zone</option>');
+
+				response.forEach(element => {
+					if ($('#selectedZoneId').val() == element['id']) {
+						$('select[name="zone_id"]').append('<option value="' + element['id'] + '" selected>' + element['zone_name'] +
+							'</option>');
+					} else {
+						$('select[name="zone_id"]').append('<option value="' + element['id'] + '">' + element['zone_name'] +
+							'</option>');
+					}
+				});
+			}
+		});
+
+		$('select[name="retailer_territory_id"]').change(function () {
+			$('select[name="zone_id"]').empty();
+			$('select[name="zone_id"]').append('<option disabled selected>Loading zones..</option>');
+			$.ajax({
+				type: 'GET',
+				url: '/RealRetailers/GetZones/' + $('select[name="retailer_territory_id"]').val(),
+				success: function (response) {
+					$('select[name="zone_id"]').empty();
+					var response = JSON.parse(response);
+					if (!response.length)
+						$('select[name="zone_id"]').append('<option disabled selected>Select zone</option>');
+
+					response.forEach(element => {
+						$('select[name="zone_id"]').append('<option value="' + element['id'] + '">' + element['zone_name'] +
+							'</option>');
+					});
+				}
+			});
+		});
+	});
+
+</script>

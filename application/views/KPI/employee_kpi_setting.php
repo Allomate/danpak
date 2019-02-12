@@ -25,7 +25,7 @@
 							<a href="#">
 								<span>KPI Management</span>
 							</a>
-						</li> 
+						</li>
 						<li>
 							<span>Add KPI</span>
 						</li>
@@ -41,7 +41,8 @@
 							<h2 class="m-b-0" style="display: inline-block; border: 0px !important">Employee Info</h2>
 							<div class="checkbox checkbox-primary checkbox-circle m-b-20 eure_set">
 								<input type="checkbox" id="evaluateUsingEmployees" value="Reports">
-								<label for="evaluateUsingEmployees" class="lab-medium" style="font-weight: bolder">Evaluate using reporting employees</label>
+								<label for="evaluateUsingEmployees" class="lab-medium" style="font-weight: bolder">Evaluate using reporting
+									employees</label>
 							</div>
 						</div>
 						<div class="bg-gl clearfix m-b-30">
@@ -213,27 +214,29 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Target</label>
-									<input type="text" name="target_<?= $i; ?>" value="<?= $error['target_'.$i]; ?>" class="form-control empTargets" placeholder="">
+									<input type="text" name="target_<?= $i; ?>" value="<?= $error['target_'.$i]; ?>" class="form-control empTargets"
+									 placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Eligibility</label>
 									<input type="text" name="eligibility_<?= $i; ?>" value="<?= $error['eligibility_'.$i]; ?>" class="form-control empEligibility"
-									placeholder="">
+									 placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Weightage</label>
-									<input type="text" name="weightage_<?= $i; ?>" value="<?= $error['weightage_'.$i]; ?>" class="form-control weightage" placeholder="">
+									<input type="text" name="weightage_<?= $i; ?>" value="<?= $error['weightage_'.$i]; ?>" class="form-control weightage"
+									 placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Incentive</label>
 									<input type="text" name="incentive_<?= $i; ?>" value="<?= $error['incentive_'.$i]; ?>" class="form-control empIncentives"
-									placeholder="">
+									 placeholder="">
 								</div>
 							</div>
 						</div>
@@ -241,7 +244,8 @@
 						<input type="text" name="selected_product_<?= $i; ?>" value="<?= $error['productDD_'.$i]; ?>" hidden="">
 						<input type="text" name="selected_unit_<?= $i; ?>" value="<?= $error['unitDD_'.$i]; ?>" hidden="">
 
-						<input type="text" name="for_month_or_criteria_<?= $i; ?>" value="<?= $error['for_month_or_criteria_'.$i]; ?>" hidden="">
+						<input type="text" name="for_month_or_criteria_<?= $i; ?>" value="<?= $error['for_month_or_criteria_'.$i]; ?>"
+						 hidden="">
 						<input type="text" name="criteria_<?= $i; ?>" value="<?= $error['criteria_'.$i]; ?>" hidden="">
 						<input type="text" name="for_kpi_type_<?= $i; ?>" value="<?= $error['for_kpi_type_'.$i]; ?>" hidden="">
 						<?php elseif($error["for_kpi_type_".$i] == "quantity") : ?>
@@ -260,33 +264,36 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Target</label>
-									<input type="text" name="target_<?= $i; ?>" value="<?= $error['target_'.$i]; ?>" class="form-control empTargets" placeholder="">
+									<input type="text" name="target_<?= $i; ?>" value="<?= $error['target_'.$i]; ?>" class="form-control empTargets"
+									 placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Eligibility</label>
 									<input type="text" name="eligibility_<?= $i; ?>" value="<?= $error['eligibility_'.$i]; ?>" class="form-control empEligibility"
-									placeholder="">
+									 placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Weightage</label>
-									<input type="text" name="weightage_<?= $i; ?>" value="<?= $error['weightage_'.$i]; ?>" class="form-control weightage" placeholder="">
+									<input type="text" name="weightage_<?= $i; ?>" value="<?= $error['weightage_'.$i]; ?>" class="form-control weightage"
+									 placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Incentive</label>
 									<input type="text" name="incentive_<?= $i; ?>" value="<?= $error['incentive_'.$i]; ?>" class="form-control empIncentives"
-									placeholder="">
+									 placeholder="">
 								</div>
 							</div>
 
 							<input type="text" name="selected_unit_<?= $i; ?>" value="<?= $error['unitDD_'.$i]; ?>" hidden="">
 
-							<input type="text" name="for_month_or_criteria_<?= $i; ?>" value="<?= $error['for_month_or_criteria_' .$i]; ?>" hidden="">
+							<input type="text" name="for_month_or_criteria_<?= $i; ?>" value="<?= $error['for_month_or_criteria_' .$i]; ?>"
+							 hidden="">
 							<input type="text" name="criteria_<?= $i; ?>" value="<?= $error['criteria_'.$i]; ?>" hidden="">
 							<input type="text" name="for_kpi_type_<?= $i; ?>" value="<?= $error['for_kpi_type_'.$i]; ?>" hidden="">
 						</div>
@@ -298,30 +305,33 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Target</label>
-									<input type="text" name="target_<?= $i; ?>" value="<?= $error['target_'.$i]; ?>" class="form-control empTargets" placeholder="">
+									<input type="text" name="target_<?= $i; ?>" value="<?= $error['target_'.$i]; ?>" class="form-control empTargets"
+									 placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Eligibility</label>
 									<input type="text" name="eligibility_<?= $i; ?>" value="<?= $error['eligibility_'.$i]; ?>" class="form-control empEligibility"
-									placeholder="">
+									 placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Weightage</label>
-									<input type="text" name="weightage_<?= $i; ?>" value="<?= $error['weightage_'.$i]; ?>" class="form-control weightage" placeholder="">
+									<input type="text" name="weightage_<?= $i; ?>" value="<?= $error['weightage_'.$i]; ?>" class="form-control weightage"
+									 placeholder="">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label mb-10">Incentive</label>
 									<input type="text" name="incentive_<?= $i; ?>" value="<?= $error['incentive_'.$i]; ?>" class="form-control empIncentives"
-									placeholder="">
+									 placeholder="">
 								</div>
 							</div>
-							<input type="text" name="for_month_or_criteria_<?= $i; ?>" value="<?= $error['for_month_or_criteria_'.$i]; ?>" hidden="">
+							<input type="text" name="for_month_or_criteria_<?= $i; ?>" value="<?= $error['for_month_or_criteria_'.$i]; ?>"
+							 hidden="">
 							<input type="text" name="criteria_<?= $i; ?>" value="<?= $error['criteria_'.$i]; ?>" hidden="">
 							<input type="text" name="for_kpi_type_<?= $i; ?>" value="<?= $error['for_kpi_type_'.$i]; ?>" hidden="">
 						</div>
@@ -339,13 +349,13 @@
 					</div>
 					</form>
 					<?php endif;?>
-					<div class="row" id="progressBar" style="display: none">
+					<!-- <div class="row" id="progressBar" style="display: none">
 						<div class="col-md-12">
 							<div class="progress progress-lg m-t-30">
 								<div class="progress-bar progress-bar-danger" style="width: 2%;" role="progressbar">0%</div>
 							</div>
 						</div>
-					</div>
+					</div> -->
 					<div class="form-bottom">
 						<div class="button-section align-right">
 							<a href="<?= base_url('Kpi/EmpKpi'); ?>" class="btn btn-cancel">Cancel</a>

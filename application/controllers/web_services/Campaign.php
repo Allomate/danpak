@@ -11,13 +11,8 @@ class Campaign extends Web_Services_Controller{
 		
 		if (!$this->AuthenticateWebServiceCall($this->input->post("api_secret_key"))):
             return $this->ResponseMessage('Failed', 'Failed Api Authentication');
-        else:
-            if (!$this->AuthenticateSession($this->input->post("session"))):
-                return $this->ResponseMessage('Failed', 'Failed session Authentication');
-            else:
-                $authentication = true;
-            endif;
         endif;
+		$authentication = true;
 	}
 
 	public function AddToCart(){

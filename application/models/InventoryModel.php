@@ -7,32 +7,76 @@ class InventoryModel extends CI_Model{
 	}
 
 	public function get_inventory_sku_wise(){
-		return $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it limit 0, 12')->result();
+		return $this->db->query('SELECT item_id, is_active, item_name, item_sku, item_brand, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 1')->result();
+	}
+
+	public function get_inventory_sku_wise_deactivated(){
+		return $this->db->query('SELECT item_id, is_active, item_name, item_sku, item_brand, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 0')->result();
 	}
 
 	public function get_inventory_sku_wise_for_gallery(){
-		return array("data" => $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it limit 0, 12')->result(), "total_records" => $this->db->query("SELECT IFNULL(count(*), 0) as totalRecords from inventory_items")->row()->totalRecords);
+		return array("data" => $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 1 limit 0, 18')->result(), "total_records" => $this->db->query("SELECT IFNULL(count(*), 0) as totalRecords from inventory_items")->row()->totalRecords);
 	}
 
-	public function getSearchedInventory($searchQuery){
-		$results = $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where LOWER(item_sku) LIKE "%'.$searchQuery.'%"')->result();
-		if(!$results){
-			$newResults = $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where LOWER(item_name) LIKE "%'.$searchQuery.'%"')->result();
-			if(!$newResults){
-				return $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where LOWER(item_main_description) LIKE "%'.$searchQuery.'%"')->result();
+	public function get_inventory_sku_wise_for_gallery_with_brand_filter($brand){
+		return array("data" => $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 1 and LOWER(item_brand) LIKE "%'.$brand.'%" limit 0, 18')->result(), "total_records" => $this->db->query("SELECT IFNULL(count(*), 0) as totalRecords from inventory_items where LOWER(item_brand) LIKE '%".$brand."%'")->row()->totalRecords);
+	}
+
+	public function getBrandItemsForProductReports($brand){
+		return $this->db->select('pref_id, item_barcode, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, (SELECT item_sku from inventory_items where item_id = ip.item_id) as item_sku, item_trade_price')->where('item_id IN (SELECT item_id from inventory_items where item_brand = "'.$brand.'")')->get("inventory_preferences ip")->result();
+	}
+
+	public function getSearchedInventory($searchQuery, $brand){
+		if($brand != "0"){
+			$results = $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 1 and LOWER(item_sku) LIKE "%'.$searchQuery.'%" and LOWER(item_brand) = "'.$brand.'"')->result();
+			if(!$results){
+				$newResults = $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 1 and LOWER(item_name) LIKE "%'.$searchQuery.'%" and LOWER(item_brand) = "'.$brand.'"')->result();
+				if(!$newResults){
+					return $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 1 and LOWER(item_main_description) LIKE "%'.$searchQuery.'%" and LOWER(item_brand) = "'.$brand.'"')->result();
+				}
+				return $newResults;
 			}
-			return $newResults;
+			return $results;
+		}else{
+			$results = $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 1 and LOWER(item_sku) LIKE "%'.$searchQuery.'%"')->result();
+			if(!$results){
+				$newResults = $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 1 and LOWER(item_name) LIKE "%'.$searchQuery.'%"')->result();
+				if(!$newResults){
+					return $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 1 and LOWER(item_main_description) LIKE "%'.$searchQuery.'%"')->result();
+				}
+				return $newResults;
+			}
+			return $results;
 		}
-		return $results;
 	}
 
-	public function get_inventory_sku_wise_paginated($startLimit){
-		return $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it limit '.$startLimit.', 12')->result();
+	public function getBrands(){
+		return $this->db->query('SELECT item_brand from inventory_items where item_brand != "" and item_brand IS NOT NULL group by item_brand')->result();
+	}
+
+	public function get_inventory_sku_wise_paginated($startLimit, $brand){
+		if($brand != '0'){
+			return $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 1 and item_brand = "'.$brand.'" limit '.$startLimit.', 18')->result();
+		}else{
+			return $this->db->query('SELECT item_id, item_name, item_sku, item_main_description, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail from inventory_items it where is_active = 1 limit '.$startLimit.', 18')->result();
+		}
 	}
 
 	public function RemoveDistributorStock($prefId){
 		$distributorId = $this->db->select('distributor_id')->where('session', $this->session->userdata("session"))->get('admin_session')->row()->distributor_id;
 		return $this->db->delete('distributor_stock', array('pref_id' => $prefId, "distributor_id" => $distributorId)); 
+	}
+
+	public function UpdateDanpakStock($prefId, $quantity){
+		$exist = $this->db->select('item_quantity')->where('pref_id', $prefId)->get('inventory_preferences')->row()->item_quantity;
+		$exist = (int) $exist + (int) $quantity;
+		return $this->db->where('pref_id',$prefId)->update('inventory_preferences', array('item_quantity' => $exist));
+	}
+
+	public function RemoveDanpakStock($prefId, $quantity){
+		$exist = $this->db->select('item_quantity')->where('pref_id', $prefId)->get('inventory_preferences')->row()->item_quantity;
+		$exist = (int) $exist - (int) $quantity;
+		return $this->db->where('pref_id',$prefId)->update('inventory_preferences', array('item_quantity' => $exist));
 	}
 
 	public function UpdateDistributorStock($prefId, $quantity){
@@ -52,19 +96,23 @@ class InventoryModel extends CI_Model{
 		return $this->db->select('pref_id, item_barcode, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, (SELECT item_sku from inventory_items where item_id = ip.item_id) as item_sku, item_trade_price')->get("inventory_preferences ip")->result();
 	}
 
-	public function updateInventoryCore($skuId, $name, $sku, $desc){
+	public function updateInventoryCore($skuId, $name, $sku, $desc, $brand){
 		if($this->db->where('item_sku = "'.$sku.'" and item_id != '.$skuId)->get('inventory_items')->row())
 			return "Exist";
 		
-		return $this->db->where('item_id', $skuId)->update('inventory_items', array('item_name' => $name, 'item_sku' => $sku, 'item_main_description' => $desc));
+		return $this->db->where('item_id', $skuId)->update('inventory_items', array('item_name' => $name, 'item_sku' => $sku, 'item_main_description' => $desc, 'item_brand' => $brand));
 	}
 
 	public function getInventoryForDistributorStockManagement(){
 		return $this->db->select('pref_id, (SELECT stock from distributor_stock where distributor_id = (SELECT distributor_id from admin_session where session = "'.$this->session->userdata("session").'") and pref_id = ip.pref_id) as stocked, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, (SELECT item_sku from inventory_items where item_id = ip.item_id) as item_sku, (SELECT item_main_description from inventory_items where item_id = ip.item_id) as item_main_description, REPLACE(item_thumbnail,"./","'.base_url().'") as item_thumbnail')->get("inventory_preferences ip")->result();
 	}
 
+	public function getInventoryForDanpakStockManagement(){
+		return $this->db->select('pref_id, item_quantity, (SELECT item_name from inventory_items where item_id = ip.item_id) as item_name, (SELECT unit_name from inventory_types_units where unit_id = ip.unit_id) as unit_name, (SELECT item_sku from inventory_items where item_id = ip.item_id) as item_sku, (SELECT item_main_description from inventory_items where item_id = ip.item_id) as item_main_description, REPLACE(item_thumbnail,"./","'.base_url().'") as item_thumbnail')->get("inventory_preferences ip")->result();
+	}
+
 	public function GetMainSkuDetails($item_id){
-		return $this->db->select('item_id, item_sku, item_main_description, item_name, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail, (SELECT sub_category_name from sub_categories where sub_category_id = (SELECT min(sub_category_id) from inventory_preferences where item_id = it.item_id)) as sub_category, (SELECT main_category_name from main_categories where main_category_id = (SELECT main_category_id from sub_categories where sub_category_id = (SELECT min(sub_category_id) from inventory_preferences where item_id = it.item_id))) as main_category, (SELECT min(REPLACE(item_image,"./","'.base_url().'")) as item_image from inventory_preferences where item_id = it.item_id) as item_image')->where('item_id',$item_id)->get("inventory_items it")->row();
+		return $this->db->select('item_id, item_sku, item_brand, item_main_description, item_name, (SELECT min(REPLACE(item_thumbnail,"./","'.base_url().'")) from inventory_preferences where item_id = it.item_id) as item_thumbnail, (SELECT sub_category_name from sub_categories where sub_category_id = (SELECT min(sub_category_id) from inventory_preferences where item_id = it.item_id)) as sub_category, (SELECT main_category_name from main_categories where main_category_id = (SELECT main_category_id from sub_categories where sub_category_id = (SELECT min(sub_category_id) from inventory_preferences where item_id = it.item_id))) as main_category, (SELECT min(REPLACE(item_image,"./","'.base_url().'")) as item_image from inventory_preferences where item_id = it.item_id) as item_image')->where('item_id',$item_id)->get("inventory_items it")->row();
 	}
 
 	public function get_inventory_for_this_order($orderId){
@@ -89,7 +137,35 @@ class InventoryModel extends CI_Model{
 	}
 
 	public function GetUnitNamesForSku($itemId){
-		return $this->db->select('unit_name, (SELECT pref_id from inventory_preferences where item_id = '.$itemId.' and unit_id = itu.unit_id) as pref_id')->where("find_in_set(unit_id, (SELECT GROUP_CONCAT(unit_id) from inventory_preferences where item_id = ".$itemId."))")->get('inventory_types_units itu')->result();
+		return $this->db->select('unit_id, unit_name, (SELECT pref_id from inventory_preferences where item_id = '.$itemId.' and unit_id = itu.unit_id) as pref_id')->where("find_in_set(unit_id, (SELECT GROUP_CONCAT(unit_id) from inventory_preferences where item_id = ".$itemId."))")->get('inventory_types_units itu')->result();
+	}
+
+	public function GetUnitNamesForSkuWithRetDiscount($item_id, $orderId){
+		$data = [];
+		$counter = 0;
+		$units = $this->db->select('unit_id, unit_name, (SELECT pref_id from inventory_preferences where item_id = '.$item_id.' and unit_id = itu.unit_id) as pref_id, (SELECT item_id from inventory_preferences where item_id = '.$item_id.' and unit_id = itu.unit_id) as item_id, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where item_id = '.$item_id.' and unit_id = itu.unit_id)) as item_name, (SELECT REPLACE(item_thumbnail,"./","'.base_url().'") from inventory_preferences where item_id = '.$item_id.' and unit_id = itu.unit_id) as item_thumbnail, (SELECT item_trade_price from inventory_preferences where item_id = '.$item_id.' and unit_id = itu.unit_id) as tp, ( SELECT (item_trade_price-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = (SELECT retailer_id from orders where id = '.$orderId.')))/100)*(ip.item_trade_price))) from inventory_preferences ip where item_id = '.$item_id.' and unit_id = itu.unit_id) as after_discount')->where("find_in_set(unit_id, (SELECT GROUP_CONCAT(unit_id) from inventory_preferences where item_id = ".$item_id."))")->get('inventory_types_units itu')->result();
+		foreach ($units as $unit) {
+			$data[$counter] = $unit;
+			$campaign = $this->db->where('scheme_active = 1 and eligibility_criteria_pref_id = (SELECT pref_id from inventory_preferences where item_id = '.$item_id.' and unit_id = '.$unit->unit_id.')')->get('campaign_management')->row();
+			if(!$campaign){
+				$counter++;
+				continue;
+			}
+			if($campaign->scheme_type == "1"){
+                $data[$counter]->campaign = $this->db->select('(REPLACE(scheme_image,"./","' . base_url() . '")) as scheme_image, campaign_id, eligibility_criteria_pref_id as pref_id, cm.minimum_quantity_for_eligibility as item_quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))))) as individual_price, CEIL(((((((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.scheme_amount)))) * cm.minimum_quantity_for_eligibility)) as final_price')->where('campaign_id', $campaign->campaign_id)->get('campaign_management cm')->row();
+			}else if($campaign->scheme_type == "2"){
+                $data[$counter]->campaign = $this->db->select('(REPLACE(scheme_image,"./","' . base_url() . '")) as scheme_image, campaign_id, eligibility_criteria_pref_id as pref_id, cm.minimum_quantity_for_eligibility as item_quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)))) as individual_price, CEIL((((((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr) - (((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_trade_price from inventory_preferences where pref_id = (SELECT min(item_inside_pref_id) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) - cm.discount_on_tp_pkr))) * (SELECT min(quantity) from sub_inventory_management where inside_this_item_pref_id = cm.eligibility_criteria_pref_id)) * cm.minimum_quantity_for_eligibility)) as final_price')->where('campaign_id', $campaign->campaign_id)->get('campaign_management cm')->row();
+			}else if($campaign->scheme_type == "3"){
+                $data[$counter]->campaign = $this->db->select('(REPLACE(scheme_image,"./","' . base_url() . '")) as scheme_image, campaign_id, eligibility_criteria_pref_id as pref_id, cm.minimum_quantity_for_eligibility as item_quantity, (SELECT REPLACE(item_thumbnail,"./","' . base_url() . '") from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) as item_thumbnail, (SELECT item_name from inventory_items where item_id = (SELECT item_id from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id)) as item_name, CEIL(((((((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price)))))) as individual_price, CEIL(((((((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price))-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = 1))/100)*((SELECT item_warehouse_price from inventory_preferences where pref_id = cm.eligibility_criteria_pref_id) - cm.offered_gift_price)))) * cm.minimum_quantity_for_eligibility)) as final_price')->where('campaign_id', $campaign->campaign_id)->get('campaign_management cm')->row();
+			}
+
+			$counter++;
+		}
+		return $data;
+	}
+
+	public function GetVariantPrice($itemId, $unitId, $orderId){
+		return $this->db->select('(item_trade_price-(((SELECT discount from retailer_types where id = (SELECT retailer_type_id from retailers_details where id = (SELECT retailer_id from orders where id = '.$orderId.')))/100)*(ip.item_trade_price))) as tp')->where('item_id = '.$itemId.' and unit_id = '.$unitId)->get('inventory_preferences ip')->row()->tp;
 	}
 
 	public function AddSubInventory($subInventData){
@@ -155,12 +231,20 @@ class InventoryModel extends CI_Model{
 		return $this->db->delete('inventory_types_units', array('unit_id' => $unit_id)); 
 	}
 
+	public function deactivate($item_id){
+		return $this->db->where('item_id', $item_id)->update('inventory_items', array('is_active'=>0));
+	}
+
+	public function activate($item_id){
+		return $this->db->where('item_id', $item_id)->update('inventory_items', array('is_active'=>1));
+	}
+
 	public function delete_sub_inventory($subInventId){
 		return $this->db->delete('sub_inventory_management', array('id' => $subInventId)); 
 	}
 
 	public function AddInventoryItemWithoutPref($invenData){
-		$this->db->insert('inventory_items', array('item_sku'=>$invenData['item_sku'], 'item_name'=>$invenData['item_name'], 'item_main_description'=>$invenData['item_main_description']));
+		$this->db->insert('inventory_items', array('item_sku'=>$invenData['item_sku'], 'item_name'=>$invenData['item_name'], 'item_brand'=>$invenData['item_brand'], 'item_main_description'=>$invenData['item_main_description']));
 		return $this->db->insert_id();
 	}
 
@@ -173,6 +257,7 @@ class InventoryModel extends CI_Model{
 			return 1;
 		else:
 			$childData = array();
+			return $subInventoryData;
 			foreach ($subInventoryData as $data) :
 				$parentPrefId = $this->db->select('pref_id')->where('item_id = '.$data['parent_item_main_item_id'].' and unit_id = '.$data['parent_item_unit_id'])->get('inventory_preferences')->row()->pref_id;
 				$childPrefId = $this->db->select('pref_id')->where('item_id = '.$data['parent_item_main_item_id'].' and unit_id = '.$data['child_item_unit_id'])->get('inventory_preferences')->row()->pref_id;

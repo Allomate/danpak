@@ -66,7 +66,7 @@
 												<?=$inventory->item_main_description;?>
 											</td>
 											<td>
-												<input class="form-control" type="number" value="<?= $inventory->stocked; ?>" min="1" />
+												<input class="form-control" type="number" value="<?= $inventory->stocked ? $inventory->stocked : 0; ?>" min="1" />
 											</td>
 											<td>
 												<input type="text" class="pref_id" value="<?= $inventory->pref_id; ?>" hidden />

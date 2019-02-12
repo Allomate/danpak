@@ -127,9 +127,11 @@
 											<label class="control-label mb-10">Eligibility Criteria</label>
 											<select class="selectpicker" name="eligibility_criteria_pref_id" data-style="form-control btn-default btn-outline">
 												<?php foreach( $Inventory as $item ) : ?>
-												<option value="<?= $item->pref_id; ?>">
-													<?= $item->item_name; ?>
+												<?php foreach( explode("<-->", $item->variants) as $units ) : ?>
+												<option value="<?= explode('<>', $units)[0]; ?>">
+													<?= $item->item_name . " (" .explode('<>', $units)[1].")"; ?>
 												</option>
+												<?php endforeach; ?>
 												<?php endforeach; ?>
 											</select>
 										</div>
@@ -149,9 +151,11 @@
 												<label class="control-label mb-10">+1 Item</label>
 												<select class="selectpicker" name="item_given_free_pref_id" data-style="form-control btn-default btn-outline">
 													<?php foreach( $Inventory as $item ) : ?>
-													<option value="<?= $item->pref_id; ?>">
-														<?= $item->item_name; ?>
+													<?php foreach( explode("<-->", $item->variants) as $units ) : ?>
+													<option value="<?= explode('<>', $units)[0]; ?>">
+														<?= $item->item_name . " (" .explode('<>', $units)[1].")"; ?>
 													</option>
+													<?php endforeach; ?>
 													<?php endforeach; ?>
 												</select>
 											</div>
@@ -171,13 +175,14 @@
 											<div class="form-group">
 												<label class="control-label mb-10">Scheme Amount</label>
 												<input type="number" name="scheme_amount" class="form-control" value="<?= set_value('scheme_amount'); ?>"
-												readonly>
+												 readonly>
 												<?= form_error('scheme_amount', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="form-group">
 												<label class="control-label mb-10">Scheme Image</label>
+												<small>Dimensions (1080x495)</small>
 												<input type="file" id="scheme_image" name="scheme_image" class="form-control" accept=".jpg,.bmp,.jpeg,png" />
 												<?= isset($scheme_image_error) ? '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">'.$scheme_image_error.'</small>' : '';?>
 												<small>
@@ -194,9 +199,11 @@
 												<label class="control-label mb-10">Item for discount (Each)</label>
 												<select class="selectpicker" name="price_discount_of_this_pref_id" data-style="form-control btn-default btn-outline">
 													<?php foreach( $Inventory as $item ) : ?>
-													<option value="<?= $item->pref_id; ?>">
-														<?= $item->item_name; ?>
+													<?php foreach( explode("<-->", $item->variants) as $units ) : ?>
+													<option value="<?= explode('<>', $units)[0]; ?>">
+														<?= $item->item_name . " (" .explode('<>', $units)[1].")"; ?>
 													</option>
+													<?php endforeach; ?>
 													<?php endforeach; ?>
 												</select>
 											</div>
@@ -213,6 +220,7 @@
 										<div class="col-md-6">
 											<div class="form-group">
 												<label class="control-label mb-10">Scheme Image</label>
+												<small>Dimensions (1080x495)</small>
 												<input type="file" id="scheme_image_disc_tp" name="scheme_image_disc_tp" class="form-control" accept=".jpg,.bmp,.jpeg,png" />
 												<?= isset($scheme_image_error) ? '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">'.$scheme_image_error.'</small>' : '';?>
 												<small>
@@ -227,20 +235,14 @@
 										<div class="col-md-6">
 											<div class="form-group">
 												<label class="control-label mb-10">Gift Item</label>
-												<select class="selectpicker" name="gift_item" data-style="form-control btn-default btn-outline">
-													<?php foreach( $Inventory as $item ) : ?>
-													<option value="<?= $item->pref_id; ?>">
-														<?= $item->item_name; ?>
-													</option>
-													<?php endforeach; ?>
-												</select>
+												<input type="text" class="form-control" name="gift_item" maxlength="150">
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="form-group">
 												<label class="control-label mb-10">Offered Gift Price (PKR)</label>
 												<input type="number" name="offered_gift_price" class="form-control" value="<?= set_value('offered_gift_price'); ?>"
-												min="1">
+												 min="1">
 												<?= form_error('offered_gift_price', '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">', '</small>');?>
 											</div>
 										</div>
@@ -249,6 +251,7 @@
 										<div class="col-md-6">
 											<div class="form-group">
 												<label class="control-label mb-10">Scheme Image</label>
+												<small>Dimensions (1080x495)</small>
 												<input type="file" id="scheme_image_gift" name="scheme_image_gift" class="form-control" accept=".jpg,.bmp,.jpeg,png" />
 												<?= isset($scheme_image_error) ? '<small style="color: red; font-weight: bold; margin-top: 5px; display: block">'.$scheme_image_error.'</small>' : '';?>
 												<small>
@@ -270,7 +273,7 @@
 				</div>
 			</div>
 			<input type="text" id="urlForItemTradePrice" value="<?= base_url('CampaignManagement/GetItemPriceForSchemeAmountCalculationAjax'); ?>"
-			hidden>
+			 hidden>
 			<div class="row button-section">
 				<a type="button" href="<?= base_url('CampaignManagement/ListCampaigns'); ?>" id="backFromTerritoryButton" class="btn btn-cancel">Cancel</a>
 				<a type="button" id="addCampaignBtn" class="btn btn-save">Save</a>
